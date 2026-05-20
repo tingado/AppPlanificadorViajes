@@ -24,6 +24,7 @@ export interface Destination {
   dailyBaseAccommodationCost: number;
   dailyBaseFoodCost: number;
   attractions: Attraction[];
+  flag?: string;
   visaInfo?: string;
   bestMonths?: string;
   climate?: string;

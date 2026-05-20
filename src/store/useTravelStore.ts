@@ -7,6 +7,8 @@ import { buildRouteInfo } from "@/utils/geo";
 
 const MAX_PINS = 3;
 
+let pinLimitTimer: ReturnType<typeof setTimeout> | null = null;
+
 interface TravelState {
   // Destination selection
   selectedDestination: Destination | null;
@@ -66,10 +68,13 @@ export const useTravelStore = create<TravelState>()(
         }
 
         if (activePins.length >= MAX_PINS) {
-          // Replace oldest pin and alert
           const newPins = [...activePins.slice(1), attraction];
           set({ activePins: newPins, pinLimitReached: true, routeInfo: null, showRoute: false });
-          setTimeout(() => get().setPinLimitReached(false), 3000);
+          if (pinLimitTimer) clearTimeout(pinLimitTimer);
+          pinLimitTimer = setTimeout(() => {
+            get().setPinLimitReached(false);
+            pinLimitTimer = null;
+          }, 3000);
           return;
         }
 

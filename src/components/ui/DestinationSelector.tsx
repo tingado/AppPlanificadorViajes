@@ -3,15 +3,6 @@
 import { destinations } from "@/data/destinations";
 import { useTravelStore } from "@/store/useTravelStore";
 
-const flags: Record<string, string> = {
-  JP: "🇯🇵",
-  ID: "🇮🇩",
-  SG: "🇸🇬",
-  TH: "🇹🇭",
-  VN: "🇻🇳",
-  PH: "🇵🇭",
-};
-
 export default function DestinationSelector() {
   const { selectedDestination, setSelectedDestination } = useTravelStore();
 
@@ -32,7 +23,7 @@ export default function DestinationSelector() {
           <option value="">Elige tu destino de luna de miel…</option>
           {destinations.map((d) => (
             <option key={d.id} value={d.id}>
-              {flags[d.countryCode] ?? ""} {d.country}
+              {d.flag ?? ""} {d.country}
             </option>
           ))}
         </select>

@@ -42,7 +42,7 @@ export default function CostSummary() {
           {[
             { label: "Peso Chileno", code: "CLP", value: fmt(totals.totalCLP), flag: "🇨🇱" },
             { label: "Dólar Americano", code: "USD", value: `$${fmt(totals.totalUSD)}`, flag: "🇺🇸" },
-            { label: selectedDestination.currency, code, value: fmt(totals.totalLocal), flag: "🌍" },
+            { label: selectedDestination.currency, code, value: fmt(totals.totalLocal), flag: selectedDestination.flag ?? "🌍" },
           ].map((row) => (
             <div key={row.code} className="flex items-center justify-between px-4 py-3">
               <div className="flex items-center gap-2">
