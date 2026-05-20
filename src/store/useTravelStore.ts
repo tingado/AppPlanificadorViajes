@@ -1,11 +1,13 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { Attraction, Destination, ItineraryDay, CurrencyRates, RouteInfo } from "@/types";
 import { destinations, defaultCurrencyRates } from "@/data/destinations";
 import { generateItinerary } from "@/utils/itineraryGenerator";
 import { buildRouteInfo } from "@/utils/geo";
 
 const MAX_PINS = 3;
+
+let pinLimitTimer: ReturnType<typeof setTimeout> | null = null;
 
 interface TravelState {
   // Destination selection
@@ -42,6 +44,9 @@ interface TravelState {
   // Pin limit alert
   pinLimitReached: boolean;
   setPinLimitReached: (v: boolean) => void;
+
+  // Itinerary staleness
+  itineraryOutdated: boolean;
 }
 
 export const useTravelStore = create<TravelState>()(
@@ -55,28 +60,33 @@ export const useTravelStore = create<TravelState>()(
       activePins: [],
       pinLimitReached: false,
       setPinLimitReached: (v) => set({ pinLimitReached: v }),
+      itineraryOutdated: false,
 
       toggleAttraction: (attraction) => {
-        const { activePins } = get();
+        const { activePins, generatedItinerary } = get();
         const isActive = activePins.some((p) => p.id === attraction.id);
+        const wasGenerated = generatedItinerary.length > 0;
 
         if (isActive) {
-          set({ activePins: activePins.filter((p) => p.id !== attraction.id), routeInfo: null, showRoute: false });
+          set({ activePins: activePins.filter((p) => p.id !== attraction.id), routeInfo: null, showRoute: false, itineraryOutdated: wasGenerated });
           return;
         }
 
         if (activePins.length >= MAX_PINS) {
-          // Replace oldest pin and alert
           const newPins = [...activePins.slice(1), attraction];
-          set({ activePins: newPins, pinLimitReached: true, routeInfo: null, showRoute: false });
-          setTimeout(() => get().setPinLimitReached(false), 3000);
+          set({ activePins: newPins, pinLimitReached: true, routeInfo: null, showRoute: false, itineraryOutdated: wasGenerated });
+          if (pinLimitTimer) clearTimeout(pinLimitTimer);
+          pinLimitTimer = setTimeout(() => {
+            get().setPinLimitReached(false);
+            pinLimitTimer = null;
+          }, 3000);
           return;
         }
 
-        set({ activePins: [...activePins, attraction], routeInfo: null, showRoute: false });
+        set({ activePins: [...activePins, attraction], routeInfo: null, showRoute: false, itineraryOutdated: wasGenerated });
       },
 
-      clearPins: () => set({ activePins: [], routeInfo: null, showRoute: false }),
+      clearPins: () => set({ activePins: [], routeInfo: null, showRoute: false, itineraryOutdated: false }),
 
       routeInfo: null,
       showRoute: false,
@@ -89,14 +99,17 @@ export const useTravelStore = create<TravelState>()(
       clearRoute: () => set({ routeInfo: null, showRoute: false }),
 
       tripDays: 7,
-      setTripDays: (days) => set({ tripDays: days, generatedItinerary: [] }),
+      setTripDays: (days) => {
+        const { generatedItinerary } = get();
+        set({ tripDays: days, generatedItinerary: [], itineraryOutdated: generatedItinerary.length > 0 });
+      },
 
       generatedItinerary: [],
       generateItineraryAction: () => {
         const { selectedDestination, activePins, tripDays, currencyRates } = get();
         if (!selectedDestination || activePins.length === 0) return;
         const itinerary = generateItinerary(selectedDestination, activePins, tripDays, currencyRates);
-        set({ generatedItinerary: itinerary });
+        set({ generatedItinerary: itinerary, itineraryOutdated: false });
       },
 
       currencyRates: defaultCurrencyRates,
@@ -111,16 +124,6 @@ export const useTravelStore = create<TravelState>()(
     }),
     {
       name: "travel-planner-store",
-      storage: createJSONStorage(() => {
-        if (typeof window === "undefined") {
-          return {
-            getItem: () => null as any,
-            setItem: () => {},
-            removeItem: () => {},
-          };
-        }
-        return localStorage;
-      }),
       partialize: (state) => ({
         selectedDestination: state.selectedDestination,
         activePins: state.activePins,

@@ -49,7 +49,6 @@ export default function MapView() {
 
       leafletMapRef.current = map;
 
-      // whenReady fires only when the container is actually sized
       map.whenReady(() => {
         setMapReady(true);
       });
@@ -76,7 +75,6 @@ export default function MapView() {
     try {
       map.flyTo([lat, lng], selectedDestination.zoom, { duration: 1.5 });
     } catch {
-      // Container still not sized — fall back to instant setView
       try { map.setView([lat, lng], selectedDestination.zoom); } catch { /* ignore */ }
     }
   }, [selectedDestination, mapReady]);

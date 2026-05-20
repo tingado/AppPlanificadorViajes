@@ -24,6 +24,11 @@ export interface Destination {
   dailyBaseAccommodationCost: number;
   dailyBaseFoodCost: number;
   attractions: Attraction[];
+  flag?: string;
+  visaInfo?: string;
+  bestMonths?: string;
+  climate?: string;
+  travelTips?: string[];
 }
 
 export interface ItineraryDay {
@@ -42,6 +47,9 @@ export interface CurrencyRates {
   USD_TO_JPY: number;
   USD_TO_IDR: number;
   USD_TO_SGD: number;
+  USD_TO_THB: number;
+  USD_TO_VND: number;
+  USD_TO_PHP: number;
   [key: string]: number;
 }
 

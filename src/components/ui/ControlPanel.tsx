@@ -6,6 +6,7 @@ import AttractionList from "./AttractionList";
 import ItineraryForm from "./ItineraryForm";
 import ItineraryView from "./ItineraryView";
 import CostSummary from "./CostSummary";
+import DestinationInfo from "./DestinationInfo";
 
 const tabs = [
   { key: "attractions" as const, label: "Atractivos", icon: "📍" },
@@ -21,7 +22,7 @@ export default function ControlPanel() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-4 pt-4 pb-3 space-y-3">
         <div className="flex items-center gap-2">
-          <span className="text-xl">💑</span>
+          <span className="text-xl">👨‍🦲👩‍🦱</span>
           <div>
             <h1 className="text-base font-bold text-gray-900 leading-tight">
               Luna de Miel Planner
@@ -56,7 +57,12 @@ export default function ControlPanel() {
 
       {/* Tab content */}
       <div className="flex-1 overflow-y-auto p-4">
-        {activeTab === "attractions" && <AttractionList />}
+        {activeTab === "attractions" && (
+          <div className="space-y-4">
+            <DestinationInfo />
+            <AttractionList />
+          </div>
+        )}
         {activeTab === "itinerary" && <ItineraryView />}
         {activeTab === "costs" && <CostSummary />}
       </div>

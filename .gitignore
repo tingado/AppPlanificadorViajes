@@ -22,10 +22,9 @@
 next-env.d.ts
 
 # screenshots & scripts temporales
-screenshot*.png
-desk-*.png
-mobile-*.png
+*.png
+!public/*.png
 screenshot*.mjs
 
-# allow PWA icons in public/
-!public/*.png
+# claude code internals
+.claude/
