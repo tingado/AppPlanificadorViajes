@@ -44,6 +44,9 @@ interface TravelState {
   // Pin limit alert
   pinLimitReached: boolean;
   setPinLimitReached: (v: boolean) => void;
+
+  // Itinerary staleness
+  itineraryOutdated: boolean;
 }
 
 export const useTravelStore = create<TravelState>()(
@@ -57,19 +60,21 @@ export const useTravelStore = create<TravelState>()(
       activePins: [],
       pinLimitReached: false,
       setPinLimitReached: (v) => set({ pinLimitReached: v }),
+      itineraryOutdated: false,
 
       toggleAttraction: (attraction) => {
-        const { activePins } = get();
+        const { activePins, generatedItinerary } = get();
         const isActive = activePins.some((p) => p.id === attraction.id);
+        const wasGenerated = generatedItinerary.length > 0;
 
         if (isActive) {
-          set({ activePins: activePins.filter((p) => p.id !== attraction.id), routeInfo: null, showRoute: false });
+          set({ activePins: activePins.filter((p) => p.id !== attraction.id), routeInfo: null, showRoute: false, itineraryOutdated: wasGenerated });
           return;
         }
 
         if (activePins.length >= MAX_PINS) {
           const newPins = [...activePins.slice(1), attraction];
-          set({ activePins: newPins, pinLimitReached: true, routeInfo: null, showRoute: false });
+          set({ activePins: newPins, pinLimitReached: true, routeInfo: null, showRoute: false, itineraryOutdated: wasGenerated });
           if (pinLimitTimer) clearTimeout(pinLimitTimer);
           pinLimitTimer = setTimeout(() => {
             get().setPinLimitReached(false);
@@ -78,10 +83,10 @@ export const useTravelStore = create<TravelState>()(
           return;
         }
 
-        set({ activePins: [...activePins, attraction], routeInfo: null, showRoute: false });
+        set({ activePins: [...activePins, attraction], routeInfo: null, showRoute: false, itineraryOutdated: wasGenerated });
       },
 
-      clearPins: () => set({ activePins: [], routeInfo: null, showRoute: false }),
+      clearPins: () => set({ activePins: [], routeInfo: null, showRoute: false, itineraryOutdated: false }),
 
       routeInfo: null,
       showRoute: false,
@@ -94,14 +99,17 @@ export const useTravelStore = create<TravelState>()(
       clearRoute: () => set({ routeInfo: null, showRoute: false }),
 
       tripDays: 7,
-      setTripDays: (days) => set({ tripDays: days, generatedItinerary: [] }),
+      setTripDays: (days) => {
+        const { generatedItinerary } = get();
+        set({ tripDays: days, generatedItinerary: [], itineraryOutdated: generatedItinerary.length > 0 });
+      },
 
       generatedItinerary: [],
       generateItineraryAction: () => {
         const { selectedDestination, activePins, tripDays, currencyRates } = get();
         if (!selectedDestination || activePins.length === 0) return;
         const itinerary = generateItinerary(selectedDestination, activePins, tripDays, currencyRates);
-        set({ generatedItinerary: itinerary });
+        set({ generatedItinerary: itinerary, itineraryOutdated: false });
       },
 
       currencyRates: defaultCurrencyRates,

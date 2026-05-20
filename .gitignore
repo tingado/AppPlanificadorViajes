@@ -23,6 +23,7 @@ next-env.d.ts
 
 # screenshots & scripts temporales
 *.png
+!public/*.png
 screenshot*.mjs
 
 # claude code internals

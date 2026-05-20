@@ -1,7 +1,6 @@
 "use client";
 
 import { useTravelStore } from "@/store/useTravelStore";
-import { computeTotals } from "@/utils/itineraryGenerator";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -24,10 +23,14 @@ export default function CostSummary() {
     );
   }
 
-  const totals = computeTotals(generatedItinerary);
   const code = selectedDestination.currencyCode;
   const rateKey = `USD_TO_${code}`;
   const localRate = currencyRates[rateKey] ?? 1;
+
+  // Recalculate live from USD + current rates (not pre-calculated fields)
+  const totalUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0);
+  const totalCLP = totalUSD * currencyRates.USD_TO_CLP;
+  const totalLocal = totalUSD * localRate;
 
   return (
     <div className="space-y-4">
@@ -40,9 +43,9 @@ export default function CostSummary() {
         </div>
         <div className="divide-y divide-gray-100">
           {[
-            { label: "Peso Chileno", code: "CLP", value: fmt(totals.totalCLP), flag: "🇨🇱" },
-            { label: "Dólar Americano", code: "USD", value: `$${fmt(totals.totalUSD)}`, flag: "🇺🇸" },
-            { label: selectedDestination.currency, code, value: fmt(totals.totalLocal), flag: selectedDestination.flag ?? "🌍" },
+            { label: "Peso Chileno", code: "CLP", value: fmt(totalCLP), flag: "🇨🇱" },
+            { label: "Dólar Americano", code: "USD", value: `$${fmt(totalUSD)}`, flag: "🇺🇸" },
+            { label: selectedDestination.currency, code, value: fmt(totalLocal), flag: selectedDestination.flag ?? "🌍" },
           ].map((row) => (
             <div key={row.code} className="flex items-center justify-between px-4 py-3">
               <div className="flex items-center gap-2">
@@ -91,10 +94,8 @@ export default function CostSummary() {
       <div className="rounded-xl bg-brand-50 border border-brand-100 px-4 py-3">
         <p className="text-xs text-brand-700 font-medium">
           Promedio diario por pareja:{" "}
-          <strong>
-            {fmt(totals.totalCLP / generatedItinerary.length)} CLP
-          </strong>{" "}
-          · <strong>${fmt(totals.totalUSD / generatedItinerary.length)} USD</strong>
+          <strong>{fmt(totalCLP / generatedItinerary.length)} CLP</strong>{" "}
+          · <strong>${fmt(totalUSD / generatedItinerary.length)} USD</strong>
         </p>
       </div>
     </div>

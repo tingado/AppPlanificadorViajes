@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: "Luna de Miel Planner",
   description: "Planificador interactivo de viajes para parejas",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/icon-192.png",
+  },
 };
 
 export const viewport: Viewport = {

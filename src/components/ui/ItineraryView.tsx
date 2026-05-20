@@ -1,32 +1,62 @@
 "use client";
 
 import { useTravelStore } from "@/store/useTravelStore";
-import { computeTotals } from "@/utils/itineraryGenerator";
 import { formatDuration } from "@/utils/geo";
 
-function fmt(n: number, opts?: Intl.NumberFormatOptions) {
-  return new Intl.NumberFormat("es-CL", opts).format(Math.round(n));
+function fmt(n: number) {
+  return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
 }
 
 export default function ItineraryView() {
-  const { generatedItinerary, selectedDestination } = useTravelStore();
+  const {
+    generatedItinerary,
+    selectedDestination,
+    currencyRates,
+    itineraryOutdated,
+    generateItineraryAction,
+    setActiveTab,
+  } = useTravelStore();
 
   if (!selectedDestination || generatedItinerary.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center text-gray-400">
         <span className="text-4xl mb-3">📅</span>
         <p className="text-sm">
-          Configura tu plan en la pestaña <strong>Planificar</strong> y genera el itinerario
+          Selecciona atracciones y genera el itinerario desde la pestaña{" "}
+          <button
+            onClick={() => setActiveTab("attractions")}
+            className="text-brand-500 font-semibold underline underline-offset-2"
+          >
+            Atractivos
+          </button>
         </p>
       </div>
     );
   }
 
-  const totals = computeTotals(generatedItinerary);
   const code = selectedDestination.currencyCode;
+  const localRate = currencyRates[`USD_TO_${code}`] ?? 1;
+  const totalUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0);
+  const totalCLP = totalUSD * currencyRates.USD_TO_CLP;
+  const totalLocal = totalUSD * localRate;
 
   return (
     <div className="space-y-3">
+      {/* Outdated banner */}
+      {itineraryOutdated && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 flex items-center justify-between gap-3">
+          <p className="text-xs text-amber-700 font-medium">
+            ⚠️ Cambios detectados — el itinerario puede estar desactualizado
+          </p>
+          <button
+            onClick={generateItineraryAction}
+            className="text-xs font-semibold text-amber-700 border border-amber-300 rounded-lg px-2 py-1 hover:bg-amber-100 shrink-0"
+          >
+            Regenerar
+          </button>
+        </div>
+      )}
+
       {/* Cost summary card */}
       <div className="rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 p-4 text-white shadow">
         <p className="text-xs font-semibold uppercase tracking-wide opacity-80 mb-2">
@@ -34,15 +64,15 @@ export default function ItineraryView() {
         </p>
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
-            <p className="text-lg font-bold">{fmt(totals.totalCLP)}</p>
+            <p className="text-lg font-bold">{fmt(totalCLP)}</p>
             <p className="text-xs opacity-75">CLP</p>
           </div>
           <div>
-            <p className="text-lg font-bold">${fmt(totals.totalUSD)}</p>
+            <p className="text-lg font-bold">${fmt(totalUSD)}</p>
             <p className="text-xs opacity-75">USD</p>
           </div>
           <div>
-            <p className="text-lg font-bold">{fmt(totals.totalLocal)}</p>
+            <p className="text-lg font-bold">{fmt(totalLocal)}</p>
             <p className="text-xs opacity-75">{code}</p>
           </div>
         </div>
@@ -88,7 +118,7 @@ export default function ItineraryView() {
               </div>
               <div className="text-right shrink-0">
                 <p className="text-xs font-semibold text-gray-700">
-                  {fmt(day.estimatedCostCLP)} CLP
+                  {fmt(day.estimatedCostUSD * currencyRates.USD_TO_CLP)} CLP
                 </p>
                 <p className="text-xs text-gray-400">${fmt(day.estimatedCostUSD)} USD</p>
               </div>
