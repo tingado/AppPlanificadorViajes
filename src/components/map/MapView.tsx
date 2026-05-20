@@ -48,7 +48,11 @@ export default function MapView() {
       }).addTo(map);
 
       leafletMapRef.current = map;
-      setMapReady(true);
+
+      // whenReady fires only when the container is actually sized
+      map.whenReady(() => {
+        setMapReady(true);
+      });
     };
 
     initMap();
@@ -67,7 +71,14 @@ export default function MapView() {
     if (!mapReady || !leafletMapRef.current || !selectedDestination) return;
     const map = leafletMapRef.current;
     const { lat, lng } = selectedDestination.centerCoordinates;
-    map.flyTo([lat, lng], selectedDestination.zoom, { duration: 1.5 });
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+    map.invalidateSize();
+    try {
+      map.flyTo([lat, lng], selectedDestination.zoom, { duration: 1.5 });
+    } catch {
+      // Container still not sized — fall back to instant setView
+      try { map.setView([lat, lng], selectedDestination.zoom); } catch { /* ignore */ }
+    }
   }, [selectedDestination, mapReady]);
 
   // Manage markers
