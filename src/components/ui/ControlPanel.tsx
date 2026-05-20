@@ -22,7 +22,7 @@ export default function ControlPanel() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-4 pt-4 pb-3 space-y-3">
         <div className="flex items-center gap-2">
-          <span className="text-xl">💑</span>
+          <span className="text-xl">👨‍🦲👩‍🦱</span>
           <div>
             <h1 className="text-base font-bold text-gray-900 leading-tight">
               Luna de Miel Planner
