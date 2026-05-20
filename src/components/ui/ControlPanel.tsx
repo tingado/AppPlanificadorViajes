@@ -6,6 +6,7 @@ import AttractionList from "./AttractionList";
 import ItineraryForm from "./ItineraryForm";
 import ItineraryView from "./ItineraryView";
 import CostSummary from "./CostSummary";
+import DestinationInfo from "./DestinationInfo";
 
 const tabs = [
   { key: "attractions" as const, label: "Atractivos", icon: "📍" },
@@ -56,7 +57,12 @@ export default function ControlPanel() {
 
       {/* Tab content */}
       <div className="flex-1 overflow-y-auto p-4">
-        {activeTab === "attractions" && <AttractionList />}
+        {activeTab === "attractions" && (
+          <div className="space-y-4">
+            <DestinationInfo />
+            <AttractionList />
+          </div>
+        )}
         {activeTab === "itinerary" && <ItineraryView />}
         {activeTab === "costs" && <CostSummary />}
       </div>
