@@ -24,7 +24,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/AppPlanificadorViajes/sw.js');
+          var base = location.pathname.startsWith('/AppPlanificadorViajes') ? '/AppPlanificadorViajes' : '';
+          navigator.serviceWorker.register(base + '/sw.js');
         });
       }
     `,
