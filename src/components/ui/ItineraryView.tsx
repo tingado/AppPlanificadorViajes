@@ -111,6 +111,11 @@ export default function ItineraryView() {
                       ✈ {formatDuration(day.travelTimeHours)} de viaje
                     </p>
                   )}
+                  {day.isTransitDay && day.flightCostUSD != null && day.flightCostUSD > 0 && (
+                    <p className="text-xs text-blue-600 mt-0.5">
+                      ✈ Vuelo estimado: ${fmt(day.flightCostUSD)} USD
+                    </p>
+                  )}
                   {day.notes && (
                     <p className="text-xs text-gray-400 mt-0.5">{day.notes}</p>
                   )}

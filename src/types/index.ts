@@ -36,6 +36,7 @@ export interface ItineraryDay {
   isTransitDay: boolean;
   attractions: Attraction[];
   travelTimeHours?: number;
+  flightCostUSD?: number;  // solo en días de traslado
   estimatedCostLocal: number;
   estimatedCostUSD: number;
   estimatedCostCLP: number;

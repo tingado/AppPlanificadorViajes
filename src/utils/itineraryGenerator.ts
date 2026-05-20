@@ -58,14 +58,26 @@ export function generateItinerary(
         const transitCostLocal =
           destination.dailyBaseAccommodationCost + destination.dailyBaseFoodCost;
         const converted = convertCost(transitCostLocal, destination.currencyCode, rates);
+
+        // Estimar costo de vuelo según duración del traslado
+        let flightCostUSD: number;
+        if (travelHours > 4) {
+          flightCostUSD = 150 * 2; // vuelo largo: $150 USD/persona × 2
+        } else if (travelHours >= 2) {
+          flightCostUSD = 80 * 2;  // vuelo corto: $80 USD/persona × 2
+        } else {
+          flightCostUSD = 0;       // traslado terrestre
+        }
+
         days.push({
           day: dayIndex++,
           isTransitDay: true,
           attractions: [],
           travelTimeHours: travelHours,
+          flightCostUSD,
           estimatedCostLocal: transitCostLocal,
-          estimatedCostUSD: converted.usd,
-          estimatedCostCLP: converted.clp,
+          estimatedCostUSD: converted.usd + flightCostUSD,
+          estimatedCostCLP: converted.clp + flightCostUSD * rates.USD_TO_CLP,
           notes: `Día de traslado de ${prev.name} a ${attraction.name} (~${Math.round(travelHours)} h)`,
         });
       }

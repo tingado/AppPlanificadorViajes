@@ -40,8 +40,8 @@ export default function DestinationInfo() {
         <div className="space-y-1">
           <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">💡 Tips de viaje</p>
           <ul className="space-y-1">
-            {travelTips.map((tip, i) => (
-              <li key={i} className="text-sm text-gray-700 flex gap-2">
+            {travelTips.map((tip) => (
+              <li key={tip} className="text-sm text-gray-700 flex gap-2">
                 <span className="text-brand-400 shrink-0">•</span>
                 <span>{tip}</span>
               </li>
