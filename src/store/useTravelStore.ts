@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { Attraction, Destination, ItineraryDay, CurrencyRates, RouteInfo } from "@/types";
 import { destinations, defaultCurrencyRates } from "@/data/destinations";
 import { generateItinerary } from "@/utils/itineraryGenerator";
@@ -111,7 +111,16 @@ export const useTravelStore = create<TravelState>()(
     }),
     {
       name: "travel-planner-store",
-      skipHydration: true,
+      storage: createJSONStorage(() => {
+        if (typeof window === "undefined") {
+          return {
+            getItem: () => null as any,
+            setItem: () => {},
+            removeItem: () => {},
+          };
+        }
+        return localStorage;
+      }),
       partialize: (state) => ({
         selectedDestination: state.selectedDestination,
         activePins: state.activePins,

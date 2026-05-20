@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import StoreHydration from "@/components/ui/StoreHydration";
 
 export const metadata: Metadata = {
   title: "Luna de Miel Planner",
@@ -16,7 +15,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body className="font-sans antialiased">
-        <StoreHydration />
         {children}
       </body>
     </html>
