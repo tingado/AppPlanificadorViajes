@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
-const isGithubPages = process.env.GITHUB_PAGES === "true";
+const isProd = process.env.NODE_ENV === "production";
 const repoName = "AppPlanificadorViajes";
 
 const nextConfig = {
   output: "export",
-  basePath: isGithubPages ? `/${repoName}` : "",
-  assetPrefix: isGithubPages ? `/${repoName}/` : "",
+  basePath: isProd ? `/${repoName}` : "",
+  assetPrefix: isProd ? `/${repoName}/` : "",
   reactStrictMode: true,
   transpilePackages: ["leaflet", "react-leaflet"],
   images: {
