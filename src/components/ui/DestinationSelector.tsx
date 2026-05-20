@@ -7,6 +7,9 @@ const flags: Record<string, string> = {
   JP: "🇯🇵",
   ID: "🇮🇩",
   SG: "🇸🇬",
+  TH: "🇹🇭",
+  VN: "🇻🇳",
+  PH: "🇵🇭",
 };
 
 export default function DestinationSelector() {
