@@ -111,6 +111,7 @@ export const useTravelStore = create<TravelState>()(
     }),
     {
       name: "travel-planner-store",
+      skipHydration: true,
       partialize: (state) => ({
         selectedDestination: state.selectedDestination,
         activePins: state.activePins,

@@ -25,7 +25,9 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Build
-        run: NODE_ENV=production npm run build
+        run: npm run build
+        env:
+          GITHUB_PAGES: true
 
       - name: Add .nojekyll
         run: touch out/.nojekyll
