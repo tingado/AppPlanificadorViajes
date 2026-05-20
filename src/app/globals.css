@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Leaflet styles */
+@import "leaflet/dist/leaflet.css";
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+#__next,
+main {
+  height: 100%;
+}
+
+/* Leaflet z-index fix inside Next.js */
+.leaflet-pane {
+  z-index: 400 !important;
+}
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 800 !important;
+}
+.leaflet-popup-pane {
+  z-index: 900 !important;
+}
