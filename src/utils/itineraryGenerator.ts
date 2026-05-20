@@ -28,8 +28,8 @@ function convertCost(
 ): { usd: number; clp: number } {
   let usdAmount: number;
   const rateKey = `USD_TO_${currencyCode}`;
-  const rate = rates[rateKey] ?? 1;
-  usdAmount = localAmount / rate;
+  const rate = rates[rateKey] || 1;
+  usdAmount = rate > 0 ? localAmount / rate : 0;
   return {
     usd: usdAmount,
     clp: usdAmount * rates.USD_TO_CLP,

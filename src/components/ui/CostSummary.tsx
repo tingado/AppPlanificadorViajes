@@ -74,9 +74,10 @@ export default function CostSummary() {
             <input
               type="number"
               value={rate.value}
-              onChange={(e) =>
-                setCurrencyRates({ [rate.key]: Number(e.target.value) })
-              }
+              onChange={(e) => {
+                const val = Number(e.target.value);
+                if (val > 0) setCurrencyRates({ [rate.key]: val });
+              }}
               className="w-28 rounded-lg border border-gray-200 px-2 py-1 text-right text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
           </div>

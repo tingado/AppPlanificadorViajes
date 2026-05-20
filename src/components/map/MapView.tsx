@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { formatDuration } from "@/utils/geo";
 
 export default function MapView() {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<import("leaflet").Map | null>(null);
+  const [mapReady, setMapReady] = useState(false);
   const markersRef = useRef<import("leaflet").Marker[]>([]);
   const polylineRef = useRef<import("leaflet").Polyline | null>(null);
 
@@ -47,6 +48,7 @@ export default function MapView() {
       }).addTo(map);
 
       leafletMapRef.current = map;
+      setMapReady(true);
     };
 
     initMap();
@@ -55,21 +57,22 @@ export default function MapView() {
       if (leafletMapRef.current) {
         leafletMapRef.current.remove();
         leafletMapRef.current = null;
+        setMapReady(false);
       }
     };
   }, []);
 
   // Fly to destination
   useEffect(() => {
-    if (!leafletMapRef.current || !selectedDestination) return;
+    if (!mapReady || !leafletMapRef.current || !selectedDestination) return;
     const map = leafletMapRef.current;
     const { lat, lng } = selectedDestination.centerCoordinates;
     map.flyTo([lat, lng], selectedDestination.zoom, { duration: 1.5 });
-  }, [selectedDestination]);
+  }, [selectedDestination, mapReady]);
 
   // Manage markers
   useEffect(() => {
-    if (!leafletMapRef.current) return;
+    if (!mapReady || !leafletMapRef.current) return;
     const mapInit = async () => {
       const L = (await import("leaflet")).default;
       const map = leafletMapRef.current!;
@@ -143,7 +146,7 @@ export default function MapView() {
       }
     };
     mapInit();
-  }, [activePins, showRoute]);
+  }, [activePins, showRoute, mapReady]);
 
   return (
     <div className="relative w-full h-full">
