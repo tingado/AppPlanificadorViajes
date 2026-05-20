@@ -7,7 +7,8 @@ import ControlPanel from "./ControlPanel";
 const MapView = dynamic(() => import("@/components/map/MapView"), { ssr: false });
 
 export default function MobileLayout() {
-  const { mobilePanel, setMobilePanel } = useTravelStore();
+  const { mobilePanel, setMobilePanel, activePins } = useTravelStore();
+  const activePinCount = activePins.length;
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
@@ -32,7 +33,18 @@ export default function MobileLayout() {
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            {panel === "map" ? "🗺 Mapa" : "⚙ Controles"}
+            {panel === "map" ? (
+              "🗺 Mapa"
+            ) : (
+              <span className="flex items-center gap-1.5">
+                ⚙ Controles
+                {activePinCount > 0 && (
+                  <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-brand-600 text-white text-[10px] font-bold leading-none">
+                    {activePinCount}
+                  </span>
+                )}
+              </span>
+            )}
           </button>
         ))}
       </div>
