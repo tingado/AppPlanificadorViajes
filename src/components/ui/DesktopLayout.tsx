@@ -9,7 +9,7 @@ export default function DesktopLayout() {
   return (
     <div className="flex h-screen w-full overflow-hidden">
       {/* Left control panel — fixed width between 380-420px */}
-      <div className="min-w-[380px] max-w-[420px] w-[400px] h-full overflow-y-auto border-r border-gray-200 bg-gray-50 flex-shrink-0">
+      <div className="min-w-[380px] max-w-[420px] w-[400px] h-full overflow-y-auto border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex-shrink-0">
         <ControlPanel />
       </div>
 

@@ -65,6 +65,10 @@ interface TravelState {
   // Itinerary staleness
   itineraryOutdated: boolean;
 
+  // Per-day notes (user-editable, keyed by day number)
+  dayNotes: Record<number, string>;
+  setDayNote: (day: number, note: string) => void;
+
   // Attraction notes
   attractionNotes: Record<string, string>;
   setAttractionNote: (attractionId: string, note: string) => void;
@@ -147,7 +151,7 @@ export const useTravelStore = create<TravelState>()(
         const { selectedDestination, activePins, tripDays, currencyRates } = get();
         if (!selectedDestination || activePins.length === 0) return;
         const itinerary = generateItinerary(selectedDestination, activePins, tripDays, currencyRates);
-        set({ generatedItinerary: itinerary, itineraryOutdated: false });
+        set({ generatedItinerary: itinerary, itineraryOutdated: false, dayNotes: {} });
       },
 
       currencyRates: defaultCurrencyRates,
@@ -185,6 +189,10 @@ export const useTravelStore = create<TravelState>()(
       activeTab: "attractions",
       setActiveTab: (tab) => set({ activeTab: tab }),
 
+      dayNotes: {},
+      setDayNote: (day, note) =>
+        set((s) => ({ dayNotes: { ...s.dayNotes, [day]: note } })),
+
       attractionNotes: {},
       setAttractionNote: (id, note) =>
         set((s) => ({ attractionNotes: { ...s.attractionNotes, [id]: note } })),
@@ -204,6 +212,7 @@ export const useTravelStore = create<TravelState>()(
         tripDays: state.tripDays,
         generatedItinerary: state.generatedItinerary,
         currencyRates: state.currencyRates,
+        dayNotes: state.dayNotes,
         attractionNotes: state.attractionNotes,
         darkMode: state.darkMode,
         packingList: state.packingList,
