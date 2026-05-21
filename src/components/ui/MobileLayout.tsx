@@ -8,6 +8,7 @@ import ItineraryForm from "./ItineraryForm";
 import ItineraryView from "./ItineraryView";
 import CostSummary from "./CostSummary";
 import DestinationInfo from "./DestinationInfo";
+import PackingList from "./PackingList";
 import { destinations } from "@/data/destinations";
 
 const MapView = dynamic(() => import("@/components/map/MapView"), { ssr: false });
@@ -40,6 +41,7 @@ const tabs = [
   { key: "attractions" as const, label: "Atractivos", icon: "📍" },
   { key: "itinerary" as const, label: "Itinerario", icon: "📅" },
   { key: "costs" as const, label: "Costos", icon: "💰" },
+  { key: "packing" as const, label: "Maleta", icon: "🧳" },
 ];
 
 export default function MobileLayout() {
@@ -152,6 +154,7 @@ export default function MobileLayout() {
           )}
           {activeTab === "itinerary" && <ItineraryView />}
           {activeTab === "costs" && <CostSummary />}
+          {activeTab === "packing" && <PackingList />}
         </div>
       </div>
     </div>
