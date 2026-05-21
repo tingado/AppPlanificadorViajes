@@ -51,6 +51,7 @@ interface TravelState {
   // Packing list v2 (smart checklist)
   packingItems: Record<string, boolean>;
   togglePackingItem: (id: string) => void;
+  markAllPacking: (ids: string[]) => void;
   resetPacking: () => void;
   customPackingItems: { id: string; label: string }[];
   addCustomPackingItem: (label: string) => void;
@@ -205,6 +206,9 @@ export const useTravelStore = create<TravelState>()(
       packingItems: {},
       togglePackingItem: (id) => set((s) => ({
         packingItems: { ...s.packingItems, [id]: !s.packingItems[id] }
+      })),
+      markAllPacking: (ids) => set((s) => ({
+        packingItems: { ...s.packingItems, ...Object.fromEntries(ids.map(id => [id, true])) }
       })),
       resetPacking: () => set({ packingItems: {} }),
       customPackingItems: [],

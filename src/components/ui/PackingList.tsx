@@ -29,8 +29,9 @@ function getSeasonItems(dest: Destination, month: number): { id: string; cat: st
 }
 
 export default function PackingList() {
-  const { packingItems, togglePackingItem, resetPacking, selectedDestination, tripDays, tripDate, customPackingItems, addCustomPackingItem, removeCustomPackingItem } = useTravelStore();
+  const { packingItems, togglePackingItem, markAllPacking, resetPacking, selectedDestination, tripDays, tripDate, customPackingItems, addCustomPackingItem, removeCustomPackingItem } = useTravelStore();
   const [newItem, setNewItem] = useState('');
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const checkMonth = tripDate
     ? new Date(tripDate + 'T12:00:00').getMonth() + 1
@@ -43,33 +44,92 @@ export default function PackingList() {
   const categories = [...new Set(allItems.map((i) => i.cat))];
   const checked = allItems.filter((i) => packingItems[i.id]).length + customPackingItems.filter(i => packingItems[i.id]).length;
   const total = allItems.length + customPackingItems.length;
+  const allChecked = checked === total && total > 0;
+
+  const visibleItems = activeCategory
+    ? allItems.filter(i => i.cat === activeCategory)
+    : allItems;
+  const visibleCategories = activeCategory ? [activeCategory] : categories;
+
+  const handleMarkAll = () => {
+    const allIds = [...allItems.map(i => i.id), ...customPackingItems.map(i => i.id)];
+    markAllPacking(allIds);
+  };
 
   return (
     <div className="space-y-4">
       {/* Progress */}
       <div className="rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 p-4 text-white">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-sm font-semibold">Maleta lista</p>
+          <p className="text-sm font-semibold">
+            {allChecked ? '🎉 ¡Maleta lista!' : 'Maleta lista'}
+          </p>
           <span className="text-lg font-bold">{checked}/{total}</span>
         </div>
         <div className="w-full h-2 bg-white/30 rounded-full overflow-hidden">
           <div
-            className="h-full bg-white rounded-full transition-all"
-            style={{ width: `${(checked / total) * 100}%` }}
+            className="h-full bg-white rounded-full transition-all duration-500"
+            style={{ width: total > 0 ? `${(checked / total) * 100}%` : '0%' }}
           />
         </div>
-        {tripDays > 0 && (
-          <p className="text-xs opacity-75 mt-1">
-            Viaje de {tripDays} días{selectedDestination ? ` a ${selectedDestination.country}` : ""}
-          </p>
-        )}
+        <div className="flex items-center justify-between mt-2">
+          {tripDays > 0 && (
+            <p className="text-xs opacity-75">
+              Viaje de {tripDays} días{selectedDestination ? ` a ${selectedDestination.country}` : ""}
+            </p>
+          )}
+          {!allChecked && total > 0 && (
+            <button
+              onClick={handleMarkAll}
+              className="text-xs font-semibold bg-white/20 hover:bg-white/30 rounded-full px-3 py-1 transition-colors ml-auto"
+            >
+              ✓ Marcar todo
+            </button>
+          )}
+        </div>
       </div>
 
+      {/* Category filter chips */}
+      {categories.length > 1 && (
+        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <button
+            onClick={() => setActiveCategory(null)}
+            className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${!activeCategory ? 'bg-brand-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
+          >
+            Todas
+          </button>
+          {categories.map(cat => {
+            const catItems = allItems.filter(i => i.cat === cat);
+            const catChecked = catItems.filter(i => packingItems[i.id]).length;
+            const catDone = catChecked === catItems.length;
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat === activeCategory ? null : cat)}
+                className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors flex items-center gap-1 ${activeCategory === cat ? 'bg-brand-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
+              >
+                {catDone && <span className="text-[10px]">✓</span>}
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* Items by category */}
-      {categories.map((cat) => (
+      {visibleCategories.map((cat) => (
         <div key={cat} className="space-y-1">
-          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{cat}</p>
-          {allItems
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{cat}</p>
+            {(() => {
+              const catItems = allItems.filter(i => i.cat === cat);
+              const catChecked = catItems.filter(i => packingItems[i.id]).length;
+              return (
+                <span className="text-[10px] text-gray-400 dark:text-gray-500">{catChecked}/{catItems.length}</span>
+              );
+            })()}
+          </div>
+          {visibleItems
             .filter((i) => i.cat === cat)
             .map((item) => (
               <button
@@ -99,9 +159,14 @@ export default function PackingList() {
       ))}
 
       {/* Custom items */}
-      {customPackingItems.length > 0 && (
+      {(!activeCategory || activeCategory === '✏️ Mis items') && customPackingItems.length > 0 && (
         <div className="space-y-1">
-          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">✏️ Mis items</p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">✏️ Mis items</p>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500">
+              {customPackingItems.filter(i => packingItems[i.id]).length}/{customPackingItems.length}
+            </span>
+          </div>
           {customPackingItems.map(item => (
             <div key={item.id} className="flex items-center gap-2">
               <button
