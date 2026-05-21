@@ -13,8 +13,14 @@ function formatLocalCost(amount: number, currencyCode: string): string {
 }
 
 export default function AttractionList() {
-  const { selectedDestination, activePins, toggleAttraction, pinLimitReached } =
-    useTravelStore();
+  const {
+    selectedDestination,
+    activePins,
+    toggleAttraction,
+    pinLimitReached,
+    attractionNotes,
+    setAttractionNote,
+  } = useTravelStore();
 
   const regions = selectedDestination
     ? [...new Set(selectedDestination.attractions.map((a) => a.region))]
@@ -106,50 +112,63 @@ export default function AttractionList() {
       {filtered.map((attraction: Attraction) => {
         const isActive = activePins.some((p) => p.id === attraction.id);
         return (
-          <button
+          <div
             key={attraction.id}
-            onClick={() => toggleAttraction(attraction)}
-            aria-label={isActive ? "Desactivar " + attraction.name : "Activar " + attraction.name}
-            className={`w-full text-left rounded-xl border p-3 min-h-[44px] transition-all duration-200 ${
+            className={`w-full rounded-xl border p-3 transition-all duration-200 ${
               isActive
                 ? "border-brand-400 bg-brand-50 shadow-sm"
                 : "border-gray-200 bg-white hover:border-brand-200 hover:bg-brand-50/30"
             }`}
           >
-            <div className="flex items-start gap-2">
-              <div
-                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                  isActive
-                    ? "bg-brand-500 text-white"
-                    : "bg-gray-100 text-gray-400"
-                }`}
-              >
-                {isActive ? "✓" : "○"}
-              </div>
-              {attraction.imageUrl && (
-                <img
-                  src={attraction.imageUrl}
-                  alt={attraction.name}
-                  className="w-16 h-16 rounded-lg object-cover shrink-0 border border-gray-100"
-                  loading="lazy"
-                />
-              )}
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-sm font-semibold text-gray-800">{attraction.name}</p>
-                  <span className="inline-block rounded-full bg-gray-100 text-gray-500 text-[10px] px-2 py-0.5 font-medium">
-                    {attraction.region}
-                  </span>
+            <button
+              onClick={() => toggleAttraction(attraction)}
+              aria-label={isActive ? "Desactivar " + attraction.name : "Activar " + attraction.name}
+              className="w-full text-left min-h-[44px]"
+            >
+              <div className="flex items-start gap-2">
+                <div
+                  className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                    isActive
+                      ? "bg-brand-500 text-white"
+                      : "bg-gray-100 text-gray-400"
+                  }`}
+                >
+                  {isActive ? "✓" : "○"}
                 </div>
-                <p className="mt-0.5 text-xs text-gray-500 line-clamp-2">
-                  {attraction.description}
-                </p>
-                <p className="text-xs text-brand-600 font-semibold mt-0.5">
-                  ~${attraction.costPerCouplePerDay} USD/día · 2 personas
-                </p>
+                {attraction.imageUrl && (
+                  <img
+                    src={attraction.imageUrl}
+                    alt={attraction.name}
+                    className="w-16 h-16 rounded-lg object-cover shrink-0 border border-gray-100"
+                    loading="lazy"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-sm font-semibold text-gray-800">{attraction.name}</p>
+                    <span className="inline-block rounded-full bg-gray-100 text-gray-500 text-[10px] px-2 py-0.5 font-medium">
+                      {attraction.region}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-xs text-gray-500 line-clamp-2">
+                    {attraction.description}
+                  </p>
+                  <p className="text-xs text-brand-600 font-semibold mt-0.5">
+                    ~${attraction.costPerCouplePerDay} USD/día · 2 personas
+                  </p>
+                </div>
               </div>
-            </div>
-          </button>
+            </button>
+            {isActive && (
+              <textarea
+                value={attractionNotes[attraction.id] ?? ""}
+                onChange={(e) => setAttractionNote(attraction.id, e.target.value)}
+                placeholder="Agregar nota…"
+                rows={2}
+                className="mt-2 w-full text-xs rounded-lg border border-gray-200 p-2 resize-none focus:outline-none focus:ring-1 focus:ring-brand-400"
+              />
+            )}
+          </div>
         );
       })}
     </div>
