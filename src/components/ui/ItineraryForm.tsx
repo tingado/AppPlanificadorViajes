@@ -4,7 +4,11 @@ import { useTravelStore } from "@/store/useTravelStore";
 
 const presets = [7, 10, 14, 21, 25];
 
-export default function ItineraryForm() {
+interface ItineraryFormProps {
+  compact?: boolean;
+}
+
+export default function ItineraryForm({ compact }: ItineraryFormProps) {
   const {
     tripDays,
     setTripDays,
@@ -20,6 +24,26 @@ export default function ItineraryForm() {
   function handleGenerate() {
     generateItineraryAction();
     setActiveTab("itinerary");
+  }
+
+  if (compact) {
+    return (
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <span className="text-xs text-gray-500 font-medium">Días:</span>
+        {presets.map((d) => (
+          <button
+            key={d}
+            onClick={() => setTripDays(d)}
+            className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+              tripDays === d ? "bg-brand-500 text-white" : "bg-gray-100 text-gray-600"
+            }`}
+          >
+            {d}d
+          </button>
+        ))}
+        <span className="text-xs text-gray-400 ml-1">({tripDays}d)</span>
+      </div>
+    );
   }
 
   return (
@@ -46,20 +70,22 @@ export default function ItineraryForm() {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Continuous slider */}
+        <div className="space-y-1">
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>1 día</span>
+            <span className="font-semibold text-brand-600">{tripDays} días</span>
+            <span>30 días</span>
+          </div>
           <input
             type="range"
-            min={2}
+            min={1}
             max={30}
             value={tripDays}
             onChange={(e) => setTripDays(Number(e.target.value))}
-            className="flex-1 accent-brand-500"
+            className="w-full accent-brand-500"
           />
-          <span className="w-12 text-center rounded-lg border border-gray-200 py-1 text-sm font-bold text-brand-600">
-            {tripDays}
-          </span>
         </div>
-        <p className="text-xs text-gray-400 mt-1">Arrastra para ajustar (2–30 días)</p>
       </div>
 
       <div className="rounded-xl bg-gray-50 border border-gray-200 p-3 text-sm">
