@@ -20,14 +20,23 @@ export default function AttractionList() {
     ? [...new Set(selectedDestination.attractions.map((a) => a.region))]
     : [];
   const [activeRegion, setActiveRegion] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setActiveRegion(null);
+    setSearch("");
   }, [selectedDestination?.id]);
 
-  const filtered = activeRegion
-    ? selectedDestination!.attractions.filter((a) => a.region === activeRegion)
-    : selectedDestination?.attractions ?? [];
+  const filtered = selectedDestination
+    ? selectedDestination.attractions.filter((a) => {
+        const matchRegion = !activeRegion || a.region === activeRegion;
+        const matchSearch =
+          !search ||
+          a.name.toLowerCase().includes(search.toLowerCase()) ||
+          a.description.toLowerCase().includes(search.toLowerCase());
+        return matchRegion && matchSearch;
+      })
+    : [];
 
   if (!selectedDestination) {
     return (
@@ -49,6 +58,24 @@ export default function AttractionList() {
       <p className="text-xs text-gray-500 mb-2">
         Selecciona hasta <strong>3 atractivos</strong> para visualizarlos en el mapa
       </p>
+      <div className="relative">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Buscar atracción..."
+          className="w-full rounded-xl border border-gray-200 bg-white pl-8 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+        />
+        <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+        {search && (
+          <button
+            onClick={() => setSearch("")}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs"
+          >
+            ✕
+          </button>
+        )}
+      </div>
       {regions.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
           <button
