@@ -57,6 +57,14 @@ export default function AttractionList() {
               >
                 {isActive ? pinIndex + 1 : "○"}
               </div>
+              {attraction.imageUrl && (
+                <img
+                  src={attraction.imageUrl}
+                  alt={attraction.name}
+                  className="w-14 h-14 rounded-lg object-cover shrink-0"
+                  loading="lazy"
+                />
+              )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-gray-800">{attraction.name}</p>
                 <p className="mt-0.5 text-xs text-gray-500 line-clamp-2">
