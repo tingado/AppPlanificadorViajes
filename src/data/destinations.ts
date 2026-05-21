@@ -26,6 +26,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 15000,
         region: "Kansai",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Fushimi_Inari-taisha_Shrine_Kyoto_Japan_cropped.jpg/400px-Fushimi_Inari-taisha_Shrine_Kyoto_Japan_cropped.jpg",
+        rating: 5,
       },
       {
         id: "tokyo",
@@ -35,6 +36,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 20000,
         region: "Kanto",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Shibuya_scramble_crosswalk.jpg/400px-Shibuya_scramble_crosswalk.jpg",
+        rating: 5,
       },
       {
         id: "mt-fuji",
@@ -44,6 +46,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 18000,
         region: "Kanto",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Kokusan_fuji.jpg/400px-Kokusan_fuji.jpg",
+        rating: 5,
       },
       {
         id: "kyoto-fushimi",
@@ -53,6 +56,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 10,
         region: "Kansai",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Fushimi_inari.jpg/400px-Fushimi_inari.jpg",
+        rating: 5,
       },
       {
         id: "kyoto-arashiyama",
@@ -62,6 +66,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 20,
         region: "Kansai",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Bamboo_groves_of_Arashiyama.jpg/400px-Bamboo_groves_of_Arashiyama.jpg",
+        rating: 4.5,
       },
       {
         id: "tokyo-shibuya",
@@ -71,6 +76,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 30,
         region: "Kanto",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Shibuya_scramble_crosswalk.jpg/400px-Shibuya_scramble_crosswalk.jpg",
+        rating: 4,
       },
       {
         id: "kyoto-gion",
@@ -126,6 +132,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 300000,
         region: "Ubud",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tegalalang_Rice_Terrace.jpg/400px-Tegalalang_Rice_Terrace.jpg",
+        rating: 5,
       },
       {
         id: "uluwatu",
@@ -135,6 +142,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 450000,
         region: "Uluwatu",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Tanah_Lot_temple.jpg/400px-Tanah_Lot_temple.jpg",
+        rating: 5,
       },
       {
         id: "nusa-penida",
@@ -144,6 +152,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 600000,
         region: "Islas Nusa",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Seminyak_beach_bali.jpg/400px-Seminyak_beach_bali.jpg",
+        rating: 5,
       },
       {
         id: "bali-ubud-rice",
@@ -153,6 +162,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 15,
         region: "Ubud",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tegalalang_Rice_Terrace.jpg/400px-Tegalalang_Rice_Terrace.jpg",
+        rating: 4.5,
       },
       {
         id: "bali-tanah-lot",
@@ -162,6 +172,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 10,
         region: "Tabanan",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Tanah_Lot_temple.jpg/400px-Tanah_Lot_temple.jpg",
+        rating: 4.5,
       },
       {
         id: "bali-seminyak",
@@ -171,6 +182,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 60,
         region: "Seminyak",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Seminyak_beach_bali.jpg/400px-Seminyak_beach_bali.jpg",
+        rating: 4,
       },
       {
         id: "bali-uluwatu",
@@ -226,6 +238,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 70,
         region: "Marina Bay",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Singapore_Supertrees.jpg/400px-Singapore_Supertrees.jpg",
+        rating: 5,
       },
       {
         id: "sentosa",
@@ -235,6 +248,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 160,
         region: "Sentosa",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Sentosa_island.jpg/400px-Sentosa_island.jpg",
+        rating: 4.5,
       },
       {
         id: "marina-sands",
@@ -244,6 +258,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 60,
         region: "Downtown Core",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Singapore_Chinatown.jpg/400px-Singapore_Chinatown.jpg",
+        rating: 5,
       },
       {
         id: "sg-gardens",
@@ -253,6 +268,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 50,
         region: "Marina Bay",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Singapore_Supertrees.jpg/400px-Singapore_Supertrees.jpg",
+        rating: 5,
       },
       {
         id: "sg-chinatown",
@@ -262,6 +278,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 30,
         region: "Central",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Singapore_Chinatown.jpg/400px-Singapore_Chinatown.jpg",
+        rating: 4,
       },
       {
         id: "sg-sentosa",
@@ -271,6 +288,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 80,
         region: "Sentosa",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Sentosa_island.jpg/400px-Sentosa_island.jpg",
+        rating: 4.5,
       },
       {
         id: "sg-hawker",
@@ -332,6 +350,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 8000,
         region: "Chiang Mai",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Chiang_mai_old_city.jpg/400px-Chiang_mai_old_city.jpg",
+        rating: 5,
       },
       {
         id: "krabi-beaches",
@@ -341,6 +360,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 5500,
         region: "Krabi",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Phi-phi-island.jpg/400px-Phi-phi-island.jpg",
+        rating: 5,
       },
       {
         id: "bangkok-temples",
@@ -350,6 +370,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 4000,
         region: "Bangkok",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Wat_pho_temple.jpg/400px-Wat_pho_temple.jpg",
+        rating: 5,
       },
       {
         id: "th-phiphi",
@@ -359,6 +380,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 80,
         region: "Sur",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Phi-phi-island.jpg/400px-Phi-phi-island.jpg",
+        rating: 4.5,
       },
       {
         id: "th-watpho",
@@ -368,6 +390,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 20,
         region: "Bangkok",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Wat_pho_temple.jpg/400px-Wat_pho_temple.jpg",
+        rating: 4.5,
       },
       {
         id: "th-chiang-mai",
@@ -377,6 +400,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 40,
         region: "Norte",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Chiang_mai_old_city.jpg/400px-Chiang_mai_old_city.jpg",
+        rating: 4,
       },
       {
         id: "th-railay",
@@ -438,6 +462,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 1600000,
         region: "Ha Long Bay",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Halong_bay_Vietnam.jpg/400px-Halong_bay_Vietnam.jpg",
+        rating: 5,
       },
       {
         id: "hoi-an",
@@ -447,6 +472,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 700000,
         region: "Hoi An",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Hoi_an_river.jpg/400px-Hoi_an_river.jpg",
+        rating: 5,
       },
       {
         id: "hanoi-oldquarter",
@@ -456,6 +482,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 500000,
         region: "Hanoi",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Hue_citadel.jpg/400px-Hue_citadel.jpg",
+        rating: 4.5,
       },
       {
         id: "vn-halong",
@@ -465,6 +492,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 120,
         region: "Norte",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Halong_bay_Vietnam.jpg/400px-Halong_bay_Vietnam.jpg",
+        rating: 5,
       },
       {
         id: "vn-hue",
@@ -474,6 +502,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 30,
         region: "Centro",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Hue_citadel.jpg/400px-Hue_citadel.jpg",
+        rating: 4,
       },
       {
         id: "vn-hoian",
@@ -483,6 +512,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 35,
         region: "Centro",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Hoi_an_river.jpg/400px-Hoi_an_river.jpg",
+        rating: 4.5,
       },
       {
         id: "vn-sapa",
@@ -544,6 +574,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 3000,
         region: "El Nido",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/El_Nido_Palawan.jpg/400px-El_Nido_Palawan.jpg",
+        rating: 5,
       },
       {
         id: "coron-wrecks",
@@ -553,6 +584,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 4000,
         region: "Coron",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Chocolate_Hills_Overview.JPG/400px-Chocolate_Hills_Overview.JPG",
+        rating: 4.5,
       },
       {
         id: "palawan-beach",
@@ -562,6 +594,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 2000,
         region: "Palawan",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Boracay_white_beach.jpg/400px-Boracay_white_beach.jpg",
+        rating: 5,
       },
       {
         id: "ph-boracay",
@@ -571,6 +604,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 90,
         region: "Visayas",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Boracay_white_beach.jpg/400px-Boracay_white_beach.jpg",
+        rating: 5,
       },
       {
         id: "ph-chocolate-hills",
@@ -580,6 +614,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 25,
         region: "Visayas",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Chocolate_Hills_Overview.JPG/400px-Chocolate_Hills_Overview.JPG",
+        rating: 4,
       },
       {
         id: "ph-palawan",
@@ -589,6 +624,7 @@ export const destinations: Destination[] = [
         costPerCouplePerDay: 100,
         region: "Palawan",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/El_Nido_Palawan.jpg/400px-El_Nido_Palawan.jpg",
+        rating: 4.5,
       },
       {
         id: "ph-siargao",

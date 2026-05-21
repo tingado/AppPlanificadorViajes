@@ -183,6 +183,14 @@ export default function AttractionList() {
                       {attraction.region}
                     </span>
                   </div>
+                  {attraction.rating && (
+                    <div className="flex items-center gap-0.5 mt-0.5">
+                      {[1,2,3,4,5].map(star => (
+                        <span key={star} className={`text-[10px] ${star <= Math.round(attraction.rating!) ? 'text-amber-400' : 'text-gray-200'}`}>★</span>
+                      ))}
+                      <span className="text-[10px] text-gray-400 ml-0.5">{attraction.rating}</span>
+                    </div>
+                  )}
                   <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
                     {attraction.description}
                   </p>

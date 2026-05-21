@@ -65,6 +65,22 @@ export default function ExportButton() {
     URL.revokeObjectURL(url);
   };
 
+  const handleShare = async () => {
+    setOpen(false);
+    const text = `🌏 Luna de Miel en ${selectedDestination!.country} — ${generatedItinerary.length} días\n\n` +
+      generatedItinerary.map(d =>
+        `Día ${d.day}: ${d.isTransitDay ? '✈ Traslado' : d.attractions[0]?.name ?? 'Día libre'}`
+      ).join('\n') +
+      `\n\n💰 Total: ~$${fmt(generatedItinerary.reduce((s,d) => s+d.estimatedCostUSD,0))} USD`;
+
+    if (navigator.share) {
+      await navigator.share({ title: `Itinerario ${selectedDestination!.country}`, text });
+    } else {
+      await navigator.clipboard.writeText(text);
+      alert('¡Copiado al portapapeles!');
+    }
+  };
+
   return (
     <div className="relative">
       <button
@@ -82,6 +98,9 @@ export default function ExportButton() {
             </button>
             <button onClick={handleHTML} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50">
               📄 Descargar HTML
+            </button>
+            <button onClick={handleShare} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50">
+              🔗 Compartir
             </button>
           </div>
         </>
