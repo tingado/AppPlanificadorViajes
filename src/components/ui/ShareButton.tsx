@@ -4,16 +4,18 @@ import { useTravelStore } from "@/store/useTravelStore";
 
 export default function ShareButton() {
   const [copied, setCopied] = useState(false);
-  const { selectedDestination, activePins, tripDays, generatedItinerary } = useTravelStore();
+  const { selectedDestination, activePins, tripDays, tripDate, generatedItinerary } = useTravelStore();
 
   if (!selectedDestination) return null;
 
   const buildUrl = () => {
-    const params = new URLSearchParams({
+    const p: Record<string, string> = {
       dest: selectedDestination.id,
       days: String(tripDays),
       pins: activePins.map(p => p.id).join(','),
-    });
+    };
+    if (tripDate) p.date = tripDate;
+    const params = new URLSearchParams(p);
     return `${location.origin}${location.pathname}?${params.toString()}`;
   };
 
