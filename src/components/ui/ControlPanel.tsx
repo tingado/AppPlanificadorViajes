@@ -25,7 +25,7 @@ const REGIONS: Record<string, string> = {
 };
 
 function WelcomeScreen() {
-  const { setSelectedDestination, currencyRates, tripDate } = useTravelStore();
+  const { setSelectedDestination, currencyRates, tripDate, tripDays } = useTravelStore();
   const [regionFilter, setRegionFilter] = React.useState<string | null>(null);
   const checkMonth = tripDate
     ? new Date(tripDate + 'T12:00:00').getMonth() + 1
@@ -91,7 +91,10 @@ function WelcomeScreen() {
         {filtered.map((dest) => {
           const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
           const dailyUSD = Math.round((dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate);
-          const budgetColor = dailyUSD < 200 ? 'text-green-400' : dailyUSD < 400 ? 'text-amber-300' : 'text-red-300';
+          const flightUSD = dest.estimatedFlightFromChileUSD ?? 3500;
+          const tripTotalUSD = dailyUSD * tripDays + flightUSD;
+          const totalK = tripTotalUSD >= 1000 ? `$${(tripTotalUSD / 1000).toFixed(1)}K` : `$${tripTotalUSD}`;
+          const budgetColor = tripTotalUSD < 7000 ? 'text-green-400' : tripTotalUSD < 12000 ? 'text-amber-300' : 'text-red-300';
           const season = getSeasonBadge(dest, checkMonth);
           const coverImg = dest.attractions[0]?.imageUrl;
           return (
@@ -104,16 +107,16 @@ function WelcomeScreen() {
               {!coverImg && <div className="absolute inset-0 bg-gradient-to-br from-brand-500 to-purple-600" />}
               <div className="absolute inset-0 bg-black/55 group-hover:bg-black/40 transition-colors" />
               <div className="relative z-10 flex flex-col items-center justify-center gap-0.5 h-full px-1">
-                <span className="text-xl">{dest.flag}</span>
+                <span className="text-lg">{dest.flag}</span>
                 <span className="text-[11px] font-bold text-white leading-tight drop-shadow text-center">{dest.country}</span>
-                <span className={`text-[10px] font-semibold ${budgetColor}`}>~${dailyUSD}/día</span>
-                <span className="text-[9px] text-white/80">{season.icon}</span>
+                <span className={`text-[10px] font-semibold ${budgetColor}`}>{totalK} total</span>
+                <span className="text-[9px] text-white/60">~${dailyUSD}/día {season.icon}</span>
               </div>
             </button>
           );
         })}
       </div>
-      <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center">💡 Costo base diario: alojamiento + comida · 2 personas</p>
+      <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center">💡 Total estimado {tripDays}d · vuelo + aloj. + comida · 2 pax</p>
     </div>
   );
 }
