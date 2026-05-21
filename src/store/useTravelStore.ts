@@ -63,6 +63,13 @@ interface TravelState {
   // Attraction notes
   attractionNotes: Record<string, string>;
   setAttractionNote: (attractionId: string, note: string) => void;
+
+  // Budget overrides
+  budgetOverrides: {
+    accommodationPerNight?: number;
+    foodPerDay?: number;
+  };
+  setBudgetOverride: (key: 'accommodationPerNight' | 'foodPerDay', value: number) => void;
 }
 
 export const useTravelStore = create<TravelState>()(
@@ -166,6 +173,10 @@ export const useTravelStore = create<TravelState>()(
       attractionNotes: {},
       setAttractionNote: (id, note) =>
         set((s) => ({ attractionNotes: { ...s.attractionNotes, [id]: note } })),
+
+      budgetOverrides: {},
+      setBudgetOverride: (key, value) =>
+        set((s) => ({ budgetOverrides: { ...s.budgetOverrides, [key]: value } })),
     }),
     {
       name: "travel-planner-store",
@@ -179,6 +190,7 @@ export const useTravelStore = create<TravelState>()(
         darkMode: state.darkMode,
         packingList: state.packingList,
         packedItems: state.packedItems,
+        budgetOverrides: state.budgetOverrides,
       }),
     }
   )
