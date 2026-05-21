@@ -157,14 +157,16 @@ export default function ItineraryView() {
                         {day.day}
                       </div>
                       <div>
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
                             {day.isTransitDay
                               ? "Día de traslado"
-                              : day.attractions[0]?.name ?? "Día libre"}
+                              : day.attractions.length > 0
+                                ? day.attractions.map(a => a.name).join(' · ')
+                                : "Día libre"}
                           </p>
                           {dayDate && (
-                            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
+                            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium shrink-0">
                               {fmtDate(dayDate)}
                             </span>
                           )}

@@ -43,6 +43,15 @@ const DEST_ITEMS: Record<string, { id: string; cat: string; label: string }[]> =
     { id: "vn-cash", cat: "Vietnam", label: "Dólares en efectivo" },
     { id: "vn-sim", cat: "Vietnam", label: "SIM local (Viettel)" },
   ],
+  singapore: [
+    { id: "sg-ez-link", cat: "Singapur", label: "EZ-Link card (transporte)" },
+    { id: "sg-clothes", cat: "Singapur", label: "Ropa fresca (calor húmedo)" },
+  ],
+  philippines: [
+    { id: "ph-cash", cat: "Filipinas", label: "Pesos filipinos en efectivo" },
+    { id: "ph-sunscreen", cat: "Filipinas", label: "Protector solar (islas)" },
+    { id: "ph-snorkel", cat: "Filipinas", label: "Snorkel / máscara buceo" },
+  ],
 };
 
 export default function PackingList() {

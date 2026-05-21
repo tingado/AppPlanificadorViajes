@@ -138,6 +138,18 @@ export default function AttractionList() {
           ✨ Optimizar orden de visita
         </button>
       )}
+      {filtered.length === 0 && (
+        <div className="py-8 text-center text-gray-400 dark:text-gray-500">
+          <p className="text-2xl mb-2">🔍</p>
+          <p className="text-sm">Sin resultados para &ldquo;{search}&rdquo;</p>
+          <button
+            onClick={() => { setSearch(""); setActiveRegion(null); }}
+            className="text-xs text-brand-500 mt-1 hover:underline"
+          >
+            Limpiar filtros
+          </button>
+        </div>
+      )}
       {filtered.map((attraction: Attraction) => {
         const isActive = activePins.some((p) => p.id === attraction.id);
         return (
