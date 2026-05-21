@@ -58,6 +58,7 @@ export interface CurrencyRates {
   USD_TO_VND: number;
   USD_TO_PHP: number;
   USD_TO_EUR: number;
+  USD_TO_MAD: number;
   [key: string]: number;
 }
 
