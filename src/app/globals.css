@@ -28,6 +28,11 @@ main {
   z-index: 900 !important;
 }
 
+/* Clickable soft markers on the map */
+.soft-attraction-marker {
+  cursor: pointer !important;
+}
+
 /* Dark mode — handled by Tailwind dark: variants in components */
 @media (prefers-color-scheme: dark) {
   /* vacío — manejado por clases dark: de Tailwind */

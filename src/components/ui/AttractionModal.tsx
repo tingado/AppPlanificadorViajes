@@ -33,7 +33,7 @@ export default function AttractionModal({ attraction, onClose }: Props) {
 
       {/* Panel */}
       <div
-        className="relative z-10 w-full sm:max-w-md bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl"
+        className="relative z-10 w-full sm:max-w-md bg-white dark:bg-gray-800 rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         {/* Image */}

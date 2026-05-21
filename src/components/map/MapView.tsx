@@ -112,6 +112,7 @@ export default function MapView() {
             weight: 1.5,
             opacity: 0.8,
             fillOpacity: 0.5,
+            className: 'soft-attraction-marker',
           })
             .bindTooltip(attr.name, { direction: 'top', offset: [0, -6] })
             .on('click', () => toggleAttraction(attr))
