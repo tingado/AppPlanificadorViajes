@@ -43,7 +43,7 @@ export default function CostSummary() {
   const rateKey = `USD_TO_${code}`;
   const localRate = currencyRates[rateKey] ?? 1;
 
-  const intlFlightUSD = budgetOverrides.internationalFlightUSD ?? 3500;
+  const intlFlightUSD = budgetOverrides.internationalFlightUSD ?? selectedDestination.estimatedFlightFromChileUSD ?? 3500;
   const visaFeeUSD = (selectedDestination.visaFeePerPersonUSD ?? 0) * 2; // 2 travelers
 
   // ── Totals ────────────────────────────────────────────────────────────────
@@ -330,19 +330,24 @@ export default function CostSummary() {
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-3">
         <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">⚙️ Ajustar presupuesto</p>
         <div className="space-y-2">
-          <div className="flex items-center justify-between gap-3">
-            <label className="text-sm text-gray-700 dark:text-gray-300">🛫 Vuelo Santiago → destino (ida+vuelta, 2 pax)</label>
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400 dark:text-gray-500">$</span>
-              <input
-                type="number"
-                min={0}
-                value={intlFlightUSD}
-                onChange={e => setBudgetOverride('internationalFlightUSD', Number(e.target.value))}
-                className="w-20 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
-              />
-              <span className="text-xs text-gray-400 dark:text-gray-500">USD</span>
+          <div className="space-y-0.5">
+            <div className="flex items-center justify-between gap-3">
+              <label className="text-sm text-gray-700 dark:text-gray-300">🛫 Vuelo Santiago → destino (ida+vuelta, 2 pax)</label>
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-400 dark:text-gray-500">$</span>
+                <input
+                  type="number"
+                  min={0}
+                  value={intlFlightUSD}
+                  onChange={e => setBudgetOverride('internationalFlightUSD', Number(e.target.value))}
+                  className="w-20 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+                />
+                <span className="text-xs text-gray-400 dark:text-gray-500">USD</span>
+              </div>
             </div>
+            {selectedDestination.estimatedFlightFromChileUSD && budgetOverrides.internationalFlightUSD === undefined && (
+              <p className="text-[10px] text-gray-400 dark:text-gray-500">estimación para Chile → {selectedDestination.country}</p>
+            )}
           </div>
           <div className="flex items-center justify-between gap-3">
             <label className="text-sm text-gray-700 dark:text-gray-300">🏨 Alojamiento/noche</label>
@@ -376,7 +381,7 @@ export default function CostSummary() {
             onClick={() => {
               setBudgetOverride('accommodationPerNight', selectedDestination?.dailyBaseAccommodationCost ?? 0);
               setBudgetOverride('foodPerDay', selectedDestination?.dailyBaseFoodCost ?? 0);
-              setBudgetOverride('internationalFlightUSD', 3500);
+              setBudgetOverride('internationalFlightUSD', selectedDestination?.estimatedFlightFromChileUSD ?? 3500);
             }}
             className="text-xs text-gray-400 dark:text-gray-500 hover:text-red-500"
           >

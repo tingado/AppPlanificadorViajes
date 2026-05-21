@@ -19,6 +19,7 @@ interface TravelState {
   activePins: Attraction[];
   toggleAttraction: (attraction: Attraction) => void;
   clearPins: () => void;
+  selectAttractions: (attractions: Attraction[]) => void;
 
   // Route
   routeInfo: RouteInfo | null;
@@ -154,6 +155,12 @@ export const useTravelStore = create<TravelState>()(
       },
 
       clearPins: () => set({ activePins: [], routeInfo: null, showRoute: false, itineraryOutdated: false }),
+
+      selectAttractions: (attractions) => {
+        const capped = attractions.slice(0, MAX_PINS);
+        const wasGenerated = get().generatedItinerary.length > 0;
+        set({ activePins: capped, routeInfo: null, showRoute: false, itineraryOutdated: wasGenerated, pinLimitReached: false });
+      },
 
       routeInfo: null,
       showRoute: false,

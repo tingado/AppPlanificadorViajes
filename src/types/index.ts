@@ -35,6 +35,7 @@ export interface Destination {
   climate?: string;
   travelTips?: string[];
   freeDayHints?: string[];  // suggestions for free exploration days in itinerary
+  estimatedFlightFromChileUSD?: number;  // round trip per couple, economy class
 }
 
 export interface ItineraryDay {
