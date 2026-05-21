@@ -36,19 +36,23 @@ function convertCost(
   };
 }
 
-export function generateItinerary(
+/**
+ * Builds the sequence of scheduled (attraction + optional transit) days and
+ * returns both the array of ItineraryDay items and the count of days consumed.
+ */
+function buildAttractionDays(
   destination: Destination,
-  selectedAttractions: Attraction[],
+  sorted: Attraction[],
   tripDays: number,
   rates: CurrencyRates
-): ItineraryDay[] {
-  const sorted = sortByProximity(selectedAttractions);
+): { days: ItineraryDay[]; daysUsed: number } {
   const days: ItineraryDay[] = [];
   let dayIndex = 1;
 
   for (let i = 0; i < sorted.length && dayIndex <= tripDays; i++) {
     const attraction = sorted[i];
 
+    // ── Transit day between clusters ──────────────────────────────────────
     if (i > 0) {
       const prev = sorted[i - 1];
       const distKm = haversineDistanceKm(prev.coordinates, attraction.coordinates);
@@ -59,14 +63,13 @@ export function generateItinerary(
           destination.dailyBaseAccommodationCost + destination.dailyBaseFoodCost;
         const converted = convertCost(transitCostLocal, destination.currencyCode, rates);
 
-        // Estimar costo de vuelo según duración del traslado
         let flightCostUSD: number;
         if (travelHours > 4) {
-          flightCostUSD = 150 * 2; // vuelo largo: $150 USD/persona × 2
+          flightCostUSD = 150 * 2;
         } else if (travelHours >= 2) {
-          flightCostUSD = 80 * 2;  // vuelo corto: $80 USD/persona × 2
+          flightCostUSD = 80 * 2;
         } else {
-          flightCostUSD = 0;       // traslado terrestre
+          flightCostUSD = 0;
         }
 
         days.push({
@@ -83,6 +86,7 @@ export function generateItinerary(
       }
     }
 
+    // ── Activity day for this attraction ──────────────────────────────────
     if (dayIndex <= tripDays) {
       const baseDaily =
         destination.dailyBaseAccommodationCost + destination.dailyBaseFoodCost;
@@ -99,27 +103,107 @@ export function generateItinerary(
     }
   }
 
-  // Fill remaining days with the last attraction if any are left
-  if (sorted.length > 0) {
-    const lastAttraction = sorted[sorted.length - 1];
-    while (dayIndex <= tripDays) {
-      const baseDaily =
-        destination.dailyBaseAccommodationCost + destination.dailyBaseFoodCost;
-      const totalLocal = lastAttraction.costPerCouplePerDay + baseDaily;
-      const converted = convertCost(totalLocal, destination.currencyCode, rates);
-      days.push({
-        day: dayIndex++,
-        isTransitDay: false,
-        attractions: [lastAttraction],
-        estimatedCostLocal: totalLocal,
-        estimatedCostUSD: converted.usd,
-        estimatedCostCLP: converted.clp,
-        notes: "Día libre en el mismo destino",
-      });
+  return { days, daysUsed: dayIndex - 1 };
+}
+
+export function generateItinerary(
+  destination: Destination,
+  selectedAttractions: Attraction[],
+  tripDays: number,
+  rates: CurrencyRates
+): ItineraryDay[] {
+  const sorted = sortByProximity(selectedAttractions);
+
+  // Build the core attraction+transit days first
+  const { days, daysUsed } = buildAttractionDays(destination, sorted, tripDays, rates);
+
+  const remaining = tripDays - daysUsed;
+
+  if (remaining <= 0 || sorted.length === 0) {
+    return days;
+  }
+
+  // ── Distribute remaining days as free exploration days ──────────────────
+  // When there are many spare days relative to pins, spread free days evenly
+  // between attractions so the itinerary doesn't feel front-loaded.
+  const numAttractions = sorted.length;
+
+  // How many free days to insert *between* each pair of scheduled days,
+  // and how many to append at the end.
+  // Strategy: insert ~floor(remaining / (numAttractions + 1)) days as gaps,
+  // then place any leftover at the end.
+  const gapSlots = numAttractions + 1; // before first, between, after last
+  const freeDaysPerSlot = Math.floor(remaining / gapSlots);
+  const extraAtEnd = remaining - freeDaysPerSlot * gapSlots;
+
+  // We need to rebuild day numbers after inserting gaps.
+  // Easier: collect scheduled days (already built), then interleave free days.
+
+  // Identify the scheduled day indices that are NOT transit days —
+  // we insert free days after each activity cluster.
+  const withFree: ItineraryDay[] = [];
+  let newDayNumber = 1;
+
+  // Free days before first attraction
+  for (let f = 0; f < freeDaysPerSlot; f++) {
+    const baseDaily =
+      destination.dailyBaseAccommodationCost + destination.dailyBaseFoodCost;
+    const converted = convertCost(baseDaily, destination.currencyCode, rates);
+    withFree.push({
+      day: newDayNumber++,
+      isTransitDay: false,
+      attractions: [],
+      estimatedCostLocal: baseDaily,
+      estimatedCostUSD: converted.usd,
+      estimatedCostCLP: converted.clp,
+      notes: "Día libre para explorar",
+    });
+  }
+
+  // Walk through the already-built days and insert free days after each activity day
+  for (let i = 0; i < days.length; i++) {
+    const scheduledDay = { ...days[i], day: newDayNumber++ };
+    withFree.push(scheduledDay);
+
+    // After each non-transit day (except the last scheduled day), insert free days
+    if (!scheduledDay.isTransitDay && i < days.length - 1) {
+      for (let f = 0; f < freeDaysPerSlot; f++) {
+        const baseDaily =
+          destination.dailyBaseAccommodationCost + destination.dailyBaseFoodCost;
+        const converted = convertCost(baseDaily, destination.currencyCode, rates);
+        withFree.push({
+          day: newDayNumber++,
+          isTransitDay: false,
+          attractions: [],
+          estimatedCostLocal: baseDaily,
+          estimatedCostUSD: converted.usd,
+          estimatedCostCLP: converted.clp,
+          notes: "Día libre para explorar",
+        });
+      }
     }
   }
 
-  return days;
+  // Append remaining free days at the end (last attraction's region)
+  const totalFreeAtEnd = freeDaysPerSlot + extraAtEnd;
+  const lastAttraction = sorted[sorted.length - 1];
+  for (let f = 0; f < totalFreeAtEnd; f++) {
+    const baseDaily =
+      destination.dailyBaseAccommodationCost + destination.dailyBaseFoodCost;
+    const totalLocal = lastAttraction.costPerCouplePerDay + baseDaily;
+    const converted = convertCost(totalLocal, destination.currencyCode, rates);
+    withFree.push({
+      day: newDayNumber++,
+      isTransitDay: false,
+      attractions: [lastAttraction],
+      estimatedCostLocal: totalLocal,
+      estimatedCostUSD: converted.usd,
+      estimatedCostCLP: converted.clp,
+      notes: "Día libre para explorar",
+    });
+  }
+
+  return withFree;
 }
 
 export function computeTotals(

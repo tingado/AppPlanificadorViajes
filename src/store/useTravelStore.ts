@@ -70,6 +70,10 @@ interface TravelState {
     foodPerDay?: number;
   };
   setBudgetOverride: (key: 'accommodationPerNight' | 'foodPerDay', value: number) => void;
+
+  // Trip date (countdown)
+  tripDate: string | null;  // ISO date string "2025-03-15"
+  setTripDate: (date: string | null) => void;
 }
 
 export const useTravelStore = create<TravelState>()(
@@ -177,6 +181,9 @@ export const useTravelStore = create<TravelState>()(
       budgetOverrides: {},
       setBudgetOverride: (key, value) =>
         set((s) => ({ budgetOverrides: { ...s.budgetOverrides, [key]: value } })),
+
+      tripDate: null,
+      setTripDate: (date) => set({ tripDate: date }),
     }),
     {
       name: "travel-planner-store",
@@ -191,6 +198,7 @@ export const useTravelStore = create<TravelState>()(
         packingList: state.packingList,
         packedItems: state.packedItems,
         budgetOverrides: state.budgetOverrides,
+        tripDate: state.tripDate,
       }),
     }
   )
