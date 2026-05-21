@@ -99,6 +99,7 @@ ${(dest.visaInfo || dest.travelTips?.length) ? `
   ${dest.visaInfo ? `<p style="margin:6px 0;font-size:13px"><strong>🛂 Visa:</strong> ${dest.visaInfo}</p>` : ''}
   ${dest.climate ? `<p style="margin:6px 0;font-size:13px"><strong>🌡️ Clima:</strong> ${dest.climate}</p>` : ''}
   ${dest.bestMonths ? `<p style="margin:6px 0;font-size:13px"><strong>📅 Mejor época:</strong> ${dest.bestMonths}</p>` : ''}
+  ${dest.romanticHighlights?.length ? `<div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:10px;margin:8px 0"><p style="margin:0 0 6px;font-size:11px;font-weight:700;color:#e11d48;text-transform:uppercase;letter-spacing:0.05em">💑 Experiencias románticas imperdibles</p>${dest.romanticHighlights.map(h => `<p style="margin:3px 0;font-size:13px;color:#be123c">${h}</p>`).join('')}</div>` : ''}
   ${dest.travelTips?.length ? `<p style="margin:8px 0 4px;font-size:13px"><strong>💡 Tips de viaje:</strong></p><ul style="margin:0;padding-left:18px;font-size:13px">${dest.travelTips.map(t => `<li style="margin:3px 0">${t}</li>`).join('')}</ul>` : ''}
   ${dest.freeDayHints?.length ? `<p style="margin:8px 0 4px;font-size:13px"><strong>🌅 Ideas para días libres:</strong></p><ul style="margin:0;padding-left:18px;font-size:13px">${dest.freeDayHints.map(h => `<li style="margin:3px 0">${h}</li>`).join('')}</ul>` : ''}
 </div>` : ''}

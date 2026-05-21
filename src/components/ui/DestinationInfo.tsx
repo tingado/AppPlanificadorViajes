@@ -12,7 +12,7 @@ function getSeasonStatus(dest: Destination, month: number): { label: string; col
 }
 
 export default function DestinationInfo() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const { selectedDestination, tripDate } = useTravelStore();
   if (!selectedDestination) return null;
 
