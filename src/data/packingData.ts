@@ -63,4 +63,11 @@ export const DEST_PACKING_ITEMS: Record<string, PackingItem[]> = {
     { id: "mv-gopro", cat: "Maldivas", label: "GoPro / cámara subacuática" },
     { id: "mv-modest-clothes", cat: "Maldivas", label: "Ropa cubriente para isla local (Malé)" },
   ],
+  greece: [
+    { id: "gr-euros", cat: "Grecia", label: "Euros en efectivo (tabernas locales)" },
+    { id: "gr-ferry-tickets", cat: "Grecia", label: "Pasajes de ferry inter-islas reservados" },
+    { id: "gr-walking-shoes", cat: "Grecia", label: "Zapatos para adoquines (no sandalias planas)" },
+    { id: "gr-hat", cat: "Grecia", label: "Sombrero de sol (calor extremo Jul-Ago)" },
+    { id: "gr-light-scarf", cat: "Grecia", label: "Pañuelo/chal para visitas a iglesias" },
+  ],
 };
