@@ -17,6 +17,7 @@ function fmtDate(date: Date) {
 export default function ItineraryView() {
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
   const [expandedNoteDay, setExpandedNoteDay] = useState<number | null>(null);
+  const [jumpDay, setJumpDay] = useState('');
 
   const {
     generatedItinerary,
@@ -155,6 +156,32 @@ export default function ItineraryView() {
       {/* Day cards — Lista */}
       {viewMode === 'list' && (
         <div className="space-y-2">
+          {generatedItinerary.length >= 10 && (
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                const n = parseInt(jumpDay, 10);
+                if (n >= 1 && n <= generatedItinerary.length) {
+                  document.getElementById(`itin-day-${n}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                setJumpDay('');
+              }}
+              className="flex items-center gap-2"
+            >
+              <input
+                type="number"
+                min={1}
+                max={generatedItinerary.length}
+                value={jumpDay}
+                onChange={e => setJumpDay(e.target.value)}
+                placeholder={`Ir al día (1-${generatedItinerary.length})`}
+                className="flex-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 placeholder-gray-400 px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-400"
+              />
+              <button type="submit" className="text-xs font-semibold text-brand-600 dark:text-brand-400 border border-brand-300 dark:border-brand-700 rounded-lg px-2 py-1.5 hover:bg-brand-50 dark:hover:bg-brand-900/20">
+                Ir →
+              </button>
+            </form>
+          )}
           {generatedItinerary.map((day) => {
             const dayDate = getDayDate(day.day);
             const isNoteOpen = expandedNoteDay === day.day;
@@ -162,6 +189,7 @@ export default function ItineraryView() {
             return (
               <div
                 key={day.day}
+                id={`itin-day-${day.day}`}
                 className={`itinerary-day rounded-xl border ${
                   day.isTransitDay
                     ? "border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-700"
@@ -249,46 +277,72 @@ export default function ItineraryView() {
 
       {/* Calendario */}
       {viewMode === 'calendar' && (
-        <div className="space-y-2">
-          <div className="grid grid-cols-7 gap-0.5">
-            {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((d) => (
-              <div key={d} className="text-center text-xs font-semibold text-gray-400 dark:text-gray-500 py-1">
-                {d}
-              </div>
-            ))}
-            {/* Padding cells before day 1 */}
-            {Array.from({ length: calendarOffset }).map((_, i) => (
-              <div key={`pad-${i}`} />
-            ))}
-            {generatedItinerary.map((day) => {
-              const dayDate = getDayDate(day.day);
+        <div className="space-y-3">
+          {!startDate && (
+            <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-2">
+              Selecciona fecha de inicio para ver las fechas reales en el calendario
+            </p>
+          )}
+          {(() => {
+            // Group days by calendar month when startDate is known
+            if (!startDate) {
+              // Fallback: simple flat grid (no dates)
               return (
-                <div
-                  key={day.day}
-                  className={`rounded-lg p-1 min-h-[52px] flex flex-col items-center ${
-                    day.isTransitDay
-                      ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700'
-                      : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
-                  }`}
-                >
-                  <span className={`text-xs font-bold ${day.isTransitDay ? 'text-amber-600 dark:text-amber-400' : 'text-brand-600'}`}>
-                    {day.day}
-                  </span>
-                  {dayDate && (
-                    <span className="text-[8px] text-gray-400 dark:text-gray-500 leading-tight">
-                      {dayDate.getDate()}/{dayDate.getMonth() + 1}
-                    </span>
-                  )}
-                  <span className="text-[9px] text-gray-600 dark:text-gray-400 text-center leading-tight mt-0.5 line-clamp-2">
-                    {day.isTransitDay ? '✈️' : (day.attractions[0]?.name.split(' ')[0] ?? '—')}
-                  </span>
+                <div className="grid grid-cols-7 gap-0.5">
+                  {['L','M','X','J','V','S','D'].map(d => (
+                    <div key={d} className="text-center text-xs font-semibold text-gray-400 dark:text-gray-500 py-1">{d}</div>
+                  ))}
+                  {Array.from({ length: calendarOffset }).map((_, i) => <div key={`p${i}`} />)}
+                  {generatedItinerary.map(day => (
+                    <div key={day.day} className={`rounded-lg p-1 min-h-[48px] flex flex-col items-center border ${day.isTransitDay ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
+                      <span className={`text-xs font-bold ${day.isTransitDay ? 'text-amber-600 dark:text-amber-400' : 'text-brand-600'}`}>{day.day}</span>
+                      <span className="text-[9px] text-gray-600 dark:text-gray-400 text-center leading-tight mt-0.5 line-clamp-2">{day.isTransitDay ? '✈️' : (day.attractions[0]?.name.split(' ')[0] ?? '—')}</span>
+                    </div>
+                  ))}
                 </div>
               );
-            })}
-          </div>
-          <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
-            {startDate ? `Desde el ${fmtDate(startDate)}` : 'Selecciona fecha de inicio para ver fechas reales'}
-          </p>
+            }
+
+            // Group by year-month
+            const groups: { key: string; month: number; year: number; days: typeof generatedItinerary }[] = [];
+            generatedItinerary.forEach(day => {
+              const d = getDayDate(day.day)!;
+              const key = `${d.getFullYear()}-${d.getMonth()}`;
+              let g = groups.find(g => g.key === key);
+              if (!g) { g = { key, month: d.getMonth(), year: d.getFullYear(), days: [] }; groups.push(g); }
+              g.days.push(day);
+            });
+
+            const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+            return groups.map(group => {
+              const firstDate = getDayDate(group.days[0].day)!;
+              const offset = (firstDate.getDay() + 6) % 7;
+              return (
+                <div key={group.key} className="space-y-1">
+                  <p className="text-xs font-bold text-gray-600 dark:text-gray-300 text-center bg-gray-50 dark:bg-gray-800 rounded-lg py-1">
+                    {monthNames[group.month]} {group.year}
+                  </p>
+                  <div className="grid grid-cols-7 gap-0.5">
+                    {['L','M','X','J','V','S','D'].map(d => (
+                      <div key={d} className="text-center text-[10px] font-semibold text-gray-400 dark:text-gray-500 py-0.5">{d}</div>
+                    ))}
+                    {Array.from({ length: offset }).map((_, i) => <div key={`p${i}`} />)}
+                    {group.days.map(day => {
+                      const dayDate = getDayDate(day.day)!;
+                      return (
+                        <div key={day.day} className={`rounded-lg p-1 min-h-[52px] flex flex-col items-center border ${day.isTransitDay ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
+                          <span className={`text-xs font-bold ${day.isTransitDay ? 'text-amber-600 dark:text-amber-400' : 'text-brand-600'}`}>{day.day}</span>
+                          <span className="text-[8px] text-gray-400 dark:text-gray-500 leading-tight">{dayDate.getDate()}</span>
+                          <span className="text-[9px] text-gray-600 dark:text-gray-400 text-center leading-tight mt-0.5 line-clamp-2">{day.isTransitDay ? '✈️' : (day.attractions[0]?.name.split(' ')[0] ?? '—')}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            });
+          })()}
         </div>
       )}
     </div>
