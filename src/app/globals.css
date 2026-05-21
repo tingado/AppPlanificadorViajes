@@ -27,3 +27,14 @@ main {
 .leaflet-popup-pane {
   z-index: 900 !important;
 }
+
+@media print {
+  /* Ocultar todo excepto el itinerario */
+  header, nav, button, select, .leaflet-container, [class*="MobileLayout"], [class*="DesktopLayout"] > *:not([class*="ItineraryView"]) {
+    display: none !important;
+  }
+  body {
+    font-family: sans-serif;
+    color: black;
+  }
+}

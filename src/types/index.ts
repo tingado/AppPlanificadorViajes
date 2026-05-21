@@ -10,6 +10,7 @@ export interface Attraction {
   coordinates: LatLng;
   costPerCouplePerDay: number;
   region: string;
+  imageUrl?: string;
 }
 
 export interface Destination {

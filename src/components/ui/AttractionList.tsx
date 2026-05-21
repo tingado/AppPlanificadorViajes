@@ -41,7 +41,7 @@ export default function AttractionList() {
           <button
             key={attraction.id}
             onClick={() => toggleAttraction(attraction)}
-            className={`w-full text-left rounded-xl border p-3 transition-all duration-200 ${
+            className={`w-full text-left rounded-xl border p-3 min-h-[44px] transition-all duration-200 ${
               isActive
                 ? "border-brand-400 bg-brand-50 shadow-sm"
                 : "border-gray-200 bg-white hover:border-brand-200 hover:bg-brand-50/30"
