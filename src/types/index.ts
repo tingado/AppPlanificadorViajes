@@ -11,6 +11,7 @@ export interface Attraction {
   costPerCouplePerDay: number;
   region: string;
   imageUrl?: string;
+  rating?: number;  // 1-5 estrellas
 }
 
 export interface Destination {
