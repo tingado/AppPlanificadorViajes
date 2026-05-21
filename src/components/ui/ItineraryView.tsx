@@ -178,6 +178,30 @@ export default function ItineraryView() {
             </div>
           );
         })()}
+        {/* Quick stats */}
+        {(() => {
+          const pricedDays = generatedItinerary.filter(d => d.estimatedCostUSD > 0);
+          if (pricedDays.length === 0) return null;
+          const mostExpensive = pricedDays.reduce((a, b) => a.estimatedCostUSD > b.estimatedCostUSD ? a : b);
+          const cheapest = pricedDays.reduce((a, b) => a.estimatedCostUSD < b.estimatedCostUSD ? a : b);
+          const avgUSD = totalUSD / generatedItinerary.length;
+          return (
+            <div className="mt-2 pt-2 border-t border-white/20 grid grid-cols-3 gap-2 text-center text-[10px]">
+              <div>
+                <p className="opacity-60">Día + caro</p>
+                <p className="font-semibold">Día {mostExpensive.day} · ${fmt(mostExpensive.estimatedCostUSD)}</p>
+              </div>
+              <div>
+                <p className="opacity-60">Día + económico</p>
+                <p className="font-semibold">Día {cheapest.day} · ${fmt(cheapest.estimatedCostUSD)}</p>
+              </div>
+              <div>
+                <p className="opacity-60">Promedio/día</p>
+                <p className="font-semibold">${fmt(avgUSD)} USD</p>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Day cards — Lista */}

@@ -25,16 +25,21 @@ export default function Home() {
     const pins = params.get('pins');
 
     if (destId) {
-      const { setSelectedDestination, setTripDays, toggleAttraction } = useTravelStore.getState();
+      const { setSelectedDestination, setTripDays, toggleAttraction, generateItineraryAction } = useTravelStore.getState();
       const dest = destinations.find(d => d.id === destId);
       if (dest) {
         setSelectedDestination(dest);
         if (days) setTripDays(Number(days));
         if (pins) {
-          pins.split(',').filter(Boolean).forEach(pinId => {
+          const pinIds = pins.split(',').filter(Boolean);
+          pinIds.forEach(pinId => {
             const attraction = dest.attractions.find(a => a.id === pinId);
             if (attraction) toggleAttraction(attraction);
           });
+          if (pinIds.length > 0) {
+            // Auto-generate after state settles so the itinerary is ready on first view
+            setTimeout(() => generateItineraryAction(), 50);
+          }
         }
       }
     }
