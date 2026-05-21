@@ -51,6 +51,9 @@ interface TravelState {
   packingItems: Record<string, boolean>;
   togglePackingItem: (id: string) => void;
   resetPacking: () => void;
+  customPackingItems: { id: string; label: string }[];
+  addCustomPackingItem: (label: string) => void;
+  removeCustomPackingItem: (id: string) => void;
 
   // UI state
   mobilePanel: "map" | "controls";
@@ -187,6 +190,14 @@ export const useTravelStore = create<TravelState>()(
         packingItems: { ...s.packingItems, [id]: !s.packingItems[id] }
       })),
       resetPacking: () => set({ packingItems: {} }),
+      customPackingItems: [],
+      addCustomPackingItem: (label) => set((s) => ({
+        customPackingItems: [...s.customPackingItems, { id: `custom-${Date.now()}`, label }]
+      })),
+      removeCustomPackingItem: (id) => set((s) => ({
+        customPackingItems: s.customPackingItems.filter(i => i.id !== id),
+        packingItems: Object.fromEntries(Object.entries(s.packingItems).filter(([k]) => k !== id)),
+      })),
 
       mobilePanel: "map",
       setMobilePanel: (panel) => set({ mobilePanel: panel }),
@@ -226,6 +237,7 @@ export const useTravelStore = create<TravelState>()(
         packingList: state.packingList,
         packedItems: state.packedItems,
         packingItems: state.packingItems,
+        customPackingItems: state.customPackingItems,
         budgetOverrides: state.budgetOverrides,
         budgetGoalUSD: state.budgetGoalUSD,
         tripDate: state.tripDate,
