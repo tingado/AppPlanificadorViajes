@@ -8,13 +8,13 @@ const MapView = dynamic(() => import("@/components/map/MapView"), { ssr: false }
 export default function DesktopLayout() {
   return (
     <div className="flex h-screen w-full overflow-hidden">
-      {/* Left control panel — fixed 50% */}
-      <div className="w-1/2 h-full overflow-y-auto border-r border-gray-200 bg-gray-50">
+      {/* Left control panel — fixed width between 380-420px */}
+      <div className="min-w-[380px] max-w-[420px] w-[400px] h-full overflow-y-auto border-r border-gray-200 bg-gray-50 flex-shrink-0">
         <ControlPanel />
       </div>
 
-      {/* Right map panel — fixed 50% */}
-      <div className="w-1/2 h-full relative">
+      {/* Right map panel — fills remaining space */}
+      <div className="flex-1 h-full relative">
         <MapView />
       </div>
     </div>
