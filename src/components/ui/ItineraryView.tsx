@@ -111,7 +111,7 @@ export default function ItineraryView() {
           {generatedItinerary.map((day) => (
             <div
               key={day.day}
-              className={`rounded-xl border p-3 ${
+              className={`itinerary-day rounded-xl border p-3 ${
                 day.isTransitDay
                   ? "border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-700"
                   : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"

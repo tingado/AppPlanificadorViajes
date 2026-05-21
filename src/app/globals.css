@@ -42,18 +42,31 @@ main {
 }
 
 @media print {
-  /* Ocultar todo el contenido de la página */
-  body.printing * {
-    visibility: hidden;
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  body { font-family: 'Arial', sans-serif; font-size: 12px; color: #000; background: white; }
+
+  /* Ocultar todo excepto el contenido del itinerario */
+  nav, header, button, input, select, textarea,
+  [data-leaflet], .leaflet-container,
+  [class*="MobileLayout"], [class*="DesktopLayout"],
+  [class*="ControlPanel"], [class*="MapView"] {
+    display: none !important;
   }
 
-  /* Mostrar solo la zona del itinerario */
+  /* Mostrar solo ItineraryView */
+  [class*="ItineraryView"], main > * { display: block !important; }
+
+  /* Colores para impresión */
+  .bg-gradient-to-br { background: #c026d3 !important; color: white !important; }
+
+  /* Page break antes de cada día */
+  .itinerary-day { page-break-inside: avoid; }
+
+  /* Mantener compatibilidad con clase legacy */
+  body.printing * { visibility: hidden; }
   body.printing .itinerary-print-zone,
-  body.printing .itinerary-print-zone * {
-    visibility: visible;
-  }
-
-  /* Posicionar la zona del itinerario en la esquina superior izquierda */
+  body.printing .itinerary-print-zone * { visibility: visible; }
   body.printing .itinerary-print-zone {
     position: fixed;
     top: 0;
@@ -62,31 +75,22 @@ main {
     padding: 20px;
     background: white;
     color: black;
-    font-size: 12pt;
     overflow: visible;
   }
+  body.printing .itinerary-print-zone button { visibility: hidden !important; }
+  body.printing { background: white !important; overflow: visible !important; }
+  html.printing, body.printing { height: auto !important; overflow: visible !important; }
 
-  /* Ocultar el botón de exportar dentro del itinerario */
-  body.printing .itinerary-print-zone button {
-    visibility: hidden !important;
-  }
+  @page { margin: 1.5cm; }
+}
 
-  /* Configuración de página */
-  @page {
-    margin: 20mm;
-    size: A4;
-  }
-
-  body.printing {
-    background: white !important;
-    overflow: visible !important;
-  }
-
-  html.printing,
-  body.printing {
-    height: auto !important;
-    overflow: visible !important;
-  }
+@keyframes pin-flash {
+  0% { box-shadow: 0 0 0 0 rgb(192 38 211 / 0.4); }
+  70% { box-shadow: 0 0 0 8px rgb(192 38 211 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(192 38 211 / 0); }
+}
+.pin-pulse {
+  animation: pin-flash 0.5s ease-out;
 }
 
 @keyframes pin-flash {

@@ -122,17 +122,23 @@ export default function MapView() {
           popupAnchor: [0, -36],
         });
 
+        const starsHtml = pin.rating
+          ? `<p style="font-size:11px;color:#f59e0b;margin:0 0 2px">${'★'.repeat(Math.round(pin.rating))}</p>`
+          : '';
+        const imageHtml = pin.imageUrl
+          ? `<img src="${pin.imageUrl}" alt="${pin.name}" style="width:100%;height:96px;object-fit:cover;border-radius:6px;margin-bottom:6px;display:block" onerror="this.style.display='none'" />`
+          : '';
+
         const marker = L.marker([pin.coordinates.lat, pin.coordinates.lng], { icon })
           .addTo(map)
           .bindPopup(
-            `<div style="min-width:180px;font-family:sans-serif">
-              <img src="${pin.imageUrl ?? ''}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px" onerror="this.style.display='none'" />
-              <p style="font-weight:700;font-size:14px;margin:0 0 4px">${pin.name}</p>
-              <p style="font-size:11px;color:#6b7280;margin:0 0 6px">${pin.region}</p>
-              <p style="font-size:12px;color:#111;margin:0 0 6px">${pin.description}</p>
-              <p style="font-size:11px;font-weight:600;color:#c026d3;margin:0">~$${pin.costPerCouplePerDay} USD/día · 2 personas</p>
+            `<div style="width:200px;font-family:sans-serif;text-align:center">
+              ${imageHtml}
+              <p style="font-weight:700;font-size:13px;color:#111827;margin:0 0 2px">${pin.name}</p>
+              ${starsHtml}
+              <p style="font-size:11px;color:#6b7280;margin:0">~$${pin.costPerCouplePerDay}/día pareja</p>
             </div>`,
-            { maxWidth: 220 }
+            { maxWidth: 200 }
           );
 
         // Distance tooltip to next pin when route is active
@@ -174,6 +180,20 @@ export default function MapView() {
   return (
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full" />
+
+      {/* Floating route info panel — bottom-left */}
+      {showRoute && routeInfo && (
+        <div className="absolute bottom-6 left-2 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2 text-xs max-w-[160px]">
+          <p className="font-semibold text-gray-800 mb-1">🗺 Ruta total</p>
+          <p className="text-gray-600">{routeInfo.totalDistanceKm.toFixed(0)} km</p>
+          <p className="text-gray-600">{formatDuration(routeInfo.totalTimeHours)} aprox.</p>
+          {routeInfo.segments.map((seg, i) => (
+            <p key={i} className="text-gray-400 mt-0.5 truncate">
+              {seg.from.split(' ')[0]} → {seg.to.split(' ')[0]}: {seg.distanceKm.toFixed(0)}km
+            </p>
+          ))}
+        </div>
+      )}
 
       {/* Route overlay */}
       {activePins.length >= 2 && (
