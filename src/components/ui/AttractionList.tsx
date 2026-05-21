@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { Attraction } from "@/types";
 
@@ -15,11 +16,25 @@ export default function AttractionList() {
   const { selectedDestination, activePins, toggleAttraction, pinLimitReached } =
     useTravelStore();
 
+  const regions = selectedDestination
+    ? [...new Set(selectedDestination.attractions.map((a) => a.region))]
+    : [];
+  const [activeRegion, setActiveRegion] = useState<string | null>(null);
+
+  useEffect(() => {
+    setActiveRegion(null);
+  }, [selectedDestination?.id]);
+
+  const filtered = activeRegion
+    ? selectedDestination!.attractions.filter((a) => a.region === activeRegion)
+    : selectedDestination?.attractions ?? [];
+
   if (!selectedDestination) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center text-gray-400">
-        <span className="text-4xl mb-3">🗺️</span>
-        <p className="text-sm">Selecciona un destino para ver sus atractivos</p>
+      <div className="flex flex-col items-center justify-center py-10 text-center text-gray-400">
+        <span className="text-5xl mb-3">🌏</span>
+        <p className="text-sm font-medium text-gray-500">Elige un destino para explorar</p>
+        <p className="text-xs mt-1">Japón, Bali, Singapur, Tailandia, Vietnam o Filipinas</p>
       </div>
     );
   }
@@ -34,7 +49,34 @@ export default function AttractionList() {
       <p className="text-xs text-gray-500 mb-2">
         Selecciona hasta <strong>3 atractivos</strong> para visualizarlos en el mapa
       </p>
-      {selectedDestination.attractions.map((attraction: Attraction) => {
+      {regions.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <button
+            onClick={() => setActiveRegion(null)}
+            className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+              activeRegion === null
+                ? "bg-brand-500 text-white"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            Todas
+          </button>
+          {regions.map((r) => (
+            <button
+              key={r}
+              onClick={() => setActiveRegion(r === activeRegion ? null : r)}
+              className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                activeRegion === r
+                  ? "bg-brand-500 text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              {r}
+            </button>
+          ))}
+        </div>
+      )}
+      {filtered.map((attraction: Attraction) => {
         const isActive = activePins.some((p) => p.id === attraction.id);
         const pinIndex = activePins.findIndex((p) => p.id === attraction.id);
         return (
