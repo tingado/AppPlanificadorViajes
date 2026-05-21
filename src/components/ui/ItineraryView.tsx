@@ -64,16 +64,16 @@ export default function ItineraryView() {
 
       {/* Export button + view toggle */}
       <div className="flex items-center justify-between gap-2">
-        <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+        <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <button
             onClick={() => setViewMode('list')}
-            className={`px-2 py-1 text-xs font-medium ${viewMode === 'list' ? 'bg-brand-500 text-white' : 'bg-white text-gray-500'}`}
+            className={`px-2 py-1 text-xs font-medium ${viewMode === 'list' ? 'bg-brand-500 text-white' : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}
           >
             ☰ Lista
           </button>
           <button
             onClick={() => setViewMode('calendar')}
-            className={`px-2 py-1 text-xs font-medium ${viewMode === 'calendar' ? 'bg-brand-500 text-white' : 'bg-white text-gray-500'}`}
+            className={`px-2 py-1 text-xs font-medium ${viewMode === 'calendar' ? 'bg-brand-500 text-white' : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}
           >
             📅 Calendario
           </button>
@@ -113,8 +113,8 @@ export default function ItineraryView() {
               key={day.day}
               className={`rounded-xl border p-3 ${
                 day.isTransitDay
-                  ? "border-amber-200 bg-amber-50"
-                  : "border-gray-200 bg-white"
+                  ? "border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-700"
+                  : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
               }`}
             >
               <div className="flex items-start justify-between gap-2">
@@ -129,7 +129,7 @@ export default function ItineraryView() {
                     {day.day}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
                       {day.isTransitDay
                         ? "Día de traslado"
                         : day.attractions[0]?.name ?? "Día libre"}
@@ -145,15 +145,15 @@ export default function ItineraryView() {
                       </p>
                     )}
                     {day.notes && (
-                      <p className="text-xs text-gray-400 mt-0.5">{day.notes}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{day.notes}</p>
                     )}
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-xs font-semibold text-gray-700">
+                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                     {fmt(day.estimatedCostUSD * currencyRates.USD_TO_CLP)} CLP
                   </p>
-                  <p className="text-xs text-gray-400">${fmt(day.estimatedCostUSD)} USD</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">${fmt(day.estimatedCostUSD)} USD</p>
                 </div>
               </div>
             </div>
@@ -166,7 +166,7 @@ export default function ItineraryView() {
         <div className="space-y-2">
           <div className="grid grid-cols-7 gap-0.5">
             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((d) => (
-              <div key={d} className="text-center text-xs font-semibold text-gray-400 py-1">
+              <div key={d} className="text-center text-xs font-semibold text-gray-400 dark:text-gray-500 py-1">
                 {d}
               </div>
             ))}
@@ -176,20 +176,20 @@ export default function ItineraryView() {
                 key={day.day}
                 className={`rounded-lg p-1 min-h-[52px] flex flex-col items-center ${
                   day.isTransitDay
-                    ? 'bg-amber-50 border border-amber-200'
-                    : 'bg-white border border-gray-200'
+                    ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700'
+                    : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
                 }`}
               >
-                <span className={`text-xs font-bold ${day.isTransitDay ? 'text-amber-600' : 'text-brand-600'}`}>
+                <span className={`text-xs font-bold ${day.isTransitDay ? 'text-amber-600 dark:text-amber-400' : 'text-brand-600'}`}>
                   {day.day}
                 </span>
-                <span className="text-[9px] text-gray-600 text-center leading-tight mt-0.5 line-clamp-2">
+                <span className="text-[9px] text-gray-600 dark:text-gray-400 text-center leading-tight mt-0.5 line-clamp-2">
                   {day.isTransitDay ? '✈️' : (day.attractions[0]?.name.split(' ')[0] ?? '—')}
                 </span>
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-400 text-center">Día 1 = primer lunes del viaje</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center">Día 1 = primer lunes del viaje</p>
         </div>
       )}
     </div>

@@ -19,9 +19,9 @@ export default function CostSummary() {
 
   if (!selectedDestination || generatedItinerary.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center text-gray-400">
+      <div className="flex flex-col items-center justify-center py-12 text-center text-gray-400 dark:text-gray-500">
         <span className="text-4xl mb-3">💰</span>
-        <p className="text-sm">Genera un itinerario para ver el desglose de costos</p>
+        <p className="text-sm dark:text-gray-400">Genera un itinerario para ver el desglose de costos</p>
       </div>
     );
   }
@@ -68,6 +68,15 @@ export default function CostSummary() {
 
   const maxCategoryUSD = Math.max(...categories.map((c) => c.usd), 1);
 
+  // ── Distribution bar-chart data ───────────────────────────────────────────
+  const chartCategories = [
+    { label: "🏨 Alojamiento", amount: totalAccomUSD, color: "bg-blue-400" },
+    { label: "🍜 Comida", amount: totalFoodUSD, color: "bg-green-400" },
+    { label: "🎭 Actividades", amount: totalActivitiesUSD, color: "bg-purple-400" },
+    { label: "✈ Vuelos", amount: totalFlightUSD, color: "bg-amber-400" },
+  ];
+  const grandTotal = chartCategories.reduce((s, c) => s + c.amount, 0);
+
   return (
     <div className="space-y-4">
       {/* ── 1. Tarjeta principal con gradiente ─────────────────────────── */}
@@ -95,34 +104,34 @@ export default function CostSummary() {
       </div>
 
       {/* ── 2. Breakdown por categoría ──────────────────────────────────── */}
-      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm">
-        <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden shadow-sm">
+        <div className="bg-gray-50 dark:bg-gray-900 px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
             Desglose por categoría
           </p>
         </div>
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-gray-100 dark:divide-gray-700">
           {categories.map((cat) => {
             const pct = totalUSD > 0 ? (cat.usd / totalUSD) * 100 : 0;
             const barWidth = totalUSD > 0 ? (cat.usd / maxCategoryUSD) * 100 : 0;
             return (
               <div key={cat.label} className="px-4 py-3">
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     {cat.label}
                   </span>
                   <div className="text-right">
-                    <span className="text-sm font-bold text-gray-900">
+                    <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
                       ${fmt(cat.usd)}{" "}
-                      <span className="text-xs font-normal text-gray-400">USD</span>
+                      <span className="text-xs font-normal text-gray-400 dark:text-gray-500">USD</span>
                     </span>
-                    <span className="ml-2 text-xs text-gray-400">
+                    <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">
                       ({fmt(pct)}%)
                     </span>
                   </div>
                 </div>
                 {/* Progress bar */}
-                <div className="h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
+                <div className="h-1.5 w-full rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
                   <div
                     className="h-full rounded-full bg-brand-500 transition-all duration-500"
                     style={{ width: `${barWidth}%` }}
@@ -134,14 +143,42 @@ export default function CostSummary() {
         </div>
       </div>
 
+      {/* ── 2b. Distribución del gasto (mini bar chart) ────────────────── */}
+      {grandTotal > 0 && (
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-2 shadow-sm">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+            Distribución del gasto
+          </p>
+          {chartCategories.filter((c) => c.amount > 0).map((cat) => (
+            <div key={cat.label} className="space-y-0.5">
+              <div className="flex justify-between text-xs text-gray-600 dark:text-gray-300">
+                <span>{cat.label}</span>
+                <span className="font-medium">
+                  ${fmt(cat.amount)}{" "}
+                  <span className="text-gray-400 dark:text-gray-500">
+                    ({Math.round((cat.amount / grandTotal) * 100)}%)
+                  </span>
+                </span>
+              </div>
+              <div className="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div
+                  className={`h-full ${cat.color} rounded-full transition-all duration-500`}
+                  style={{ width: `${(cat.amount / grandTotal) * 100}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* ── 3. Resumen financiero multi-moneda ─────────────────────────── */}
-      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm">
-        <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden shadow-sm">
+        <div className="bg-gray-50 dark:bg-gray-900 px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
             Resumen financiero — 2 viajeros
           </p>
         </div>
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-gray-100 dark:divide-gray-700">
           {[
             { label: "Peso Chileno", code: "CLP", value: fmt(totalCLP), flag: "🇨🇱" },
             { label: "Dólar Americano", code: "USD", value: `$${fmt(totalUSD)}`, flag: "🇺🇸" },
@@ -151,13 +188,13 @@ export default function CostSummary() {
               <div className="flex items-center gap-2">
                 <span>{row.flag}</span>
                 <div>
-                  <p className="text-sm font-medium text-gray-700">{row.label}</p>
-                  <p className="text-xs text-gray-400">{row.code}</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{row.label}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">{row.code}</p>
                 </div>
               </div>
-              <p className="text-sm font-bold text-gray-900">
+              <p className="text-sm font-bold text-gray-900 dark:text-gray-100">
                 {row.value}{" "}
-                <span className="text-xs font-normal text-gray-400">{row.code}</span>
+                <span className="text-xs font-normal text-gray-400 dark:text-gray-500">{row.code}</span>
               </p>
             </div>
           ))}
@@ -165,8 +202,8 @@ export default function CostSummary() {
       </div>
 
       {/* ── 4. Tasas de cambio editables ───────────────────────────────── */}
-      <div className="rounded-xl border border-gray-200 bg-white p-4 space-y-3">
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-3">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
           Tasas de cambio (ajustables)
         </p>
         {[
@@ -174,7 +211,7 @@ export default function CostSummary() {
           { label: `1 USD → ${code}`, key: rateKey, value: localRate },
         ].map((rate) => (
           <div key={rate.key} className="flex items-center justify-between gap-3">
-            <label className="text-xs text-gray-600 shrink-0">{rate.label}</label>
+            <label className="text-xs text-gray-600 dark:text-gray-300 shrink-0">{rate.label}</label>
             <input
               type="number"
               value={rate.value}
@@ -182,45 +219,45 @@ export default function CostSummary() {
                 const val = Number(e.target.value);
                 if (val > 0) setCurrencyRates({ [rate.key]: val });
               }}
-              className="w-28 rounded-lg border border-gray-200 px-2 py-1 text-right text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+              className="w-28 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 text-right text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
           </div>
         ))}
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-400 dark:text-gray-500">
           Modifica las tasas para recalcular con valores actualizados
         </p>
       </div>
 
       {/* ── 5. Editor de presupuesto base ──────────────────────────────── */}
-      <div className="rounded-xl border border-gray-200 p-4 space-y-3">
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">⚙️ Ajustar base diaria</p>
+      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-3">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">⚙️ Ajustar base diaria</p>
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-3">
-            <label className="text-sm text-gray-700">🏨 Alojamiento/noche</label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">🏨 Alojamiento/noche</label>
             <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400">$</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">$</span>
               <input
                 type="number"
                 min={0}
                 value={baseAccommodation}
                 onChange={e => setBudgetOverride('accommodationPerNight', Number(e.target.value))}
-                className="w-20 text-sm text-right rounded-lg border border-gray-200 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+                className="w-20 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
               />
-              <span className="text-xs text-gray-400">USD</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">USD</span>
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="text-sm text-gray-700">🍜 Comida/día</label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">🍜 Comida/día</label>
             <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400">$</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">$</span>
               <input
                 type="number"
                 min={0}
                 value={baseFood}
                 onChange={e => setBudgetOverride('foodPerDay', Number(e.target.value))}
-                className="w-20 text-sm text-right rounded-lg border border-gray-200 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+                className="w-20 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
               />
-              <span className="text-xs text-gray-400">USD</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">USD</span>
             </div>
           </div>
         </div>
@@ -230,7 +267,7 @@ export default function CostSummary() {
               setBudgetOverride('accommodationPerNight', selectedDestination?.dailyBaseAccommodationCost ?? 0);
               setBudgetOverride('foodPerDay', selectedDestination?.dailyBaseFoodCost ?? 0);
             }}
-            className="text-xs text-gray-400 hover:text-red-500"
+            className="text-xs text-gray-400 dark:text-gray-500 hover:text-red-500"
           >
             ↺ Restaurar valores por defecto
           </button>

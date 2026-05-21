@@ -64,6 +64,24 @@ export default function AttractionList() {
           Límite de 3 pines alcanzado. Se reemplazó el atractivo más antiguo.
         </div>
       )}
+      {activePins.length > 0 && (
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex gap-1">
+            {[0, 1, 2].map(i => (
+              <div
+                key={i}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  i < activePins.length ? 'bg-brand-500' : 'bg-gray-200'
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-xs text-gray-500">{activePins.length}/3 seleccionados</span>
+          {activePins.length === 3 && (
+            <span className="text-xs text-amber-600 font-medium">máx</span>
+          )}
+        </div>
+      )}
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
         Selecciona hasta <strong>3 atractivos</strong> para visualizarlos en el mapa
       </p>

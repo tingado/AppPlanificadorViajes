@@ -43,7 +43,7 @@ const tabs = [
 ];
 
 export default function ControlPanel() {
-  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode } = useTravelStore();
+  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate } = useTravelStore();
 
   return (
     <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900">
@@ -72,6 +72,26 @@ export default function ControlPanel() {
       {/* Destination selector — white background so the select renders correctly */}
       <div className="px-4 pt-3 pb-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <DestinationSelector />
+        {/* Trip date & countdown */}
+        {selectedDestination && (
+          <div className="flex items-center gap-2 mt-2">
+            <input
+              type="date"
+              value={tripDate ?? ''}
+              onChange={e => setTripDate(e.target.value || null)}
+              className="flex-1 text-xs rounded-lg border border-gray-200 px-2 py-1.5 text-gray-600 focus:outline-none focus:ring-1 focus:ring-brand-400 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+              min={new Date().toISOString().split('T')[0]}
+            />
+            {tripDate && (() => {
+              const days = Math.ceil((new Date(tripDate).getTime() - Date.now()) / 86400000);
+              return days > 0 ? (
+                <span className="text-xs font-bold text-brand-600 whitespace-nowrap">✈ {days}d</span>
+              ) : (
+                <span className="text-xs font-bold text-green-600 whitespace-nowrap">¡Hoy!</span>
+              );
+            })()}
+          </div>
+        )}
       </div>
 
       {/* Itinerary form — integrated below header without extra card border */}
