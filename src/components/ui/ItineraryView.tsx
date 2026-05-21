@@ -42,7 +42,7 @@ export default function ItineraryView() {
   const totalLocal = totalUSD * localRate;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 itinerary-print-zone">
       {/* Outdated banner */}
       {itineraryOutdated && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 flex items-center justify-between gap-3">
