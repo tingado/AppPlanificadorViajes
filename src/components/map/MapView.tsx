@@ -135,6 +135,17 @@ export default function MapView() {
             { maxWidth: 220 }
           );
 
+        // Distance tooltip to next pin when route is active
+        if (showRoute && routeInfo && idx < activePins.length - 1) {
+          const segment = routeInfo.segments[idx];
+          if (segment) {
+            marker.bindTooltip(
+              `${segment.distanceKm.toFixed(0)} km · ${segment.timeHours.toFixed(1)}h`,
+              { permanent: true, direction: 'top', offset: [0, -36], className: 'route-distance-tooltip' }
+            ).openTooltip();
+          }
+        }
+
         markersRef.current.push(marker);
       });
 
@@ -158,7 +169,7 @@ export default function MapView() {
       }
     };
     mapInit();
-  }, [activePins, showRoute, mapReady]);
+  }, [activePins, showRoute, routeInfo, mapReady]);
 
   return (
     <div className="relative w-full h-full">

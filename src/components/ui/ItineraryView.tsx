@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { formatDuration } from "@/utils/geo";
 import ExportButton from "@/components/ui/ExportButton";
@@ -9,6 +10,8 @@ function fmt(n: number) {
 }
 
 export default function ItineraryView() {
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+
   const {
     generatedItinerary,
     selectedDestination,
@@ -58,8 +61,22 @@ export default function ItineraryView() {
         </div>
       )}
 
-      {/* Export button */}
-      <div className="flex justify-end">
+      {/* Export button + view toggle */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+          <button
+            onClick={() => setViewMode('list')}
+            className={`px-2 py-1 text-xs font-medium ${viewMode === 'list' ? 'bg-brand-500 text-white' : 'bg-white text-gray-500'}`}
+          >
+            ☰ Lista
+          </button>
+          <button
+            onClick={() => setViewMode('calendar')}
+            className={`px-2 py-1 text-xs font-medium ${viewMode === 'calendar' ? 'bg-brand-500 text-white' : 'bg-white text-gray-500'}`}
+          >
+            📅 Calendario
+          </button>
+        </div>
         <ExportButton />
       </div>
 
@@ -84,59 +101,93 @@ export default function ItineraryView() {
         </div>
       </div>
 
-      {/* Day cards */}
-      <div className="space-y-2">
-        {generatedItinerary.map((day) => (
-          <div
-            key={day.day}
-            className={`rounded-xl border p-3 ${
-              day.isTransitDay
-                ? "border-amber-200 bg-amber-50"
-                : "border-gray-200 bg-white"
-            }`}
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <div
-                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                    day.isTransitDay
-                      ? "bg-amber-400 text-white"
-                      : "bg-brand-500 text-white"
-                  }`}
-                >
-                  {day.day}
+      {/* Day cards — Lista */}
+      {viewMode === 'list' && (
+        <div className="space-y-2">
+          {generatedItinerary.map((day) => (
+            <div
+              key={day.day}
+              className={`rounded-xl border p-3 ${
+                day.isTransitDay
+                  ? "border-amber-200 bg-amber-50"
+                  : "border-gray-200 bg-white"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                      day.isTransitDay
+                        ? "bg-amber-400 text-white"
+                        : "bg-brand-500 text-white"
+                    }`}
+                  >
+                    {day.day}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {day.isTransitDay
+                        ? "Día de traslado"
+                        : day.attractions[0]?.name ?? "Día libre"}
+                    </p>
+                    {day.travelTimeHours && (
+                      <p className="text-xs text-amber-600">
+                        ✈ {formatDuration(day.travelTimeHours)} de viaje
+                      </p>
+                    )}
+                    {day.isTransitDay && day.flightCostUSD != null && day.flightCostUSD > 0 && (
+                      <p className="text-xs text-blue-600 mt-0.5">
+                        ✈ Vuelo estimado: ${fmt(day.flightCostUSD)} USD
+                      </p>
+                    )}
+                    {day.notes && (
+                      <p className="text-xs text-gray-400 mt-0.5">{day.notes}</p>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">
-                    {day.isTransitDay
-                      ? "Día de traslado"
-                      : day.attractions[0]?.name ?? "Día libre"}
+                <div className="text-right shrink-0">
+                  <p className="text-xs font-semibold text-gray-700">
+                    {fmt(day.estimatedCostUSD * currencyRates.USD_TO_CLP)} CLP
                   </p>
-                  {day.travelTimeHours && (
-                    <p className="text-xs text-amber-600">
-                      ✈ {formatDuration(day.travelTimeHours)} de viaje
-                    </p>
-                  )}
-                  {day.isTransitDay && day.flightCostUSD != null && day.flightCostUSD > 0 && (
-                    <p className="text-xs text-blue-600 mt-0.5">
-                      ✈ Vuelo estimado: ${fmt(day.flightCostUSD)} USD
-                    </p>
-                  )}
-                  {day.notes && (
-                    <p className="text-xs text-gray-400 mt-0.5">{day.notes}</p>
-                  )}
+                  <p className="text-xs text-gray-400">${fmt(day.estimatedCostUSD)} USD</p>
                 </div>
-              </div>
-              <div className="text-right shrink-0">
-                <p className="text-xs font-semibold text-gray-700">
-                  {fmt(day.estimatedCostUSD * currencyRates.USD_TO_CLP)} CLP
-                </p>
-                <p className="text-xs text-gray-400">${fmt(day.estimatedCostUSD)} USD</p>
               </div>
             </div>
+          ))}
+        </div>
+      )}
+
+      {/* Calendario */}
+      {viewMode === 'calendar' && (
+        <div className="space-y-2">
+          <div className="grid grid-cols-7 gap-0.5">
+            {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((d) => (
+              <div key={d} className="text-center text-xs font-semibold text-gray-400 py-1">
+                {d}
+              </div>
+            ))}
+            {/* Día 1 asume lunes — sin padding inicial */}
+            {generatedItinerary.map((day) => (
+              <div
+                key={day.day}
+                className={`rounded-lg p-1 min-h-[52px] flex flex-col items-center ${
+                  day.isTransitDay
+                    ? 'bg-amber-50 border border-amber-200'
+                    : 'bg-white border border-gray-200'
+                }`}
+              >
+                <span className={`text-xs font-bold ${day.isTransitDay ? 'text-amber-600' : 'text-brand-600'}`}>
+                  {day.day}
+                </span>
+                <span className="text-[9px] text-gray-600 text-center leading-tight mt-0.5 line-clamp-2">
+                  {day.isTransitDay ? '✈️' : (day.attractions[0]?.name.split(' ')[0] ?? '—')}
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          <p className="text-xs text-gray-400 text-center">Día 1 = primer lunes del viaje</p>
+        </div>
+      )}
     </div>
   );
 }
