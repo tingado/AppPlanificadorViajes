@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
+import { destinations } from "@/data/destinations";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -30,18 +32,22 @@ export default function CostSummary() {
   const rateKey = `USD_TO_${code}`;
   const localRate = currencyRates[rateKey] ?? 1;
 
+  const intlFlightUSD = budgetOverrides.internationalFlightUSD ?? 3500;
+
   // ── Totals ────────────────────────────────────────────────────────────────
-  const totalUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0);
+  const destinationUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0);
+  const totalUSD = destinationUSD + intlFlightUSD;
   const totalCLP = totalUSD * currencyRates.USD_TO_CLP;
   const totalLocal = totalUSD * localRate;
   const numDays = generatedItinerary.length || tripDays;
 
   // ── Category breakdown ────────────────────────────────────────────────────
-  // Flights: sum of explicit flightCostUSD already stored in each transit day (in USD)
-  const totalFlightUSD = generatedItinerary.reduce(
+  // Flights: international + in-destination transit flights
+  const transitFlightUSD = generatedItinerary.reduce(
     (s, d) => s + (d.flightCostUSD ?? 0),
     0
   );
+  const totalFlightUSD = intlFlightUSD + transitFlightUSD;
 
   // Accommodation & food: use budget overrides if set, otherwise fall back to
   // destination base costs. Values are in local currency per day.
@@ -89,17 +95,19 @@ export default function CostSummary() {
           <span className="text-lg font-normal opacity-80">USD</span>
         </p>
         <p className="text-xs opacity-75 mt-1">
-          ~${fmt(totalUSD / numDays)} USD/día para 2
+          ~${fmt(totalUSD / numDays)} USD/día · ~${fmt(totalUSD / 2)} por persona
         </p>
-        <div className="mt-3 flex gap-4 text-sm">
-          <span className="opacity-90">
-            🇨🇱 {fmt(totalCLP)} CLP
-          </span>
+        <div className="mt-3 flex gap-4 text-sm flex-wrap">
+          <span className="opacity-90">🇨🇱 {fmt(totalCLP)} CLP</span>
           {code !== "CLP" && (
             <span className="opacity-90">
               {selectedDestination.flag ?? "🌍"} {fmt(totalLocal)} {code}
             </span>
           )}
+        </div>
+        <div className="mt-2 pt-2 border-t border-white/20 flex gap-3 text-xs opacity-80 flex-wrap">
+          <span>🛫 Vuelo intl: ${fmt(intlFlightUSD)}</span>
+          <span>🏖 Destino: ${fmt(destinationUSD)}</span>
         </div>
       </div>
 
@@ -230,8 +238,22 @@ export default function CostSummary() {
 
       {/* ── 5. Editor de presupuesto base ──────────────────────────────── */}
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-3">
-        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">⚙️ Ajustar base diaria</p>
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">⚙️ Ajustar presupuesto</p>
         <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <label className="text-sm text-gray-700 dark:text-gray-300">🛫 Vuelo Santiago → destino (ida+vuelta, 2 pax)</label>
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-gray-400 dark:text-gray-500">$</span>
+              <input
+                type="number"
+                min={0}
+                value={intlFlightUSD}
+                onChange={e => setBudgetOverride('internationalFlightUSD', Number(e.target.value))}
+                className="w-20 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+              />
+              <span className="text-xs text-gray-400 dark:text-gray-500">USD</span>
+            </div>
+          </div>
           <div className="flex items-center justify-between gap-3">
             <label className="text-sm text-gray-700 dark:text-gray-300">🏨 Alojamiento/noche</label>
             <div className="flex items-center gap-1">
@@ -261,17 +283,100 @@ export default function CostSummary() {
             </div>
           </div>
         </div>
-        {(budgetOverrides.accommodationPerNight !== undefined || budgetOverrides.foodPerDay !== undefined) && (
+        {(budgetOverrides.accommodationPerNight !== undefined || budgetOverrides.foodPerDay !== undefined || budgetOverrides.internationalFlightUSD !== undefined) && (
           <button
             onClick={() => {
               setBudgetOverride('accommodationPerNight', selectedDestination?.dailyBaseAccommodationCost ?? 0);
               setBudgetOverride('foodPerDay', selectedDestination?.dailyBaseFoodCost ?? 0);
+              setBudgetOverride('internationalFlightUSD', 3500);
             }}
             className="text-xs text-gray-400 dark:text-gray-500 hover:text-red-500"
           >
             ↺ Restaurar valores por defecto
           </button>
         )}
+      </div>
+
+      <MultiDestEstimator primaryUSD={totalUSD} primaryCLP={totalCLP} />
+    </div>
+  );
+}
+
+function MultiDestEstimator({ primaryUSD, primaryCLP }: { primaryUSD: number; primaryCLP: number }) {
+  const [segments, setSegments] = useState<{ destId: string; days: number }[]>([]);
+  const { currencyRates } = useTravelStore();
+
+  const addSegment = () => setSegments(s => [...s, { destId: destinations[0].id, days: 7 }]);
+  const removeSegment = (i: number) => setSegments(s => s.filter((_, idx) => idx !== i));
+  const updateSegment = (i: number, key: 'destId' | 'days', val: string | number) =>
+    setSegments(s => s.map((seg, idx) => idx === i ? { ...seg, [key]: val } : seg));
+
+  if (segments.length === 0) {
+    return (
+      <button
+        onClick={addSegment}
+        className="w-full text-xs text-brand-600 dark:text-brand-400 border border-dashed border-brand-300 dark:border-brand-700 rounded-xl py-2.5 hover:bg-brand-50 dark:hover:bg-brand-900/20"
+      >
+        + Agregar segundo destino al presupuesto
+      </button>
+    );
+  }
+
+  let combinedUSD = primaryUSD;
+  const segDetails = segments.map(seg => {
+    const dest = destinations.find(d => d.id === seg.destId);
+    if (!dest) return { dest: null, estimatedUSD: 0, days: seg.days };
+    const localRate = currencyRates[`USD_TO_${dest.currencyCode}`] ?? 1;
+    const dailyLocal = dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost;
+    const dailyUSD = localRate > 0 ? dailyLocal / localRate : 0;
+    const estimatedUSD = dailyUSD * seg.days;
+    combinedUSD += estimatedUSD;
+    return { dest, estimatedUSD, days: seg.days };
+  });
+  const combinedCLP = combinedUSD * currencyRates.USD_TO_CLP;
+
+  return (
+    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">🌏 Viaje multi-destino</p>
+        <button onClick={addSegment} className="text-xs text-brand-500 hover:underline">+ añadir</button>
+      </div>
+      {segDetails.map((seg, i) => (
+        <div key={i} className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <select
+              value={segments[i].destId}
+              onChange={e => updateSegment(i, 'destId', e.target.value)}
+              className="flex-1 text-xs rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 focus:outline-none"
+            >
+              {destinations.map(d => (
+                <option key={d.id} value={d.id}>{d.flag} {d.country}</option>
+              ))}
+            </select>
+            <input
+              type="number"
+              min={1}
+              max={60}
+              value={segments[i].days}
+              onChange={e => updateSegment(i, 'days', Number(e.target.value))}
+              className="w-14 text-xs text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none"
+            />
+            <span className="text-xs text-gray-400">días</span>
+            <button onClick={() => removeSegment(i)} className="text-gray-300 dark:text-gray-600 hover:text-red-400 text-sm">✕</button>
+          </div>
+          {seg.dest && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 pl-1">
+              {seg.dest.flag} Est. ~${fmt(seg.estimatedUSD)} USD ({seg.days} días base, sin actividades)
+            </p>
+          )}
+        </div>
+      ))}
+      <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
+        <p className="text-xs text-gray-500 dark:text-gray-400">Total combinado (2 personas)</p>
+        <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
+          ${fmt(combinedUSD)} <span className="text-xs font-normal text-gray-400">USD</span>
+        </p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{fmt(combinedCLP)} CLP</p>
       </div>
     </div>
   );

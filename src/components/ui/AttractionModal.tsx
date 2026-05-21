@@ -43,21 +43,31 @@ export default function AttractionModal({ attraction, onClose }: Props) {
         >✕</button>
 
         {/* Content */}
-        <div className="p-5 space-y-3">
+        <div className="p-5 space-y-3 bg-white dark:bg-gray-800">
           <div>
-            <p className="text-xs font-medium text-brand-500 uppercase tracking-wide">{attraction.region}</p>
-            <h2 className="text-xl font-bold text-gray-900">{attraction.name}</h2>
+            <span className="inline-block text-xs font-medium text-brand-500 uppercase tracking-wide bg-brand-50 dark:bg-brand-900/30 rounded-full px-2 py-0.5 mb-1">
+              {attraction.region}
+            </span>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{attraction.name}</h2>
+            {attraction.rating && (
+              <div className="flex items-center gap-1 mt-1">
+                {[1,2,3,4,5].map(star => (
+                  <span key={star} className={`text-sm ${star <= Math.round(attraction.rating!) ? 'text-amber-400' : 'text-gray-200 dark:text-gray-600'}`}>★</span>
+                ))}
+                <span className="text-xs text-gray-500 dark:text-gray-400 ml-0.5">{attraction.rating}/5</span>
+              </div>
+            )}
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed">{attraction.description}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{attraction.description}</p>
           <div className="flex items-center justify-between pt-1">
-            <span className="text-sm text-gray-500">
-              💰 ~${attraction.costPerCouplePerDay} USD/día (pareja)
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              💰 ~${attraction.costPerCouplePerDay} USD/día · 2 personas
             </span>
             <button
               onClick={() => toggleAttraction(attraction)}
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
                 isActive
-                  ? 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100'
+                  ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-700 hover:bg-red-100'
                   : 'bg-brand-500 text-white hover:bg-brand-600'
               }`}
             >
