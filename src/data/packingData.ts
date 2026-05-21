@@ -78,4 +78,11 @@ export const DEST_PACKING_ITEMS: Record<string, PackingItem[]> = {
     { id: "ma-daypack-safe", cat: "Marruecos", label: "Mochila anti-robo / bolso cruzado" },
     { id: "ma-stomach-meds", cat: "Marruecos", label: "Medicamentos estomacales (cambio de agua)" },
   ],
+  italy: [
+    { id: "it-euros", cat: "Italia", label: "Euros en efectivo (tips y mercados)" },
+    { id: "it-tickets", cat: "Italia", label: "Entradas pre-compradas (Coliseo, Uffizi, Vaticano)" },
+    { id: "it-shoulders", cat: "Italia", label: "Pañuelo para hombros (iglesias y basílicas)" },
+    { id: "it-walking-shoes", cat: "Italia", label: "Zapatos cómodos para adoquines (sin tacones)" },
+    { id: "it-trenitalia", cat: "Italia", label: "Reservas Trenitalia Frecciarossa confirmadas" },
+  ],
 };
