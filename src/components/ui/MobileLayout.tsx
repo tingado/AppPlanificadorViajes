@@ -23,7 +23,7 @@ export default function MobileLayout() {
   return (
     <div className="flex flex-col h-dvh bg-gray-100">
       {/* Map — top 60% */}
-      <div className="flex-shrink-0" style={{ height: "58vh" }}>
+      <div className="flex-shrink-0 w-full" style={{ height: "58vh" }}>
         <MapView />
       </div>
 
@@ -32,6 +32,12 @@ export default function MobileLayout() {
         {/* Handle */}
         <div className="flex justify-center py-2">
           <div className="w-10 h-1 rounded-full bg-gray-300" />
+        </div>
+
+        {/* Mini header */}
+        <div className="flex items-center gap-2 px-4 pb-2">
+          <span className="text-lg">👨‍🦲👩‍🦱</span>
+          <span className="text-sm font-bold text-gray-900">Luna de Miel Planner</span>
         </div>
 
         {/* Destination selector */}

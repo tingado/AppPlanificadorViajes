@@ -12,6 +12,7 @@ export default function CostSummary() {
     selectedDestination,
     currencyRates,
     setCurrencyRates,
+    tripDays,
   } = useTravelStore();
 
   if (!selectedDestination || generatedItinerary.length === 0) {
@@ -27,14 +28,112 @@ export default function CostSummary() {
   const rateKey = `USD_TO_${code}`;
   const localRate = currencyRates[rateKey] ?? 1;
 
-  // Recalculate live from USD + current rates (not pre-calculated fields)
+  // ── Totals ────────────────────────────────────────────────────────────────
   const totalUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0);
   const totalCLP = totalUSD * currencyRates.USD_TO_CLP;
   const totalLocal = totalUSD * localRate;
+  const numDays = generatedItinerary.length || tripDays;
+
+  // ── Category breakdown ────────────────────────────────────────────────────
+  // Flights: sum of explicit flightCostUSD already stored in each transit day (in USD)
+  const totalFlightUSD = generatedItinerary.reduce(
+    (s, d) => s + (d.flightCostUSD ?? 0),
+    0
+  );
+
+  // Accommodation & food: each day (transit or not) includes dailyBaseAccommodationCost
+  // and dailyBaseFoodCost in its local cost. We reconstruct them from the destination
+  // base costs, converting local → USD using the current local rate.
+  const accomLocalPerDay = selectedDestination.dailyBaseAccommodationCost;
+  const foodLocalPerDay = selectedDestination.dailyBaseFoodCost;
+
+  const totalAccomUSD =
+    localRate > 0 ? (accomLocalPerDay * numDays) / localRate : 0;
+  const totalFoodUSD =
+    localRate > 0 ? (foodLocalPerDay * numDays) / localRate : 0;
+
+  // Activities: whatever remains after subtracting flights, accommodation and food
+  const totalActivitiesUSD = Math.max(
+    0,
+    totalUSD - totalFlightUSD - totalAccomUSD - totalFoodUSD
+  );
+
+  const categories = [
+    { label: "✈ Vuelos", usd: totalFlightUSD },
+    { label: "🏨 Alojamiento", usd: totalAccomUSD },
+    { label: "🍜 Comida", usd: totalFoodUSD },
+    { label: "🎯 Actividades", usd: totalActivitiesUSD },
+  ];
+
+  const maxCategoryUSD = Math.max(...categories.map((c) => c.usd), 1);
 
   return (
     <div className="space-y-4">
-      {/* Main cost card */}
+      {/* ── 1. Tarjeta principal con gradiente ─────────────────────────── */}
+      <div className="rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 p-4 text-white shadow-md">
+        <p className="text-xs font-semibold uppercase tracking-widest opacity-75 mb-1">
+          Total estimado · 2 viajeros
+        </p>
+        <p className="text-3xl font-bold tracking-tight">
+          ${fmt(totalUSD)}{" "}
+          <span className="text-lg font-normal opacity-80">USD</span>
+        </p>
+        <p className="text-xs opacity-75 mt-1">
+          ~${fmt(totalUSD / numDays)} USD/día para 2
+        </p>
+        <div className="mt-3 flex gap-4 text-sm">
+          <span className="opacity-90">
+            🇨🇱 {fmt(totalCLP)} CLP
+          </span>
+          {code !== "CLP" && (
+            <span className="opacity-90">
+              {selectedDestination.flag ?? "🌍"} {fmt(totalLocal)} {code}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* ── 2. Breakdown por categoría ──────────────────────────────────── */}
+      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+        <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            Desglose por categoría
+          </p>
+        </div>
+        <div className="divide-y divide-gray-100">
+          {categories.map((cat) => {
+            const pct = totalUSD > 0 ? (cat.usd / totalUSD) * 100 : 0;
+            const barWidth = totalUSD > 0 ? (cat.usd / maxCategoryUSD) * 100 : 0;
+            return (
+              <div key={cat.label} className="px-4 py-3">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-sm font-medium text-gray-700">
+                    {cat.label}
+                  </span>
+                  <div className="text-right">
+                    <span className="text-sm font-bold text-gray-900">
+                      ${fmt(cat.usd)}{" "}
+                      <span className="text-xs font-normal text-gray-400">USD</span>
+                    </span>
+                    <span className="ml-2 text-xs text-gray-400">
+                      ({fmt(pct)}%)
+                    </span>
+                  </div>
+                </div>
+                {/* Progress bar */}
+                <div className="h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-brand-500 transition-all duration-500"
+                    style={{ width: `${barWidth}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── 3. Resumen financiero multi-moneda ─────────────────────────── */}
       <div className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm">
         <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
@@ -56,14 +155,15 @@ export default function CostSummary() {
                 </div>
               </div>
               <p className="text-sm font-bold text-gray-900">
-                {row.value} <span className="text-xs font-normal text-gray-400">{row.code}</span>
+                {row.value}{" "}
+                <span className="text-xs font-normal text-gray-400">{row.code}</span>
               </p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Exchange rate editor */}
+      {/* ── 4. Tasas de cambio editables ───────────────────────────────── */}
       <div className="rounded-xl border border-gray-200 bg-white p-4 space-y-3">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
           Tasas de cambio (ajustables)
@@ -87,15 +187,6 @@ export default function CostSummary() {
         ))}
         <p className="text-xs text-gray-400">
           Modifica las tasas para recalcular con valores actualizados
-        </p>
-      </div>
-
-      {/* Per-day average */}
-      <div className="rounded-xl bg-brand-50 border border-brand-100 px-4 py-3">
-        <p className="text-xs text-brand-700 font-medium">
-          Promedio diario por pareja:{" "}
-          <strong>{fmt(totalCLP / generatedItinerary.length)} CLP</strong>{" "}
-          · <strong>${fmt(totalUSD / generatedItinerary.length)} USD</strong>
         </p>
       </div>
     </div>
