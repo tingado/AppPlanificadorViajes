@@ -15,14 +15,16 @@ function generateHTML(
   tripDate: string | null,
   dayNotes: Record<number, string>,
   packingChecked: Record<string, boolean>,
-  allPackingItems: { id: string; cat: string; label: string }[]
+  allPackingItems: { id: string; cat: string; label: string }[],
+  intlFlightUSD: number
 ): string {
   const destination = dest.country;
   const flag = dest.flag ?? '🌍';
   const code = dest.currencyCode;
   const localRate = rates[`USD_TO_${code}`] ?? 1;
   const visaFeeUSD = (dest.visaFeePerPersonUSD ?? 0) * 2;
-  const totalUSD = days.reduce((s: number, d: ItineraryDay) => s + d.estimatedCostUSD, 0) + visaFeeUSD;
+  const destinationUSD = days.reduce((s: number, d: ItineraryDay) => s + d.estimatedCostUSD, 0);
+  const totalUSD = destinationUSD + intlFlightUSD + visaFeeUSD;
   const totalCLP = totalUSD * rates.USD_TO_CLP;
   const totalLocal = totalUSD * localRate;
 
@@ -105,10 +107,11 @@ ${(dest.visaInfo || dest.travelTips?.length) ? `
 <table>
   <tr><th>Día</th><th>Actividad</th><th>CLP</th><th>USD</th></tr>
   ${dayRows}
+  <tr style="background:#fef9c3"><td colspan="2" style="padding:8px;border:1px solid #e5e7eb;font-weight:600">🛫 Vuelo Santiago → ${dest.country} (ida+vuelta, 2 pax)</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">${fmt(intlFlightUSD * rates.USD_TO_CLP)} CLP</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">$${fmt(intlFlightUSD)} USD</td></tr>
   ${visaFeeUSD > 0 ? `<tr style="background:#fef3c7"><td colspan="2" style="padding:8px;border:1px solid #e5e7eb;font-weight:600">🛂 Visa (${dest.country}) · 2 personas</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">${fmt(visaFeeUSD * rates.USD_TO_CLP)} CLP</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">$${fmt(visaFeeUSD)} USD</td></tr>` : ''}
   <tr style="background:#f3e8ff;font-weight:700">
-    <td colspan="2" style="padding:10px;border:1px solid #e5e7eb">📊 TOTAL DESTINO (2 personas)</td>
-    <td style="padding:10px;border:1px solid #e5e7eb;text-align:right;color:#7c3aed">${fmt(totalCLP)} CLP</td>
+    <td colspan="2" style="padding:10px;border:1px solid #e5e7eb">📊 TOTAL (2 personas)</td>
+    <td style="padding:10px;border:1px solid #e5e7eb;text-align:right;color:#7c3aed">${fmt(totalUSD * rates.USD_TO_CLP)} CLP</td>
     <td style="padding:10px;border:1px solid #e5e7eb;text-align:right;color:#7c3aed">$${fmt(totalUSD)} USD</td>
   </tr>
 </table>
@@ -139,11 +142,12 @@ ${allPackingItems.length > 0 ? `
 export default function ExportButton() {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const { generatedItinerary, selectedDestination, currencyRates, tripDate, dayNotes, packingItems, customPackingItems } = useTravelStore();
+  const { generatedItinerary, selectedDestination, currencyRates, tripDate, dayNotes, packingItems, customPackingItems, budgetOverrides } = useTravelStore();
 
   if (!selectedDestination || generatedItinerary.length === 0) return null;
 
   const code = selectedDestination.currencyCode;
+  const intlFlightUSD = budgetOverrides.internationalFlightUSD ?? selectedDestination.estimatedFlightFromChileUSD ?? 3500;
 
   const handlePDF = () => {
     setOpen(false);
@@ -166,7 +170,8 @@ export default function ExportButton() {
       tripDate,
       dayNotes,
       packingItems,
-      allItems
+      allItems,
+      intlFlightUSD
     );
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
