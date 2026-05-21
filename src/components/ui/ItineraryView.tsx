@@ -53,6 +53,10 @@ export default function ItineraryView() {
   const totalCLP = totalUSD * currencyRates.USD_TO_CLP;
   const totalLocal = totalUSD * localRate;
 
+  const activityDays = generatedItinerary.filter(d => !d.isTransitDay && d.attractions.length > 0).length;
+  const freeDays = generatedItinerary.filter(d => !d.isTransitDay && d.attractions.length === 0).length;
+  const transitDays = generatedItinerary.filter(d => d.isTransitDay).length;
+
   // Compute real dates if tripDate is set
   const startDate = tripDate ? new Date(tripDate + 'T12:00:00') : null;
   const getDayDate = (dayNum: number): Date | null => {
@@ -109,9 +113,20 @@ export default function ItineraryView() {
 
       {/* Cost summary card */}
       <div className="rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 p-4 text-white shadow">
-        <p className="text-xs font-semibold uppercase tracking-wide opacity-80 mb-2">
-          Costo total estimado para 2 personas
-        </p>
+        <div className="flex items-start justify-between mb-2">
+          <p className="text-xs font-semibold uppercase tracking-wide opacity-80">
+            Costo estimado · 2 personas
+          </p>
+          {startDate && (() => {
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + generatedItinerary.length - 1);
+            return (
+              <p className="text-[10px] opacity-70 text-right">
+                {fmtDate(startDate)} → {fmtDate(endDate)}
+              </p>
+            );
+          })()}
+        </div>
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
             <p className="text-lg font-bold">{fmt(totalCLP)}</p>
@@ -125,6 +140,15 @@ export default function ItineraryView() {
             <p className="text-lg font-bold">{fmt(totalLocal)}</p>
             <p className="text-xs opacity-75">{code}</p>
           </div>
+        </div>
+        <p className="text-[10px] opacity-60 text-center mt-1.5">
+          ~${fmt(totalUSD / 2)} USD por persona
+        </p>
+        {/* Stats pills */}
+        <div className="flex gap-1.5 mt-2 flex-wrap">
+          {activityDays > 0 && <span className="text-[10px] bg-white/20 rounded-full px-2 py-0.5">{activityDays} actividad</span>}
+          {freeDays > 0 && <span className="text-[10px] bg-white/20 rounded-full px-2 py-0.5">{freeDays} libre</span>}
+          {transitDays > 0 && <span className="text-[10px] bg-white/20 rounded-full px-2 py-0.5">{transitDays} traslado</span>}
         </div>
       </div>
 
