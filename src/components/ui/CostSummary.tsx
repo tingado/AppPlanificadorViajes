@@ -35,10 +35,11 @@ export default function CostSummary() {
   const localRate = currencyRates[rateKey] ?? 1;
 
   const intlFlightUSD = budgetOverrides.internationalFlightUSD ?? 3500;
+  const visaFeeUSD = (selectedDestination.visaFeePerPersonUSD ?? 0) * 2; // 2 travelers
 
   // ── Totals ────────────────────────────────────────────────────────────────
   const destinationUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0);
-  const totalUSD = destinationUSD + intlFlightUSD;
+  const totalUSD = destinationUSD + intlFlightUSD + visaFeeUSD;
   const totalCLP = totalUSD * currencyRates.USD_TO_CLP;
   const totalLocal = totalUSD * localRate;
   const numDays = generatedItinerary.length || tripDays;
@@ -72,6 +73,7 @@ export default function CostSummary() {
     { label: "🏨 Alojamiento", usd: totalAccomUSD },
     { label: "🍜 Comida", usd: totalFoodUSD },
     { label: "🎯 Actividades", usd: totalActivitiesUSD },
+    ...(visaFeeUSD > 0 ? [{ label: "🛂 Visa", usd: visaFeeUSD }] : []),
   ];
 
   const maxCategoryUSD = Math.max(...categories.map((c) => c.usd), 1);
@@ -110,6 +112,7 @@ export default function CostSummary() {
         <div className="mt-2 pt-2 border-t border-white/20 flex gap-3 text-xs opacity-80 flex-wrap">
           <span>🛫 Vuelo intl: ${fmt(intlFlightUSD)}</span>
           <span>🏖 Destino: ${fmt(destinationUSD)}</span>
+          {visaFeeUSD > 0 && <span>🛂 Visa: ${fmt(visaFeeUSD)}</span>}
         </div>
       </div>
 

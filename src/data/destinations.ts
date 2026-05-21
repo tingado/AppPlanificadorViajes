@@ -122,6 +122,7 @@ export const destinations: Destination[] = [
     dailyBaseAccommodationCost: 500000,
     dailyBaseFoodCost: 200000,
     visaInfo: "VOA (Visa On Arrival) USD $35/persona en aeropuerto Ngurah Rai",
+    visaFeePerPersonUSD: 35,
     bestMonths: "Oct-Nov: temporada seca ideal | Dic-Feb: lluvias intensas (EVITAR)",
     goodMonths: [4, 5, 6, 7, 8, 9, 10, 11],
     avoidMonths: [12, 1, 2],

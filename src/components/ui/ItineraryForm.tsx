@@ -99,7 +99,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
           </li>
           <li>
             Atractivos seleccionados:{" "}
-            <span className="text-gray-700 dark:text-gray-200 font-medium">{activePins.length} / 3</span>
+            <span className="text-gray-700 dark:text-gray-200 font-medium">{activePins.length} / 10</span>
           </li>
           <li>
             Duración:{" "}
