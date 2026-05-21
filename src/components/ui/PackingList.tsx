@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
+import { Destination } from "@/types";
 
 const BASE_ITEMS = [
   { id: "passport", cat: "Documentos", label: "Pasaporte vigente" },
@@ -55,12 +56,41 @@ const DEST_ITEMS: Record<string, { id: string; cat: string; label: string }[]> =
   ],
 };
 
+function getSeasonItems(dest: Destination, month: number): { id: string; cat: string; label: string }[] {
+  const items: { id: string; cat: string; label: string }[] = [];
+  if (dest.avoidMonths?.includes(month)) {
+    items.push(
+      { id: 'season-rain-jacket', cat: 'Temporada', label: 'Chaqueta impermeable (lluvia intensa)' },
+      { id: 'season-waterproof-bag', cat: 'Temporada', label: 'Bolsa impermeable para electrónicos' },
+      { id: 'season-quick-dry', cat: 'Temporada', label: 'Ropa de secado rápido' },
+    );
+  } else if (dest.goodMonths?.includes(month)) {
+    if (['japan'].includes(dest.id) && [11,12,1,2].includes(month)) {
+      items.push(
+        { id: 'season-coat', cat: 'Temporada', label: 'Abrigo para frío (Japón invierno)' },
+        { id: 'season-layers', cat: 'Temporada', label: 'Ropa en capas (termal)' },
+      );
+    }
+    if (['bali','thailand','philippines'].includes(dest.id)) {
+      items.push(
+        { id: 'season-beach', cat: 'Temporada', label: 'Accesorios de playa (temporada seca)' },
+      );
+    }
+  }
+  return items;
+}
+
 export default function PackingList() {
-  const { packingItems, togglePackingItem, resetPacking, selectedDestination, tripDays, customPackingItems, addCustomPackingItem, removeCustomPackingItem } = useTravelStore();
+  const { packingItems, togglePackingItem, resetPacking, selectedDestination, tripDays, tripDate, customPackingItems, addCustomPackingItem, removeCustomPackingItem } = useTravelStore();
   const [newItem, setNewItem] = useState('');
 
+  const checkMonth = tripDate
+    ? new Date(tripDate + 'T12:00:00').getMonth() + 1
+    : new Date().getMonth() + 1;
+
   const destItems = selectedDestination ? (DEST_ITEMS[selectedDestination.id] ?? []) : [];
-  const allItems = [...BASE_ITEMS, ...destItems];
+  const seasonItems = selectedDestination ? getSeasonItems(selectedDestination, checkMonth) : [];
+  const allItems = [...BASE_ITEMS, ...destItems, ...seasonItems];
 
   const categories = [...new Set(allItems.map((i) => i.cat))];
   const checked = allItems.filter((i) => packingItems[i.id]).length + customPackingItems.filter(i => packingItems[i.id]).length;
