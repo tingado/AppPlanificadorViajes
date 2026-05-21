@@ -12,7 +12,7 @@ import PackingList from "./PackingList";
 import { destinations } from "@/data/destinations";
 
 function WelcomeScreen() {
-  const { setSelectedDestination } = useTravelStore();
+  const { setSelectedDestination, currencyRates } = useTravelStore();
   return (
     <div className="space-y-4">
       <div className="text-center py-4">
@@ -20,19 +20,25 @@ function WelcomeScreen() {
         <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Selecciona un destino para empezar</p>
       </div>
       <div className="grid grid-cols-2 gap-2">
-        {destinations.map((dest) => (
-          <button
-            key={dest.id}
-            onClick={() => setSelectedDestination(dest)}
-            className="flex flex-col items-center gap-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 hover:border-brand-300 hover:bg-brand-50 dark:hover:bg-gray-700 transition-colors text-center"
-          >
-            <span className="text-3xl">{dest.flag}</span>
-            <span className="text-xs font-bold text-gray-800 dark:text-gray-100 leading-tight">{dest.country}</span>
-            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium tracking-wide uppercase">{dest.currencyCode}</span>
-            <span className="text-[10px] text-gray-400 dark:text-gray-500">{dest.attractions.length} atracciones</span>
-          </button>
-        ))}
+        {destinations.map((dest) => {
+          const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
+          const dailyUSD = Math.round((dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate);
+          const budgetColor = dailyUSD < 70 ? 'text-green-600 dark:text-green-400' : dailyUSD < 150 ? 'text-amber-600 dark:text-amber-400' : 'text-red-500 dark:text-red-400';
+          return (
+            <button
+              key={dest.id}
+              onClick={() => setSelectedDestination(dest)}
+              className="flex flex-col items-center gap-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 hover:border-brand-300 hover:bg-brand-50 dark:hover:bg-gray-700 transition-colors text-center"
+            >
+              <span className="text-3xl">{dest.flag}</span>
+              <span className="text-xs font-bold text-gray-800 dark:text-gray-100 leading-tight">{dest.country}</span>
+              <span className={`text-xs font-semibold ${budgetColor}`}>~${dailyUSD} USD/día</span>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500">{dest.attractions.length} atracciones</span>
+            </button>
+          );
+        })}
       </div>
+      <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center">💡 Costo base diario: alojamiento + comida · 2 personas</p>
     </div>
   );
 }
