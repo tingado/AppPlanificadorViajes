@@ -106,7 +106,7 @@ export const useTravelStore = create<TravelState>()(
     (set, get) => ({
       selectedDestination: null,
       setSelectedDestination: (destination) => {
-        set({ selectedDestination: destination, activePins: [], routeInfo: null, showRoute: false, generatedItinerary: [], dayNotes: {}, itineraryOutdated: false });
+        set({ selectedDestination: destination, activePins: [], routeInfo: null, showRoute: false, generatedItinerary: [], dayNotes: {}, attractionNotes: {}, packingItems: {}, budgetOverrides: {}, itineraryOutdated: false });
       },
       resetTrip: () => set({
         selectedDestination: null,
