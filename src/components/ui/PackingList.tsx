@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 
 const BASE_ITEMS = [
@@ -55,14 +56,15 @@ const DEST_ITEMS: Record<string, { id: string; cat: string; label: string }[]> =
 };
 
 export default function PackingList() {
-  const { packingItems, togglePackingItem, resetPacking, selectedDestination, tripDays } = useTravelStore();
+  const { packingItems, togglePackingItem, resetPacking, selectedDestination, tripDays, customPackingItems, addCustomPackingItem, removeCustomPackingItem } = useTravelStore();
+  const [newItem, setNewItem] = useState('');
 
   const destItems = selectedDestination ? (DEST_ITEMS[selectedDestination.id] ?? []) : [];
   const allItems = [...BASE_ITEMS, ...destItems];
 
   const categories = [...new Set(allItems.map((i) => i.cat))];
-  const checked = allItems.filter((i) => packingItems[i.id]).length;
-  const total = allItems.length;
+  const checked = allItems.filter((i) => packingItems[i.id]).length + customPackingItems.filter(i => packingItems[i.id]).length;
+  const total = allItems.length + customPackingItems.length;
 
   return (
     <div className="space-y-4">
@@ -118,13 +120,65 @@ export default function PackingList() {
         </div>
       ))}
 
+      {/* Custom items */}
+      {customPackingItems.length > 0 && (
+        <div className="space-y-1">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">✏️ Mis items</p>
+          {customPackingItems.map(item => (
+            <div key={item.id} className="flex items-center gap-2">
+              <button
+                onClick={() => togglePackingItem(item.id)}
+                className="flex-1 flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+              >
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${packingItems[item.id] ? 'bg-brand-500 border-brand-500' : 'border-gray-300 dark:border-gray-600'}`}>
+                  {packingItems[item.id] && <span className="text-white text-xs">✓</span>}
+                </div>
+                <span className={`text-sm transition-colors ${packingItems[item.id] ? 'line-through text-gray-400' : 'text-gray-700 dark:text-gray-200'}`}>
+                  {item.label}
+                </span>
+              </button>
+              <button
+                onClick={() => removeCustomPackingItem(item.id)}
+                className="text-gray-300 dark:text-gray-600 hover:text-red-400 text-sm px-1 shrink-0"
+                title="Eliminar"
+              >✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Add custom item */}
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+          const v = newItem.trim();
+          if (v) { addCustomPackingItem(v); setNewItem(''); }
+        }}
+        className="flex gap-2"
+      >
+        <input
+          type="text"
+          value={newItem}
+          onChange={e => setNewItem(e.target.value)}
+          placeholder="Agregar ítem personalizado..."
+          className="flex-1 text-xs rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-400"
+        />
+        <button
+          type="submit"
+          disabled={!newItem.trim()}
+          className="text-xs font-semibold text-brand-600 dark:text-brand-400 border border-brand-300 dark:border-brand-700 rounded-lg px-3 py-2 hover:bg-brand-50 dark:hover:bg-brand-900/20 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          + Añadir
+        </button>
+      </form>
+
       {/* Reset */}
       {checked > 0 && (
         <button
           onClick={resetPacking}
-          className="text-xs text-gray-400 hover:text-red-500 w-full text-center py-2"
+          className="text-xs text-gray-400 dark:text-gray-500 hover:text-red-500 w-full text-center py-2"
         >
-          ↺ Limpiar lista
+          ↺ Limpiar marcas
         </button>
       )}
     </div>
