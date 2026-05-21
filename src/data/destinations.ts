@@ -20,6 +20,13 @@ export const destinations: Destination[] = [
     climate: "Templado, 15-22°C en Oct-Nov",
     travelTips: ["JR Pass para Shinkansen (~$300 USD/7 días)", "Amiga local sin costo de alojamiento", "Comprar Suica card en aeropuerto"],
     freeDayHints: ["Onsen en un ryokan tradicional (baño termal, cena kaiseki)", "Explorar konbini: sushi, ramen y repostería local desde ¥500", "Mercado Nishiki (Kioto) o Tsukiji (Tokio): probar tamagoyaki y mochi fresco", "Paseo nocturno por Dotonbori (Osaka) y takoyaki en el puesto callejero"],
+    basicPhrases: [
+      { phrase: "ありがとう", translation: "Gracias", phonetic: "Arigatou" },
+      { phrase: "すみません", translation: "Disculpe / Perdón", phonetic: "Sumimasen" },
+      { phrase: "いくらですか？", translation: "¿Cuánto cuesta?", phonetic: "Ikura desu ka?" },
+      { phrase: "おいしい！", translation: "¡Delicioso!", phonetic: "Oishii!" },
+      { phrase: "写真を撮ってもいいですか？", translation: "¿Puedo tomar una foto?", phonetic: "Shashin o totte mo ii desu ka?" },
+    ],
     romanticHighlights: [
       "🛁 Noche en ryokan con onsen privado y cena kaiseki de 10 tiempos — la experiencia más íntima de Japón",
       "🎎 Paseo al atardecer en rickshaw por el barrio de Gion en Kioto",
@@ -139,6 +146,13 @@ export const destinations: Destination[] = [
     climate: "Tropical, 27-32°C, húmedo",
     travelTips: ["Alquilar moto en Ubud (~$8/día)", "Considerar Lombok en Febrero si llueve", "Goa Gajah (Elephant Temple) cerca de Ubud ~$3/persona"],
     freeDayHints: ["Clase de yoga al amanecer en Ubud (desde IDR 150.000/persona)", "Spa balinés: masaje de 90 min ~IDR 350.000/pareja en Ubud", "Mercado de Ubud (Pasar Ubud): artesanías, especias y fruta tropical fresca", "Paseo en moto por campos de arroz y aldeas de artesanos cerca de Mas"],
+    basicPhrases: [
+      { phrase: "Terima kasih", translation: "Gracias", phonetic: "Te-ri-ma ka-sih" },
+      { phrase: "Permisi", translation: "Disculpe", phonetic: "Per-mi-si" },
+      { phrase: "Berapa harganya?", translation: "¿Cuánto cuesta?", phonetic: "Be-ra-pa har-ga-nya?" },
+      { phrase: "Enak sekali!", translation: "¡Qué rico!", phonetic: "E-nak se-ka-li!" },
+      { phrase: "Tolong bantu saya", translation: "Ayúdeme por favor", phonetic: "To-long ban-tu sa-ya" },
+    ],
     romanticHighlights: [
       "🏊 Villa privada con piscina infinita sobre las terrazas de arroz de Ubud (~$150-300/noche)",
       "💆 Spa balinés de pareja: masaje 2h + baño de flores + champagne (~$80/pareja)",
@@ -226,6 +240,13 @@ export const destinations: Destination[] = [
     climate: "Ecuatorial, 25-30°C estable todo el año",
     travelTips: ["Hawker Centers: comida Michelin desde $5 SGD", "MRT eficiente — evitar taxis", "Gardens by the Bay iluminado de noche (gratis exterior)"],
     freeDayHints: ["Tour gastronómico por hawker centers: Lau Pa Sat, Maxwell y Old Airport Road", "Haji Lane y Arab Street: boutiques vintage y café árabe con shisha", "Botanic Gardens patrimonio UNESCO (entrada gratis, Orchid Garden $5 SGD)", "Clarke Quay de noche: cócteles con vistas al río y ambiente cosmopolita"],
+    basicPhrases: [
+      { phrase: "Thank you", translation: "Gracias", phonetic: "Inglés predominante" },
+      { phrase: "Excuse me", translation: "Disculpe", phonetic: "" },
+      { phrase: "How much?", translation: "¿Cuánto cuesta?", phonetic: "" },
+      { phrase: "Delicious!", translation: "¡Delicioso!", phonetic: "" },
+      { phrase: "Can I get the bill?", translation: "La cuenta, por favor", phonetic: "" },
+    ],
     romanticHighlights: [
       "🌃 Cena en rooftop bar con vista a Marina Bay Sands (Ce La Vi, Altitude — ~$100-200/pareja)",
       "🌿 Paseo nocturno bajo los Supertrees iluminados en Gardens by the Bay (gratis, espectáculo a las 20h)",
@@ -329,6 +350,13 @@ export const destinations: Destination[] = [
       "Elephant Nature Park reservar 2-3 meses antes (se agota rápido)",
       "Songthaew (camioneta roja) en Chiang Mai: $0.50/persona por tramo",
       "Evitar Bangkok en motos — preferir BTS SkyTrain",
+    ],
+    basicPhrases: [
+      { phrase: "ขอบคุณ", translation: "Gracias", phonetic: "Khob khun" },
+      { phrase: "ขอโทษ", translation: "Disculpe / Lo siento", phonetic: "Kho thot" },
+      { phrase: "ราคาเท่าไร?", translation: "¿Cuánto cuesta?", phonetic: "Ra-kha thao-rai?" },
+      { phrase: "อร่อยมาก!", translation: "¡Muy delicioso!", phonetic: "A-roi mak!" },
+      { phrase: "ช่วยด้วย", translation: "Ayúdeme por favor", phonetic: "Chuay duay" },
     ],
     romanticHighlights: [
       "🚢 Cena flotante en crucero Manohra por el río Chao Phraya en Bangkok (~$100/pareja)",
@@ -454,6 +482,13 @@ export const destinations: Destination[] = [
       "Hoi An: rentar bicicleta para recorrer el casco histórico",
       "Casco histórico Hoi An nominado Patrimonio UNESCO",
     ],
+    basicPhrases: [
+      { phrase: "Cảm ơn", translation: "Gracias", phonetic: "Kam un" },
+      { phrase: "Xin lỗi", translation: "Disculpe / Lo siento", phonetic: "Sin loy" },
+      { phrase: "Bao nhiêu tiền?", translation: "¿Cuánto cuesta?", phonetic: "Bao nyew tyen?" },
+      { phrase: "Ngon quá!", translation: "¡Muy delicioso!", phonetic: "Ngon kwa!" },
+      { phrase: "Giúp tôi với", translation: "Ayúdeme por favor", phonetic: "Zyup toy voy" },
+    ],
     romanticHighlights: [
       "⛵ Crucero privado en Ha Long Bay con camarote y cena en cubierta bajo las estrellas (~$200-320/pareja/noche)",
       "🏮 Cena en restaurante sobre el agua en Hoi An iluminado por miles de linternas de colores",
@@ -557,6 +592,13 @@ export const destinations: Destination[] = [
       "Snorkel y isla hopping: contratar banca local (~$25-40/bote grupo)",
       "Cebu Pacific para vuelos Manila-Puerto Princesa (~$30-60/persona)",
       "Alquilar moto en El Nido pueblo (~$8/día) para explorar sin grupo",
+    ],
+    basicPhrases: [
+      { phrase: "Salamat", translation: "Gracias", phonetic: "Sa-la-mat" },
+      { phrase: "Excuse po", translation: "Disculpe (cortés)", phonetic: "Ex-kyoos po" },
+      { phrase: "Magkano?", translation: "¿Cuánto cuesta?", phonetic: "Mag-ka-no?" },
+      { phrase: "Masarap!", translation: "¡Delicioso!", phonetic: "Ma-sa-rap!" },
+      { phrase: "Mahal kita", translation: "Te quiero", phonetic: "Ma-hal ki-ta" },
     ],
     romanticHighlights: [
       "🏝 Island hopping privado en banca con picnic en banco de arena virgen solo para dos (El Nido, ~$60/bote)",
@@ -687,6 +729,13 @@ export const destinations: Destination[] = [
       "Excursión en dhow a isla habitada: cultura local, mezquita de coral y mercado de pescado",
       "Spa sobre el agua con vista al índico — masaje de pareja con sonido de olas",
     ],
+    basicPhrases: [
+      { phrase: "Thank you", translation: "Gracias", phonetic: "Inglés predominante en resorts" },
+      { phrase: "Shukuriyyaa", translation: "Gracias (Dhivehi)", phonetic: "Shoo-koo-ree-ya" },
+      { phrase: "Maafukohdheyshee", translation: "Disculpe (Dhivehi)", phonetic: "Ma-fu-koh-they-shee" },
+      { phrase: "How much?", translation: "¿Cuánto cuesta?", phonetic: "" },
+      { phrase: "Fahu fahu", translation: "Bonito / Maravilloso", phonetic: "Fa-hu fa-hu" },
+    ],
     romanticHighlights: [
       "🌟 Cena privada en muelle sobre el agua bajo las estrellas — servicio exclusivo incluido en resorts",
       "🤿 Buceo nocturno para ver tiburones de arrecife y bioluminiscencia del Índico",
@@ -805,6 +854,13 @@ export const destinations: Destination[] = [
       "Día de playa en playa Oia o Perissa (Santorini) con vista al caldera volcánico",
       "Mercado central de Atenas (Varvakeios): especias, aceitunas y queso feta en origen",
       "Excursión en velero privado al caldera activo de Santorini — hora dorada perfecta",
+    ],
+    basicPhrases: [
+      { phrase: "Ευχαριστώ", translation: "Gracias", phonetic: "Ef-ha-ris-TO" },
+      { phrase: "Συγγνώμη", translation: "Disculpe / Lo siento", phonetic: "Seeg-NOH-mee" },
+      { phrase: "Πόσο κάνει;", translation: "¿Cuánto cuesta?", phonetic: "PO-so KA-ni?" },
+      { phrase: "Νόστιμο!", translation: "¡Delicioso!", phonetic: "NOS-ti-mo!" },
+      { phrase: "Αγάπη μου", translation: "Amor mío", phonetic: "A-GA-pi mou" },
     ],
     romanticHighlights: [
       "🌅 Atardecer de Oia en Santorini — el más famoso del mundo (llegar 1h antes para lugar en primera fila)",
@@ -925,6 +981,13 @@ export const destinations: Destination[] = [
       "Paseo por la medina azul de Chefchaouen: cada callejón es una fotografía perfecta",
       "Cena romántica en azotea con vista a la Koutoubia mientras el muecín llama al rezo",
     ],
+    basicPhrases: [
+      { phrase: "شكراً", translation: "Gracias", phonetic: "Shukran" },
+      { phrase: "عفواً", translation: "De nada / Disculpe", phonetic: "Afwan" },
+      { phrase: "بشحال هذا؟", translation: "¿Cuánto cuesta?", phonetic: "Beshhal hada?" },
+      { phrase: "بنين بزاف!", translation: "¡Muy delicioso!", phonetic: "Bnin bzaf!" },
+      { phrase: "لا شكراً", translation: "No, gracias", phonetic: "La shukran" },
+    ],
     romanticHighlights: [
       "🌙 Noche en jaima de lujo en el Sahara (Merzouga) bajo el cielo más estrellado del mundo (~$200/pareja)",
       "🧖 Hammam de pareja en riad de lujo: vapor + peeling de argán + masaje aromático (~$80-120/pareja)",
@@ -1043,6 +1106,13 @@ export const destinations: Destination[] = [
       "Tour de vinos en Chianti (Toscana) a bordo de una vespa o bicicleta vintage",
       "Día de playa en Positano o Amalfi con limonada y pasta al limone frente al mar",
       "Mercado de Campo de' Fiori (Roma) a las 7 AM: frutas, quesos y el desayuno más romano posible",
+    ],
+    basicPhrases: [
+      { phrase: "Grazie", translation: "Gracias", phonetic: "GRA-tsye" },
+      { phrase: "Scusa / Permesso", translation: "Disculpe / Con permiso", phonetic: "SKOO-za / per-MES-so" },
+      { phrase: "Quanto costa?", translation: "¿Cuánto cuesta?", phonetic: "KWAN-to KOS-ta?" },
+      { phrase: "Delizioso!", translation: "¡Delicioso!", phonetic: "De-li-TSYO-so!" },
+      { phrase: "Ti amo", translation: "Te amo", phonetic: "Tee A-mo" },
     ],
     romanticHighlights: [
       "🚣 Paseo en góndola privada por los canales de Venecia al atardecer (~$120-150 por 40 min)",
