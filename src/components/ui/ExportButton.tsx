@@ -98,6 +98,7 @@ function generateHTML(
 
 export default function ExportButton() {
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { generatedItinerary, selectedDestination, currencyRates, tripDate, dayNotes } = useTravelStore();
 
   if (!selectedDestination || generatedItinerary.length === 0) return null;
@@ -147,7 +148,8 @@ export default function ExportButton() {
       await navigator.share({ title: `Itinerario ${selectedDestination.country}`, text });
     } else {
       await navigator.clipboard.writeText(text);
-      alert('¡Copiado al portapapeles!');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -170,7 +172,7 @@ export default function ExportButton() {
               📄 Descargar HTML
             </button>
             <button onClick={handleShare} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200">
-              🔗 Compartir
+              {copied ? '✅ Copiado!' : '🔗 Compartir'}
             </button>
           </div>
         </>
