@@ -46,32 +46,27 @@ export default function MobileLayout() {
   const pinCount = activePins.length;
 
   return (
-    <div className="flex flex-col h-dvh bg-gray-100">
-      {/* Map — top 60% */}
-      <div className="flex-shrink-0 w-full" style={{ height: "58vh" }}>
+    <div className="flex flex-col bg-gray-100" style={{ height: '100dvh' }}>
+      {/* Map — 38% max */}
+      <div className="flex-shrink-0" style={{ height: "38vh" }}>
         <MapView />
       </div>
 
-      {/* Bottom panel — bottom 40% */}
-      <div className="flex flex-col flex-1 bg-white rounded-t-2xl shadow-lg overflow-hidden">
+      {/* Bottom panel — rest of screen */}
+      <div className="flex flex-col flex-1 bg-white rounded-t-2xl shadow-lg overflow-hidden min-h-0">
         {/* Handle */}
-        <div className="flex justify-center py-2">
+        <div className="flex justify-center pt-2 pb-1 flex-shrink-0">
           <div className="w-10 h-1 rounded-full bg-gray-300" />
         </div>
 
-        {/* Mini header */}
-        <div className="flex items-center gap-2 px-4 pb-2">
-          <span className="text-lg">👨‍🦲👩‍🦱</span>
-          <span className="text-sm font-bold text-gray-900">Luna de Miel Planner</span>
-        </div>
-
-        {/* Destination selector */}
-        <div className="px-4 pb-2">
+        {/* Destination + Days — always visible, no scroll */}
+        <div className="px-3 pb-2 flex-shrink-0 space-y-2 border-b border-gray-100">
           <DestinationSelector />
+          {selectedDestination && <ItineraryForm compact />}
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200">
+        <div className="flex border-b border-gray-200 flex-shrink-0">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -92,12 +87,11 @@ export default function MobileLayout() {
           ))}
         </div>
 
-        {/* Tab content — scrollable */}
-        <div className="flex-1 overflow-y-auto p-3">
+        {/* Scrollable tab content */}
+        <div className="flex-1 overflow-y-auto min-h-0 p-3">
           {activeTab === "attractions" && (
             selectedDestination ? (
-              <div className="space-y-3">
-                <ItineraryForm />
+              <div className="space-y-2">
                 <DestinationInfo />
                 <AttractionList />
               </div>
