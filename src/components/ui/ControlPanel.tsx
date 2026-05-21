@@ -7,6 +7,32 @@ import ItineraryForm from "./ItineraryForm";
 import ItineraryView from "./ItineraryView";
 import CostSummary from "./CostSummary";
 import DestinationInfo from "./DestinationInfo";
+import { destinations } from "@/data/destinations";
+
+function WelcomeScreen() {
+  const { setSelectedDestination } = useTravelStore();
+  return (
+    <div className="space-y-4">
+      <div className="text-center py-4">
+        <p className="text-sm font-semibold text-gray-700">¿A dónde quieres ir?</p>
+        <p className="text-xs text-gray-400 mt-1">Selecciona un destino para empezar</p>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {destinations.map((dest) => (
+          <button
+            key={dest.id}
+            onClick={() => setSelectedDestination(dest)}
+            className="flex flex-col items-center gap-1.5 rounded-xl border border-gray-200 bg-white p-4 hover:border-brand-300 hover:bg-brand-50 transition-colors text-center"
+          >
+            <span className="text-3xl">{dest.flag}</span>
+            <span className="text-xs font-semibold text-gray-800">{dest.country}</span>
+            <span className="text-[10px] text-gray-400">{dest.regions.slice(0, 2).join(" · ")}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const tabs = [
   { key: "attractions" as const, label: "Atractivos", icon: "📍" },
@@ -15,7 +41,7 @@ const tabs = [
 ];
 
 export default function ControlPanel() {
-  const { activeTab, setActiveTab } = useTravelStore();
+  const { activeTab, setActiveTab, selectedDestination } = useTravelStore();
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
@@ -64,10 +90,14 @@ export default function ControlPanel() {
       {/* Tab content */}
       <div className="flex-1 min-h-0 overflow-y-auto p-4">
         {activeTab === "attractions" && (
-          <div className="space-y-4">
-            <DestinationInfo />
-            <AttractionList />
-          </div>
+          selectedDestination ? (
+            <div className="space-y-4">
+              <DestinationInfo />
+              <AttractionList />
+            </div>
+          ) : (
+            <WelcomeScreen />
+          )
         )}
         {activeTab === "itinerary" && <ItineraryView />}
         {activeTab === "costs" && <CostSummary />}

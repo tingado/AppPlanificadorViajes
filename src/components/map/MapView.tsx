@@ -125,11 +125,14 @@ export default function MapView() {
         const marker = L.marker([pin.coordinates.lat, pin.coordinates.lng], { icon })
           .addTo(map)
           .bindPopup(
-            `<div style="font-family:sans-serif;min-width:160px">
-              <strong style="font-size:13px">${pin.name}</strong>
-              <br/><span style="font-size:11px;color:#6b7280">${pin.region}</span>
+            `<div style="min-width:180px;font-family:sans-serif">
+              <img src="${pin.imageUrl ?? ''}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px" onerror="this.style.display='none'" />
+              <p style="font-weight:700;font-size:14px;margin:0 0 4px">${pin.name}</p>
+              <p style="font-size:11px;color:#6b7280;margin:0 0 6px">${pin.region}</p>
+              <p style="font-size:12px;color:#111;margin:0 0 6px">${pin.description}</p>
+              <p style="font-size:11px;font-weight:600;color:#c026d3;margin:0">~$${pin.costPerCouplePerDay} USD/día · 2 personas</p>
             </div>`,
-            { maxWidth: 200 }
+            { maxWidth: 220 }
           );
 
         markersRef.current.push(marker);
