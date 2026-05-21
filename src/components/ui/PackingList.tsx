@@ -2,59 +2,7 @@
 import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { Destination } from "@/types";
-
-const BASE_ITEMS = [
-  { id: "passport", cat: "Documentos", label: "Pasaporte vigente" },
-  { id: "visa", cat: "Documentos", label: "Visa (si aplica)" },
-  { id: "insurance", cat: "Documentos", label: "Seguro de viaje" },
-  { id: "flights", cat: "Documentos", label: "Tickets de vuelo" },
-  { id: "hotel", cat: "Documentos", label: "Reservas de hotel" },
-  { id: "phone", cat: "Electrónica", label: "Teléfono + cargador" },
-  { id: "adapter", cat: "Electrónica", label: "Adaptador universal" },
-  { id: "powerbank", cat: "Electrónica", label: "Power bank" },
-  { id: "camera", cat: "Electrónica", label: "Cámara / GoPro" },
-  { id: "sunscreen", cat: "Salud", label: "Protector solar FPS50+" },
-  { id: "repellent", cat: "Salud", label: "Repelente de insectos" },
-  { id: "meds", cat: "Salud", label: "Botiquín básico" },
-  { id: "clothes-light", cat: "Ropa", label: "Ropa liviana (tropical)" },
-  { id: "shoes", cat: "Ropa", label: "Zapatos cómodos" },
-  { id: "swimsuit", cat: "Ropa", label: "Traje de baño" },
-  { id: "rain", cat: "Ropa", label: "Poncho / impermeable" },
-  { id: "backpack", cat: "Accesorios", label: "Mochila de día" },
-  { id: "cash", cat: "Dinero", label: "Efectivo local" },
-  { id: "card", cat: "Dinero", label: "Tarjeta internacional" },
-  { id: "locks", cat: "Seguridad", label: "Candados para maletas" },
-];
-
-// Items específicos por destino
-const DEST_ITEMS: Record<string, { id: string; cat: string; label: string }[]> = {
-  japan: [
-    { id: "jp-ic-card", cat: "Japón", label: "IC Card (transporte)" },
-    { id: "jp-pocket-wifi", cat: "Japón", label: "Pocket WiFi reservado" },
-    { id: "jp-onsen", cat: "Japón", label: "Ropa para onsen (toalla)" },
-  ],
-  bali: [
-    { id: "bali-sarong", cat: "Bali", label: "Sarong para templos" },
-    { id: "bali-deet", cat: "Bali", label: "DEET (dengue zona)" },
-  ],
-  thailand: [
-    { id: "th-temple", cat: "Tailandia", label: "Ropa cubriente para templos" },
-    { id: "th-flip", cat: "Tailandia", label: "Sandalias para templos" },
-  ],
-  vietnam: [
-    { id: "vn-cash", cat: "Vietnam", label: "Dólares en efectivo" },
-    { id: "vn-sim", cat: "Vietnam", label: "SIM local (Viettel)" },
-  ],
-  singapore: [
-    { id: "sg-ez-link", cat: "Singapur", label: "EZ-Link card (transporte)" },
-    { id: "sg-clothes", cat: "Singapur", label: "Ropa fresca (calor húmedo)" },
-  ],
-  philippines: [
-    { id: "ph-cash", cat: "Filipinas", label: "Pesos filipinos en efectivo" },
-    { id: "ph-sunscreen", cat: "Filipinas", label: "Protector solar (islas)" },
-    { id: "ph-snorkel", cat: "Filipinas", label: "Snorkel / máscara buceo" },
-  ],
-};
+import { BASE_PACKING_ITEMS, DEST_PACKING_ITEMS } from "@/data/packingData";
 
 function getSeasonItems(dest: Destination, month: number): { id: string; cat: string; label: string }[] {
   const items: { id: string; cat: string; label: string }[] = [];
@@ -88,9 +36,9 @@ export default function PackingList() {
     ? new Date(tripDate + 'T12:00:00').getMonth() + 1
     : new Date().getMonth() + 1;
 
-  const destItems = selectedDestination ? (DEST_ITEMS[selectedDestination.id] ?? []) : [];
+  const destItems = selectedDestination ? (DEST_PACKING_ITEMS[selectedDestination.id] ?? []) : [];
   const seasonItems = selectedDestination ? getSeasonItems(selectedDestination, checkMonth) : [];
-  const allItems = [...BASE_ITEMS, ...destItems, ...seasonItems];
+  const allItems = [...BASE_PACKING_ITEMS, ...destItems, ...seasonItems];
 
   const categories = [...new Set(allItems.map((i) => i.cat))];
   const checked = allItems.filter((i) => packingItems[i.id]).length + customPackingItems.filter(i => packingItems[i.id]).length;
