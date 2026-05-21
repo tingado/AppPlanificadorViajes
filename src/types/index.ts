@@ -29,6 +29,8 @@ export interface Destination {
   flag?: string;
   visaInfo?: string;
   bestMonths?: string;
+  goodMonths?: number[];   // 1-12, months considered ideal; empty = year-round
+  avoidMonths?: number[];  // 1-12, months to avoid
   climate?: string;
   travelTips?: string[];
 }

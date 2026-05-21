@@ -1,19 +1,35 @@
 "use client";
 
 import { useTravelStore } from "@/store/useTravelStore";
+import { Destination } from "@/types";
+
+function getSeasonStatus(dest: Destination, month: number): { label: string; color: string } {
+  if (!dest.goodMonths || dest.goodMonths.length === 12) return { label: '✅ Todo el año', color: 'text-green-600 dark:text-green-400' };
+  if (dest.avoidMonths?.includes(month)) return { label: '⚠️ Temporada de lluvia', color: 'text-red-500 dark:text-red-400' };
+  if (dest.goodMonths.includes(month)) return { label: '✅ Temporada ideal', color: 'text-green-600 dark:text-green-400' };
+  return { label: '⚡ Temporada variable', color: 'text-amber-600 dark:text-amber-400' };
+}
 
 export default function DestinationInfo() {
-  const { selectedDestination } = useTravelStore();
+  const { selectedDestination, tripDate } = useTravelStore();
   if (!selectedDestination) return null;
 
   const { visaInfo, bestMonths, climate, travelTips } = selectedDestination;
   if (!visaInfo && !bestMonths && !climate && !travelTips?.length) return null;
 
+  const checkMonth = tripDate
+    ? new Date(tripDate + 'T12:00:00').getMonth() + 1
+    : new Date().getMonth() + 1;
+  const season = getSeasonStatus(selectedDestination, checkMonth);
+
   return (
     <div className="rounded-xl border border-brand-100 dark:border-brand-900/40 bg-brand-50/40 dark:bg-brand-900/10 p-4 space-y-3">
-      <h3 className="text-sm font-semibold text-brand-700 dark:text-brand-400 flex items-center gap-1.5">
-        🌏 Info del Destino
-      </h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-brand-700 dark:text-brand-400 flex items-center gap-1.5">
+          🌏 Info del Destino
+        </h3>
+        <span className={`text-xs font-semibold ${season.color}`}>{season.label}</span>
+      </div>
 
       {visaInfo && (
         <div className="space-y-0.5">
