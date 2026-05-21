@@ -20,11 +20,24 @@ function getSeasonBadge(dest: typeof destinations[0], month: number) {
   return { icon: '⚡', color: 'text-amber-600 dark:text-amber-400' };
 }
 
+const REGIONS_MOBILE: Record<string, string> = {
+  japan: 'Asia', bali: 'Asia', singapore: 'Asia', thailand: 'Asia', vietnam: 'Asia', philippines: 'Asia', maldives: 'Asia',
+  greece: 'Europa', italy: 'Europa',
+  morocco: 'África',
+};
+
 function WelcomeScreen() {
   const { setSelectedDestination, setActiveTab, currencyRates, tripDate } = useTravelStore();
+  const [regionFilter, setRegionFilter] = useState<string | null>(null);
   const checkMonth = tripDate
     ? new Date(tripDate + 'T12:00:00').getMonth() + 1
     : new Date().getMonth() + 1;
+
+  const idealDests = destinations.filter(d =>
+    d.goodMonths?.includes(checkMonth) && !d.avoidMonths?.includes(checkMonth)
+  );
+  const filtered = regionFilter ? destinations.filter(d => REGIONS_MOBILE[d.id] === regionFilter) : destinations;
+  const regionOptions = [...new Set(destinations.map(d => REGIONS_MOBILE[d.id]).filter(Boolean))];
 
   return (
     <div className="space-y-3">
@@ -32,8 +45,30 @@ function WelcomeScreen() {
         <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">¿A dónde quieres ir?</p>
         <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Toca un destino para comenzar</p>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        {destinations.map(dest => {
+
+      {idealDests.length > 0 && (
+        <div className="rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-3 py-2">
+          <p className="text-[10px] font-semibold text-green-700 dark:text-green-400 uppercase tracking-wide mb-1">✅ Ideal para este mes</p>
+          <div className="flex gap-1.5 flex-wrap">
+            {idealDests.map(d => (
+              <button key={d.id} onClick={() => { setSelectedDestination(d); setActiveTab("attractions"); }}
+                className="text-xs font-medium text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/40 rounded-full px-2 py-0.5 hover:bg-green-200 transition-colors">
+                {d.flag} {d.country}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
+        <button onClick={() => setRegionFilter(null)} className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${!regionFilter ? 'bg-brand-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>Todos</button>
+        {regionOptions.map(r => (
+          <button key={r} onClick={() => setRegionFilter(r === regionFilter ? null : r)} className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${regionFilter === r ? 'bg-brand-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>{r}</button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        {filtered.map(dest => {
           const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
           const dailyUSD = Math.round((dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate);
           const budgetColor = dailyUSD < 200 ? 'text-green-400' : dailyUSD < 400 ? 'text-amber-300' : 'text-red-300';
@@ -43,16 +78,16 @@ function WelcomeScreen() {
             <button
               key={dest.id}
               onClick={() => { setSelectedDestination(dest); setActiveTab("attractions"); }}
-              className="relative overflow-hidden rounded-xl border-2 border-transparent active:scale-95 transition-all text-center h-32"
+              className="relative overflow-hidden rounded-xl border-2 border-transparent active:scale-95 transition-all text-center h-28"
               style={coverImg ? { backgroundImage: `url(${coverImg})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
             >
               {!coverImg && <div className="absolute inset-0 bg-gradient-to-br from-brand-500 to-purple-600" />}
-              <div className="absolute inset-0 bg-black/50 active:bg-black/40 transition-colors" />
-              <div className="relative z-10 flex flex-col items-center justify-center gap-0.5 h-full px-2">
-                <span className="text-2xl">{dest.flag}</span>
-                <span className="text-xs font-bold text-white leading-tight drop-shadow">{dest.country}</span>
-                <span className={`text-[11px] font-semibold ${budgetColor}`}>~${dailyUSD} USD/día</span>
-                <span className="text-[10px] text-white/80">{season.icon} {dest.attractions.length} atracciones</span>
+              <div className="absolute inset-0 bg-black/55 active:bg-black/40 transition-colors" />
+              <div className="relative z-10 flex flex-col items-center justify-center gap-0.5 h-full px-1">
+                <span className="text-xl">{dest.flag}</span>
+                <span className="text-[11px] font-bold text-white leading-tight drop-shadow text-center">{dest.country}</span>
+                <span className={`text-[10px] font-semibold ${budgetColor}`}>~${dailyUSD}/día</span>
+                <span className="text-[9px] text-white/80">{season.icon}</span>
               </div>
             </button>
           );
