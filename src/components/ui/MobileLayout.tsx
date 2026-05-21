@@ -148,8 +148,11 @@ const stepperSteps = [
 ];
 
 export default function MobileLayout() {
-  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary, itineraryOutdated, darkMode, toggleDarkMode, tripDate, setTripDate, resetTrip } = useTravelStore();
+  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary, itineraryOutdated, darkMode, toggleDarkMode, tripDate, setTripDate, resetTrip, preTripChecked } = useTravelStore();
   const pinCount = activePins.length;
+  const preTripTotal = 19; // PRE_TRIP_ITEMS length — kept in sync with preTripData.ts
+  const preTripDone = Object.values(preTripChecked ?? {}).filter(Boolean).length;
+  const preTripPending = preTripTotal - preTripDone;
 
   // Mejora 1: scroll al inicio al cambiar de tab
   const contentRef = useRef<HTMLDivElement>(null);
@@ -294,6 +297,11 @@ export default function MobileLayout() {
               )}
               {tab.key === "itinerary" && itineraryOutdated && (
                 <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-amber-400" />
+              )}
+              {tab.key === "packing" && preTripPending > 0 && (
+                <span className="absolute top-1 right-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-indigo-500 text-white text-[9px] font-bold">
+                  {preTripPending}
+                </span>
               )}
             </button>
           ))}
