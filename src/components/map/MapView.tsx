@@ -19,6 +19,7 @@ export default function MapView() {
     routeInfo,
     calculateRoute,
     clearRoute,
+    toggleAttraction,
   } = useTravelStore();
 
   // Initialize map
@@ -105,7 +106,7 @@ export default function MapView() {
         selectedDestination.attractions.forEach((attr) => {
           if (pinnedIds.has(attr.id)) return;
           const circle = L.circleMarker([attr.coordinates.lat, attr.coordinates.lng], {
-            radius: 6,
+            radius: 7,
             fillColor: "#9ca3af",
             color: "#fff",
             weight: 1.5,
@@ -113,6 +114,7 @@ export default function MapView() {
             fillOpacity: 0.5,
           })
             .bindTooltip(attr.name, { direction: 'top', offset: [0, -6] })
+            .on('click', () => toggleAttraction(attr))
             .addTo(map);
           softMarkersRef.current.push(circle);
         });
@@ -197,7 +199,7 @@ export default function MapView() {
       }
     };
     mapInit();
-  }, [activePins, showRoute, routeInfo, mapReady, selectedDestination]);
+  }, [activePins, showRoute, routeInfo, mapReady, selectedDestination, toggleAttraction]);
 
   return (
     <div className="relative w-full h-full">
