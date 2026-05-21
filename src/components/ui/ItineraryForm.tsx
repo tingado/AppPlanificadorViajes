@@ -29,7 +29,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
   if (compact) {
     return (
       <div className="flex items-center gap-1.5 flex-wrap">
-        <span className="text-xs text-gray-500 font-medium">Días:</span>
+        <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Días:</span>
         {presets.map((d) => (
           <button
             key={d}
@@ -41,7 +41,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
             {d}d
           </button>
         ))}
-        <span className="text-xs text-gray-400 ml-1">({tripDays}d)</span>
+        <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">({tripDays}d)</span>
       </div>
     );
   }
@@ -49,7 +49,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+        <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
           Días de viaje
         </label>
 
@@ -72,7 +72,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
 
         {/* Continuous slider */}
         <div className="space-y-1">
-          <div className="flex justify-between text-xs text-gray-500">
+          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
             <span>1 día</span>
             <span className="font-semibold text-brand-600">{tripDays} días</span>
             <span>30 días</span>
@@ -119,7 +119,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
           className={`w-full rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition ${
             canGenerate
               ? "bg-brand-500 hover:bg-brand-600 text-white"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
           }`}
         >
           {canGenerate
@@ -133,7 +133,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
 
         {/* Pin counter hint */}
         {activePins.length === 0 && (
-          <p className="text-xs text-gray-400 text-center mt-1">
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-1">
             Selecciona al menos una atracción para generar
           </p>
         )}
@@ -144,7 +144,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
             {activePins.map((pin, i) => (
               <span
                 key={pin.id}
-                className="inline-flex items-center gap-1 rounded-full bg-brand-100 text-brand-700 px-2 py-0.5 text-xs font-medium"
+                className="inline-flex items-center gap-1 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 px-2 py-0.5 text-xs font-medium"
               >
                 <span className="w-4 h-4 rounded-full bg-brand-500 text-white text-[10px] flex items-center justify-center font-bold">
                   {i + 1}
