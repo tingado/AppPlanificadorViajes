@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { Attraction, Destination, ItineraryDay, CurrencyRates, RouteInfo } from "@/types";
 import { destinations, defaultCurrencyRates } from "@/data/destinations";
 import { generateItinerary } from "@/utils/itineraryGenerator";
-import { buildRouteInfo } from "@/utils/geo";
+import { buildRouteInfo, optimizeRouteOrder } from "@/utils/geo";
 
 const MAX_PINS = 3;
 
@@ -24,6 +24,7 @@ interface TravelState {
   showRoute: boolean;
   calculateRoute: () => void;
   clearRoute: () => void;
+  optimizeRoute: () => void;
 
   // Itinerary planner
   tripDays: number;
@@ -112,6 +113,12 @@ export const useTravelStore = create<TravelState>()(
         set({ routeInfo: info, showRoute: true });
       },
       clearRoute: () => set({ routeInfo: null, showRoute: false }),
+      optimizeRoute: () => {
+        const { activePins } = get();
+        if (activePins.length < 3) return;
+        const optimized = optimizeRouteOrder(activePins);
+        set({ activePins: optimized, routeInfo: null, showRoute: false });
+      },
 
       tripDays: 7,
       setTripDays: (days) => {

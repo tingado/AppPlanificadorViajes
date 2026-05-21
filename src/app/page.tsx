@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import { useTravelStore, destinations } from "@/store/useTravelStore";
 
 const MobileLayout = dynamic(() => import("@/components/ui/MobileLayout"), { ssr: false });
 const DesktopLayout = dynamic(() => import("@/components/ui/DesktopLayout"), { ssr: false });
@@ -16,6 +17,28 @@ export default function Home() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const destId = params.get('dest');
+    const days = params.get('days');
+    const pins = params.get('pins');
+
+    if (destId) {
+      const { setSelectedDestination, setTripDays, toggleAttraction } = useTravelStore.getState();
+      const dest = destinations.find(d => d.id === destId);
+      if (dest) {
+        setSelectedDestination(dest);
+        if (days) setTripDays(Number(days));
+        if (pins) {
+          pins.split(',').filter(Boolean).forEach(pinId => {
+            const attraction = dest.attractions.find(a => a.id === pinId);
+            if (attraction) toggleAttraction(attraction);
+          });
+        }
+      }
+    }
+  }, []); // Solo al montar
 
   if (isDesktop === null) return null;
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { formatDuration } from "@/utils/geo";
 import ExportButton from "@/components/ui/ExportButton";
+import ShareButton from "@/components/ui/ShareButton";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -77,7 +78,10 @@ export default function ItineraryView() {
             📅 Calendario
           </button>
         </div>
-        <ExportButton />
+        <div className="flex justify-end gap-2">
+          <ShareButton />
+          <ExportButton />
+        </div>
       </div>
 
       {/* Cost summary card */}
