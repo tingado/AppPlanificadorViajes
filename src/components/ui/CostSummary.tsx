@@ -305,29 +305,27 @@ export default function CostSummary() {
           <div className="flex items-center justify-between gap-3">
             <label className="text-sm text-gray-700 dark:text-gray-300">🏨 Alojamiento/noche</label>
             <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400 dark:text-gray-500">$</span>
               <input
                 type="number"
                 min={0}
                 value={baseAccommodation}
                 onChange={e => setBudgetOverride('accommodationPerNight', Number(e.target.value))}
-                className="w-20 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+                className="w-24 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
               />
-              <span className="text-xs text-gray-400 dark:text-gray-500">USD</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">{code}</span>
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
             <label className="text-sm text-gray-700 dark:text-gray-300">🍜 Comida/día</label>
             <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400 dark:text-gray-500">$</span>
               <input
                 type="number"
                 min={0}
                 value={baseFood}
                 onChange={e => setBudgetOverride('foodPerDay', Number(e.target.value))}
-                className="w-20 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+                className="w-24 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
               />
-              <span className="text-xs text-gray-400 dark:text-gray-500">USD</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">{code}</span>
             </div>
           </div>
         </div>

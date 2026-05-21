@@ -124,7 +124,7 @@ export default function MapView() {
 
       if (activePins.length === 0) return;
 
-      const colors = ["#c026d3", "#7c3aed", "#0891b2"];
+      const colors = ["#c026d3","#7c3aed","#0891b2","#059669","#d97706","#dc2626","#2563eb","#0d9488","#7c2d12","#4f46e5"];
 
       activePins.forEach((pin, idx) => {
         const color = colors[idx] ?? "#6b7280";
