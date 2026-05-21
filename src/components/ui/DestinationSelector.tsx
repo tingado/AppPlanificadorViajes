@@ -4,20 +4,21 @@ import { destinations } from "@/data/destinations";
 import { useTravelStore } from "@/store/useTravelStore";
 
 export default function DestinationSelector() {
-  const { selectedDestination, setSelectedDestination } = useTravelStore();
+  const { selectedDestination, setSelectedDestination, setActiveTab } = useTravelStore();
 
   return (
     <div className="w-full">
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+      <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
         Destino
       </label>
       <div className="relative">
         <select
-          className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-400 shadow-sm"
+          className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2.5 text-sm text-gray-800 dark:text-gray-100 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-400 shadow-sm"
           value={selectedDestination?.id ?? ""}
           onChange={(e) => {
             const dest = destinations.find((d) => d.id === e.target.value) ?? null;
             setSelectedDestination(dest);
+            if (dest) setActiveTab("attractions");
           }}
         >
           <option value="">Elige tu destino de luna de miel…</option>

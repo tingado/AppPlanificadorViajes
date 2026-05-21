@@ -9,6 +9,7 @@ export default function MapView() {
   const leafletMapRef = useRef<import("leaflet").Map | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const markersRef = useRef<import("leaflet").Marker[]>([]);
+  const softMarkersRef = useRef<import("leaflet").CircleMarker[]>([]);
   const polylineRef = useRef<import("leaflet").Polyline | null>(null);
 
   const {
@@ -89,11 +90,32 @@ export default function MapView() {
       // Clear existing markers
       markersRef.current.forEach((m) => m.remove());
       markersRef.current = [];
+      softMarkersRef.current.forEach((m) => m.remove());
+      softMarkersRef.current = [];
 
       // Remove route
       if (polylineRef.current) {
         polylineRef.current.remove();
         polylineRef.current = null;
+      }
+
+      // Show all destination attractions as soft circle markers (not pinned)
+      if (selectedDestination) {
+        const pinnedIds = new Set(activePins.map(p => p.id));
+        selectedDestination.attractions.forEach((attr) => {
+          if (pinnedIds.has(attr.id)) return;
+          const circle = L.circleMarker([attr.coordinates.lat, attr.coordinates.lng], {
+            radius: 6,
+            fillColor: "#9ca3af",
+            color: "#fff",
+            weight: 1.5,
+            opacity: 0.8,
+            fillOpacity: 0.5,
+          })
+            .bindTooltip(attr.name, { direction: 'top', offset: [0, -6] })
+            .addTo(map);
+          softMarkersRef.current.push(circle);
+        });
       }
 
       if (activePins.length === 0) return;
@@ -175,7 +197,7 @@ export default function MapView() {
       }
     };
     mapInit();
-  }, [activePins, showRoute, routeInfo, mapReady]);
+  }, [activePins, showRoute, routeInfo, mapReady, selectedDestination]);
 
   return (
     <div className="relative w-full h-full">

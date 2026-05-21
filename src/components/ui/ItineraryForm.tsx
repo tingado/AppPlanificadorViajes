@@ -35,7 +35,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
             key={d}
             onClick={() => setTripDays(d)}
             className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-              tripDays === d ? "bg-brand-500 text-white" : "bg-gray-100 text-gray-600"
+              tripDays === d ? "bg-brand-500 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
             }`}
           >
             {d}d
@@ -62,7 +62,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
               className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
                 tripDays === d
                   ? "bg-brand-500 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
               }`}
             >
               {d}d
@@ -88,25 +88,25 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
         </div>
       </div>
 
-      <div className="rounded-xl bg-gray-50 border border-gray-200 p-3 text-sm">
-        <p className="font-semibold text-gray-700 mb-1">Resumen del plan</p>
-        <ul className="space-y-0.5 text-xs text-gray-500">
+      <div className="rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-3 text-sm">
+        <p className="font-semibold text-gray-700 dark:text-gray-200 mb-1">Resumen del plan</p>
+        <ul className="space-y-0.5 text-xs text-gray-500 dark:text-gray-400">
           <li>
             Destino:{" "}
-            <span className="text-gray-700 font-medium">
+            <span className="text-gray-700 dark:text-gray-200 font-medium">
               {selectedDestination?.country ?? "Sin seleccionar"}
             </span>
           </li>
           <li>
             Atractivos seleccionados:{" "}
-            <span className="text-gray-700 font-medium">{activePins.length} / 3</span>
+            <span className="text-gray-700 dark:text-gray-200 font-medium">{activePins.length} / 3</span>
           </li>
           <li>
             Duración:{" "}
-            <span className="text-gray-700 font-medium">{tripDays} días</span>
+            <span className="text-gray-700 dark:text-gray-200 font-medium">{tripDays} días</span>
           </li>
           <li>
-            Viajeros: <span className="text-gray-700 font-medium">2 personas (pareja)</span>
+            Viajeros: <span className="text-gray-700 dark:text-gray-200 font-medium">2 personas (pareja)</span>
           </li>
         </ul>
       </div>

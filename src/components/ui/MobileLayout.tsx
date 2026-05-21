@@ -14,22 +14,24 @@ import { destinations } from "@/data/destinations";
 const MapView = dynamic(() => import("@/components/map/MapView"), { ssr: false });
 
 function WelcomeScreen() {
-  const { setSelectedDestination } = useTravelStore();
+  const { setSelectedDestination, setActiveTab } = useTravelStore();
   return (
     <div className="space-y-3">
       <div className="text-center pt-2 pb-1">
-        <p className="text-sm font-semibold text-gray-700">¿A dónde quieres ir?</p>
-        <p className="text-xs text-gray-400 mt-0.5">Toca un destino para comenzar</p>
+        <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">¿A dónde quieres ir?</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Toca un destino para comenzar</p>
       </div>
       <div className="grid grid-cols-2 gap-2">
         {destinations.map(dest => (
           <button
             key={dest.id}
-            onClick={() => setSelectedDestination(dest)}
-            className="flex flex-col items-center gap-1 rounded-xl border border-gray-200 bg-white p-3 hover:border-brand-300 hover:bg-brand-50 active:scale-95 transition-all text-center"
+            onClick={() => { setSelectedDestination(dest); setActiveTab("attractions"); }}
+            className="flex flex-col items-center gap-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 hover:border-brand-300 hover:bg-brand-50 dark:hover:bg-gray-700 active:scale-95 transition-all text-center"
           >
             <span className="text-2xl">{dest.flag}</span>
-            <span className="text-xs font-semibold text-gray-800 leading-tight">{dest.country}</span>
+            <span className="text-xs font-bold text-gray-800 dark:text-gray-100 leading-tight">{dest.country}</span>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium tracking-wide uppercase">{dest.currencyCode}</span>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500">{dest.attractions.length} atracciones</span>
           </button>
         ))}
       </div>
