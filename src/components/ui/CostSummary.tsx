@@ -62,10 +62,10 @@ export default function CostSummary() {
   const totalFoodUSD =
     localRate > 0 ? (baseFood * numDays) / localRate : 0;
 
-  // Activities: whatever remains after subtracting flights, accommodation and food
+  // Activities: whatever remains after subtracting flights, accommodation, food and visa
   const totalActivitiesUSD = Math.max(
     0,
-    totalUSD - totalFlightUSD - totalAccomUSD - totalFoodUSD
+    totalUSD - totalFlightUSD - totalAccomUSD - totalFoodUSD - visaFeeUSD
   );
 
   const categories = [
@@ -84,6 +84,7 @@ export default function CostSummary() {
     { label: "🍜 Comida", amount: totalFoodUSD, color: "bg-green-400" },
     { label: "🎭 Actividades", amount: totalActivitiesUSD, color: "bg-purple-400" },
     { label: "✈ Vuelos", amount: totalFlightUSD, color: "bg-amber-400" },
+    ...(visaFeeUSD > 0 ? [{ label: "🛂 Visa", amount: visaFeeUSD, color: "bg-rose-400" }] : []),
   ];
   const grandTotal = chartCategories.reduce((s, c) => s + c.amount, 0);
 
