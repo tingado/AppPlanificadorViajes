@@ -3,6 +3,77 @@ import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { Destination } from "@/types";
 import { BASE_PACKING_ITEMS, DEST_PACKING_ITEMS } from "@/data/packingData";
+import { PRE_TRIP_ITEMS } from "@/data/preTripData";
+
+function PreTripChecklist() {
+  const { preTripChecked, togglePreTripItem, resetPreTrip } = useTravelStore();
+  const [open, setOpen] = useState(false);
+
+  const total = PRE_TRIP_ITEMS.length;
+  const checked = PRE_TRIP_ITEMS.filter(i => preTripChecked[i.id]).length;
+  const allDone = checked === total;
+  const cats = [...new Set(PRE_TRIP_ITEMS.map(i => i.cat))];
+
+  return (
+    <div className="rounded-xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/40 dark:bg-indigo-900/10">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-4 py-3 text-left"
+      >
+        <h3 className="text-sm font-semibold text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5">
+          ✅ Preparativos pre-viaje
+        </h3>
+        <div className="flex items-center gap-2">
+          <span className={`text-xs font-bold ${allDone ? 'text-green-600 dark:text-green-400' : 'text-indigo-600 dark:text-indigo-400'}`}>
+            {checked}/{total}
+          </span>
+          <span className="text-gray-400 dark:text-gray-500 text-xs">{open ? '▲' : '▼'}</span>
+        </div>
+      </button>
+
+      {open && (
+        <div className="px-4 pb-4 space-y-4 border-t border-indigo-100 dark:border-indigo-900/40 pt-3">
+          {/* Progress bar */}
+          <div className="w-full h-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+              style={{ width: total > 0 ? `${(checked / total) * 100}%` : '0%' }}
+            />
+          </div>
+
+          {cats.map(cat => (
+            <div key={cat} className="space-y-1">
+              <p className="text-[10px] font-semibold text-indigo-500 dark:text-indigo-400 uppercase tracking-wide">{cat}</p>
+              {PRE_TRIP_ITEMS.filter(i => i.cat === cat).map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => togglePreTripItem(item.id)}
+                  className="w-full flex items-center gap-3 py-1.5 px-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors text-left"
+                >
+                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${preTripChecked[item.id] ? 'bg-indigo-500 border-indigo-500' : 'border-gray-300 dark:border-gray-600'}`}>
+                    {preTripChecked[item.id] && <span className="text-white text-[9px]">✓</span>}
+                  </div>
+                  <span className={`text-xs transition-colors ${preTripChecked[item.id] ? 'line-through text-gray-400' : 'text-gray-700 dark:text-gray-200'}`}>
+                    {item.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          ))}
+
+          {checked > 0 && (
+            <button
+              onClick={resetPreTrip}
+              className="text-xs text-gray-400 dark:text-gray-500 hover:text-red-500 w-full text-center py-1"
+            >
+              ↺ Limpiar marcas
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function getSeasonItems(dest: Destination, month: number): { id: string; cat: string; label: string }[] {
   const items: { id: string; cat: string; label: string }[] = [];
@@ -58,6 +129,9 @@ export default function PackingList() {
 
   return (
     <div className="space-y-4">
+      {/* Pre-trip administrative checklist */}
+      <PreTripChecklist />
+
       {/* Progress */}
       <div className="rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 p-4 text-white">
         <div className="flex items-center justify-between mb-2">
