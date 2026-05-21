@@ -78,11 +78,11 @@ export default function AttractionList() {
       )}
       {filtered.map((attraction: Attraction) => {
         const isActive = activePins.some((p) => p.id === attraction.id);
-        const pinIndex = activePins.findIndex((p) => p.id === attraction.id);
         return (
           <button
             key={attraction.id}
             onClick={() => toggleAttraction(attraction)}
+            aria-label={isActive ? "Desactivar " + attraction.name : "Activar " + attraction.name}
             className={`w-full text-left rounded-xl border p-3 min-h-[44px] transition-all duration-200 ${
               isActive
                 ? "border-brand-400 bg-brand-50 shadow-sm"
@@ -97,33 +97,29 @@ export default function AttractionList() {
                     : "bg-gray-100 text-gray-400"
                 }`}
               >
-                {isActive ? pinIndex + 1 : "○"}
+                {isActive ? "✓" : "○"}
               </div>
               {attraction.imageUrl && (
                 <img
                   src={attraction.imageUrl}
                   alt={attraction.name}
-                  className="w-14 h-14 rounded-lg object-cover shrink-0"
+                  className="w-16 h-16 rounded-lg object-cover shrink-0 border border-gray-100"
                   loading="lazy"
                 />
               )}
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-800">{attraction.name}</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-sm font-semibold text-gray-800">{attraction.name}</p>
+                  <span className="inline-block rounded-full bg-gray-100 text-gray-500 text-[10px] px-2 py-0.5 font-medium">
+                    {attraction.region}
+                  </span>
+                </div>
                 <p className="mt-0.5 text-xs text-gray-500 line-clamp-2">
                   {attraction.description}
                 </p>
-                <div className="mt-1.5 flex items-center gap-2">
-                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
-                    {attraction.region}
-                  </span>
-                  <span className="text-xs text-brand-600 font-medium">
-                    {formatLocalCost(
-                      attraction.costPerCouplePerDay,
-                      selectedDestination.currencyCode
-                    )}
-                    /día por pareja
-                  </span>
-                </div>
+                <p className="text-xs text-brand-600 font-semibold mt-0.5">
+                  ~${attraction.costPerCouplePerDay} USD/día · 2 personas
+                </p>
               </div>
             </div>
           </button>
