@@ -23,9 +23,17 @@ export default function CostSummary() {
 
   if (!selectedDestination || generatedItinerary.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center text-gray-400 dark:text-gray-500">
-        <span className="text-4xl mb-3">💰</span>
-        <p className="text-sm dark:text-gray-400">Genera un itinerario para ver el desglose de costos</p>
+      <div className="space-y-4">
+        <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400 dark:text-gray-500">
+          <span className="text-4xl mb-3">💰</span>
+          <p className="text-sm dark:text-gray-400">Genera un itinerario para ver el desglose de costos</p>
+        </div>
+        {selectedDestination && (
+          <CurrencyConverter
+            destCode={selectedDestination.currencyCode}
+            destFlag={selectedDestination.flag ?? '🌍'}
+          />
+        )}
       </div>
     );
   }
@@ -348,6 +356,80 @@ export default function CostSummary() {
       </div>
 
       <MultiDestEstimator primaryUSD={totalUSD} primaryCLP={totalCLP} />
+      <CurrencyConverter destCode={code} destFlag={selectedDestination.flag ?? '🌍'} />
+    </div>
+  );
+}
+
+function CurrencyConverter({ destCode, destFlag }: { destCode: string; destFlag: string }) {
+  const { currencyRates } = useTravelStore();
+  const [amount, setAmount] = useState('');
+  const [fromCurrency, setFromCurrency] = useState<'USD' | 'CLP' | 'LOCAL'>('LOCAL');
+
+  const localRate = currencyRates[`USD_TO_${destCode}`] ?? 1;
+  const numAmount = parseFloat(amount) || 0;
+
+  const toUSD = fromCurrency === 'USD'
+    ? numAmount
+    : fromCurrency === 'CLP'
+      ? numAmount / currencyRates.USD_TO_CLP
+      : localRate > 0 ? numAmount / localRate : 0;
+
+  const toCLP = toUSD * currencyRates.USD_TO_CLP;
+  const toLocal = toUSD * localRate;
+
+  const currencies = [
+    { key: 'LOCAL' as const, label: destCode, flag: destFlag },
+    { key: 'USD' as const, label: 'USD', flag: '🇺🇸' },
+    { key: 'CLP' as const, label: 'CLP', flag: '🇨🇱' },
+  ];
+
+  return (
+    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-3">
+      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">💱 Convertidor de moneda</p>
+      <div className="flex gap-2">
+        <input
+          type="number"
+          min={0}
+          value={amount}
+          onChange={e => setAmount(e.target.value)}
+          placeholder="Ingresa monto..."
+          className="flex-1 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-400"
+        />
+        <div className="flex rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden">
+          {currencies.map(c => (
+            <button
+              key={c.key}
+              onClick={() => setFromCurrency(c.key)}
+              className={`px-2 py-1 text-xs font-semibold transition-colors ${fromCurrency === c.key ? 'bg-brand-500 text-white' : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'}`}
+            >
+              {c.flag}
+            </button>
+          ))}
+        </div>
+      </div>
+      {numAmount > 0 && (
+        <div className="space-y-1.5 pt-1 border-t border-gray-100 dark:border-gray-700">
+          {fromCurrency !== 'LOCAL' && (
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-500 dark:text-gray-400">{destFlag} {destCode}</span>
+              <span className="font-semibold text-gray-900 dark:text-gray-100">{fmt(toLocal)}</span>
+            </div>
+          )}
+          {fromCurrency !== 'USD' && (
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-500 dark:text-gray-400">🇺🇸 USD</span>
+              <span className="font-semibold text-gray-900 dark:text-gray-100">${(toUSD).toFixed(2)}</span>
+            </div>
+          )}
+          {fromCurrency !== 'CLP' && (
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-500 dark:text-gray-400">🇨🇱 CLP</span>
+              <span className="font-semibold text-gray-900 dark:text-gray-100">{fmt(toCLP)}</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
