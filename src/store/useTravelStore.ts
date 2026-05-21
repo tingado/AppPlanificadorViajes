@@ -91,7 +91,7 @@ export const useTravelStore = create<TravelState>()(
     (set, get) => ({
       selectedDestination: null,
       setSelectedDestination: (destination) => {
-        set({ selectedDestination: destination, activePins: [], routeInfo: null, showRoute: false, generatedItinerary: [] });
+        set({ selectedDestination: destination, activePins: [], routeInfo: null, showRoute: false, generatedItinerary: [], dayNotes: {}, itineraryOutdated: false });
       },
 
       activePins: [],
@@ -152,7 +152,7 @@ export const useTravelStore = create<TravelState>()(
         const { selectedDestination, activePins, tripDays, currencyRates } = get();
         if (!selectedDestination || activePins.length === 0) return;
         const itinerary = generateItinerary(selectedDestination, activePins, tripDays, currencyRates);
-        set({ generatedItinerary: itinerary, itineraryOutdated: false, dayNotes: {} });
+        set({ generatedItinerary: itinerary, itineraryOutdated: false });
       },
 
       currencyRates: defaultCurrencyRates,
