@@ -74,7 +74,7 @@ export default function MobileLayout() {
               className={`flex-1 py-2 text-xs font-semibold transition-colors relative ${
                 activeTab === tab.key
                   ? "border-b-2 border-brand-500 text-brand-600"
-                  : "text-gray-500 dark:text-gray-400"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
               }`}
             >
               {tab.icon} {tab.label}
