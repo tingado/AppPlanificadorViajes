@@ -70,7 +70,7 @@ const stepperSteps = [
 ];
 
 export default function ControlPanel() {
-  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate, activePins, generatedItinerary, resetTrip } = useTravelStore();
+  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate, activePins, generatedItinerary, itineraryOutdated, resetTrip } = useTravelStore();
 
   const currentStep = !selectedDestination ? 0 : activePins.length === 0 ? 1 : generatedItinerary.length === 0 ? 2 : 3;
 
@@ -163,13 +163,16 @@ export default function ControlPanel() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex-1 py-2.5 text-xs font-semibold transition-colors ${
+            className={`flex-1 py-2.5 text-xs font-semibold transition-colors relative ${
               activeTab === tab.key
                 ? "border-b-2 border-brand-500 text-brand-600"
                 : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
             }`}
           >
             {tab.icon} {tab.label}
+            {tab.key === "itinerary" && itineraryOutdated && (
+              <span className="absolute top-1.5 right-1 w-2 h-2 rounded-full bg-amber-400" />
+            )}
           </button>
         ))}
       </div>

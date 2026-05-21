@@ -72,7 +72,7 @@ const stepperSteps = [
 ];
 
 export default function MobileLayout() {
-  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary, darkMode, toggleDarkMode, tripDate, setTripDate, resetTrip } = useTravelStore();
+  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary, itineraryOutdated, darkMode, toggleDarkMode, tripDate, setTripDate, resetTrip } = useTravelStore();
   const pinCount = activePins.length;
 
   // Mejora 1: scroll al inicio al cambiar de tab
@@ -215,6 +215,9 @@ export default function MobileLayout() {
                 <span className="absolute top-1 right-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-brand-500 text-white text-[10px] font-bold">
                   {pinCount}
                 </span>
+              )}
+              {tab.key === "itinerary" && itineraryOutdated && (
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-amber-400" />
               )}
             </button>
           ))}
