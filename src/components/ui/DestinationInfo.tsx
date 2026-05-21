@@ -16,8 +16,8 @@ export default function DestinationInfo() {
   const { selectedDestination, tripDate } = useTravelStore();
   if (!selectedDestination) return null;
 
-  const { visaInfo, bestMonths, climate, travelTips } = selectedDestination;
-  if (!visaInfo && !bestMonths && !climate && !travelTips?.length) return null;
+  const { visaInfo, bestMonths, climate, travelTips, freeDayHints } = selectedDestination;
+  if (!visaInfo && !bestMonths && !climate && !travelTips?.length && !freeDayHints?.length) return null;
 
   const checkMonth = tripDate
     ? new Date(tripDate + 'T12:00:00').getMonth() + 1
@@ -70,6 +70,20 @@ export default function DestinationInfo() {
                   <li key={tip} className="text-sm text-gray-700 dark:text-gray-300 flex gap-2">
                     <span className="text-brand-400 shrink-0">•</span>
                     <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {freeDayHints && freeDayHints.length > 0 && (
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">🌅 Ideas para días libres</p>
+              <ul className="space-y-1">
+                {freeDayHints.map((hint) => (
+                  <li key={hint} className="text-sm text-gray-700 dark:text-gray-300 flex gap-2">
+                    <span className="text-amber-400 shrink-0">★</span>
+                    <span>{hint}</span>
                   </li>
                 ))}
               </ul>

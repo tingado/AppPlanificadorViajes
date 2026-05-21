@@ -19,6 +19,7 @@ export const destinations: Destination[] = [
     avoidMonths: [6, 7, 8],
     climate: "Templado, 15-22°C en Oct-Nov",
     travelTips: ["JR Pass para Shinkansen (~$300 USD/7 días)", "Amiga local sin costo de alojamiento", "Comprar Suica card en aeropuerto"],
+    freeDayHints: ["Onsen en un ryokan tradicional (baño termal, cena kaiseki)", "Explorar konbini: sushi, ramen y repostería local desde ¥500", "Mercado Nishiki (Kioto) o Tsukiji (Tokio): probar tamagoyaki y mochi fresco", "Paseo nocturno por Dotonbori (Osaka) y takoyaki en el puesto callejero"],
     attractions: [
       {
         id: "kyoto",
@@ -128,6 +129,7 @@ export const destinations: Destination[] = [
     avoidMonths: [12, 1, 2],
     climate: "Tropical, 27-32°C, húmedo",
     travelTips: ["Alquilar moto en Ubud (~$8/día)", "Considerar Lombok en Febrero si llueve", "Goa Gajah (Elephant Temple) cerca de Ubud ~$3/persona"],
+    freeDayHints: ["Clase de yoga al amanecer en Ubud (desde IDR 150.000/persona)", "Spa balinés: masaje de 90 min ~IDR 350.000/pareja en Ubud", "Mercado de Ubud (Pasar Ubud): artesanías, especias y fruta tropical fresca", "Paseo en moto por campos de arroz y aldeas de artesanos cerca de Mas"],
     attractions: [
       {
         id: "tegallalang",
@@ -156,18 +158,8 @@ export const destinations: Destination[] = [
         coordinates: { lat: -8.7278, lng: 115.5444 },
         costPerCouplePerDay: 600000,
         region: "Islas Nusa",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Seminyak_beach_bali.jpg/400px-Seminyak_beach_bali.jpg",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Kelingking_beach_nusa_penida.jpg/400px-Kelingking_beach_nusa_penida.jpg",
         rating: 5,
-      },
-      {
-        id: "bali-ubud-rice",
-        name: "Tegallalang Rice Terrace",
-        description: "Terrazas de arroz escalonadas patrimonio UNESCO",
-        coordinates: { lat: -8.4317, lng: 115.2794 },
-        costPerCouplePerDay: 245000,
-        region: "Ubud",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tegalalang_Rice_Terrace.jpg/400px-Tegalalang_Rice_Terrace.jpg",
-        rating: 4.5,
       },
       {
         id: "bali-tanah-lot",
@@ -188,24 +180,6 @@ export const destinations: Destination[] = [
         region: "Seminyak",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Seminyak_beach_bali.jpg/400px-Seminyak_beach_bali.jpg",
         rating: 4,
-      },
-      {
-        id: "bali-uluwatu",
-        name: "Templo Uluwatu",
-        description: "Templo en acantilado sobre el Océano Índico, danza Kecak al atardecer",
-        coordinates: { lat: -8.8291, lng: 115.0849 },
-        costPerCouplePerDay: 325000,
-        region: "Bukit",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Uluwatu_Temple_Bali.jpg/400px-Uluwatu_Temple_Bali.jpg",
-      },
-      {
-        id: "bali-nusa-penida",
-        name: "Nusa Penida",
-        description: "Isla con aguas cristalinas y playa de Kelingking",
-        coordinates: { lat: -8.7278, lng: 115.5444 },
-        costPerCouplePerDay: 1300000,
-        region: "Nusa Penida",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Kelingking_beach_nusa_penida.jpg/400px-Kelingking_beach_nusa_penida.jpg",
       },
       {
         id: "bali-mount-batur",
@@ -235,6 +209,7 @@ export const destinations: Destination[] = [
     goodMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     climate: "Ecuatorial, 25-30°C estable todo el año",
     travelTips: ["Hawker Centers: comida Michelin desde $5 SGD", "MRT eficiente — evitar taxis", "Gardens by the Bay iluminado de noche (gratis exterior)"],
+    freeDayHints: ["Tour gastronómico por hawker centers: Lau Pa Sat, Maxwell y Old Airport Road", "Haji Lane y Arab Street: boutiques vintage y café árabe con shisha", "Botanic Gardens patrimonio UNESCO (entrada gratis, Orchid Garden $5 SGD)", "Clarke Quay de noche: cócteles con vistas al río y ambiente cosmopolita"],
     attractions: [
       {
         id: "gardens-bay",
@@ -267,16 +242,6 @@ export const destinations: Destination[] = [
         rating: 5,
       },
       {
-        id: "sg-gardens",
-        name: "Gardens by the Bay",
-        description: "Supertrees y cúpulas de flores futuristas",
-        coordinates: { lat: 1.2816, lng: 103.8636 },
-        costPerCouplePerDay: 50,
-        region: "Marina Bay",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Singapore_Supertrees.jpg/400px-Singapore_Supertrees.jpg",
-        rating: 5,
-      },
-      {
         id: "sg-chinatown",
         name: "Chinatown",
         description: "Templos, mercados y gastronomía auténtica china",
@@ -285,16 +250,6 @@ export const destinations: Destination[] = [
         region: "Central",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Singapore_Chinatown.jpg/400px-Singapore_Chinatown.jpg",
         rating: 4,
-      },
-      {
-        id: "sg-sentosa",
-        name: "Sentosa Island",
-        description: "Playas, parques temáticos y resort de lujo",
-        coordinates: { lat: 1.2494, lng: 103.8303 },
-        costPerCouplePerDay: 80,
-        region: "Sentosa",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Sentosa_island.jpg/400px-Sentosa_island.jpg",
-        rating: 4.5,
       },
       {
         id: "sg-hawker",
@@ -342,6 +297,7 @@ export const destinations: Destination[] = [
     goodMonths: [11, 12, 1, 2],
     avoidMonths: [5, 6, 7, 8, 9],
     climate: "Tropical, 24-32°C en temporada seca (Nov-Feb)",
+    freeDayHints: ["Clase de cocina tailandesa: mercado + cooking class (~$25/persona)", "Mercado nocturno local: Chatuchak (Bangkok) o Night Bazaar (Chiang Mai)", "Masaje tradicional thai de 2h en spa local (~600 THB/persona)", "Tour en tuk-tuk por templos secundarios fuera del circuito turístico"],
     travelTips: [
       "Bus nocturno Bangkok-Chiang Mai (~$10/persona, 8h) ahorra noche de hotel",
       "AirAsia/Nok Air para vuelos internos (~$25-50/persona)",
@@ -456,6 +412,7 @@ export const destinations: Destination[] = [
     goodMonths: [11, 12, 1, 2, 3],
     avoidMonths: [6, 7, 8],
     climate: "Variable: norte fresco (17-22°C), sur cálido (28-33°C) en Nov-Feb",
+    freeDayHints: ["Pho Bo (sopa de res) de madrugada en puesto callejero local (~30.000 VND)", "Cyclo tour por el casco antiguo de Hanoi o bicicleta en Hoi An", "Clase de cocina vietnamita: mercado matutino + preparar Pho, Banh Mi y Cao Lau", "Café de huevo (Egg Coffee) en Giang Café, Hanoi — experiencia única"],
     travelTips: [
       "Crucero Ha Long Bay 2 noches todo incluido (~$200-320/pareja) — reservar antes",
       "Grab (app) más seguro que taxis en Hanoi y HCMC",
@@ -495,16 +452,6 @@ export const destinations: Destination[] = [
         rating: 4.5,
       },
       {
-        id: "vn-halong",
-        name: "Bahía de Ha Long",
-        description: "Miles de islotes kársticos sobre aguas esmeralda",
-        coordinates: { lat: 20.9101, lng: 107.1839 },
-        costPerCouplePerDay: 3000000,
-        region: "Norte",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Halong_bay_Vietnam.jpg/400px-Halong_bay_Vietnam.jpg",
-        rating: 5,
-      },
-      {
         id: "vn-hue",
         name: "Ciudad Imperial de Hué",
         description: "Antigua capital imperial con ciudadela y tumbas reales",
@@ -513,16 +460,6 @@ export const destinations: Destination[] = [
         region: "Centro",
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Hue_citadel.jpg/400px-Hue_citadel.jpg",
         rating: 4,
-      },
-      {
-        id: "vn-hoian",
-        name: "Hoi An Ancient Town",
-        description: "Ciudad antigua con linternas y arquitectura colonial",
-        coordinates: { lat: 15.8801, lng: 108.3380 },
-        costPerCouplePerDay: 890000,
-        region: "Centro",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Hoi_an_river.jpg/400px-Hoi_an_river.jpg",
-        rating: 4.5,
       },
       {
         id: "vn-sapa",
@@ -570,6 +507,7 @@ export const destinations: Destination[] = [
     goodMonths: [11, 12, 1, 2, 3, 4],
     avoidMonths: [7, 8, 9],
     climate: "Tropical, 28-33°C, humedad alta. Temporada seca: Nov-Abril",
+    freeDayHints: ["Snorkeling libre desde la playa con alquiler de equipo (~$5/persona)", "Bangka al atardecer: paseo en banca local con pescadores (~$15/bote)", "Barbacoa de mariscos en la playa: pescado fresco, calamares y gambas", "Alquilar moto y explorar playas desconocidas sin turistas"],
     travelTips: [
       "El Nido: Laguna Secreta (Tour A) requiere reserva anticipada",
       "Puerto Princesa ↔ El Nido: van pública ($10/persona, 5h) o vuelo privado ($80+)",

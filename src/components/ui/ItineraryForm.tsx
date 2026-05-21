@@ -4,6 +4,10 @@ import { useTravelStore } from "@/store/useTravelStore";
 
 const presets = [7, 10, 14, 21, 25];
 
+function fmt(n: number) {
+  return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
+}
+
 interface ItineraryFormProps {
   compact?: boolean;
 }
@@ -17,9 +21,23 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
     generateItineraryAction,
     generatedItinerary,
     setActiveTab,
+    currencyRates,
+    budgetOverrides,
   } = useTravelStore();
 
   const canGenerate = selectedDestination && activePins.length > 0;
+
+  // Quick estimate: base accommodation+food + avg attraction cost spread across days
+  const quickEstimateUSD = (() => {
+    if (!selectedDestination) return null;
+    const localRate = (currencyRates as Record<string, number>)[`USD_TO_${selectedDestination.currencyCode}`] ?? 1;
+    const baseNight = budgetOverrides.accommodationPerNight ?? selectedDestination.dailyBaseAccommodationCost;
+    const baseFood = budgetOverrides.foodPerDay ?? selectedDestination.dailyBaseFoodCost;
+    const basePerDayUSD = localRate > 0 ? (baseNight + baseFood) / localRate : 0;
+    const activityTotalUSD = activePins.reduce((s, pin) => s + (localRate > 0 ? pin.costPerCouplePerDay / localRate : 0), 0);
+    const intlFlight = budgetOverrides.internationalFlightUSD ?? 3500;
+    return basePerDayUSD * tripDays + activityTotalUSD + intlFlight;
+  })();
 
   function handleGenerate() {
     generateItineraryAction();
@@ -108,6 +126,17 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
           <li>
             Viajeros: <span className="text-gray-700 dark:text-gray-200 font-medium">2 personas (pareja)</span>
           </li>
+          {quickEstimateUSD != null && (
+            <li className="pt-1 border-t border-gray-200 dark:border-gray-700 mt-1">
+              Costo estimado:{" "}
+              <span className="text-brand-600 dark:text-brand-400 font-semibold">
+                ~${fmt(quickEstimateUSD)} USD
+              </span>
+              <span className="text-gray-400 dark:text-gray-500 ml-1">
+                · {fmt(quickEstimateUSD * currencyRates.USD_TO_CLP)} CLP
+              </span>
+            </li>
+          )}
         </ul>
       </div>
 

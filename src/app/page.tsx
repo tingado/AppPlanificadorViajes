@@ -23,13 +23,15 @@ export default function Home() {
     const destId = params.get('dest');
     const days = params.get('days');
     const pins = params.get('pins');
+    const date = params.get('date');
 
     if (destId) {
-      const { setSelectedDestination, setTripDays, toggleAttraction, generateItineraryAction } = useTravelStore.getState();
+      const { setSelectedDestination, setTripDays, setTripDate, toggleAttraction, generateItineraryAction } = useTravelStore.getState();
       const dest = destinations.find(d => d.id === destId);
       if (dest) {
         setSelectedDestination(dest);
         if (days) setTripDays(Number(days));
+        if (date) setTripDate(date);
         if (pins) {
           const pinIds = pins.split(',').filter(Boolean);
           pinIds.forEach(pinId => {
