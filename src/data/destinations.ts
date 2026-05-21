@@ -20,6 +20,11 @@ export const destinations: Destination[] = [
     climate: "Templado, 15-22°C en Oct-Nov",
     travelTips: ["JR Pass para Shinkansen (~$300 USD/7 días)", "Amiga local sin costo de alojamiento", "Comprar Suica card en aeropuerto"],
     freeDayHints: ["Onsen en un ryokan tradicional (baño termal, cena kaiseki)", "Explorar konbini: sushi, ramen y repostería local desde ¥500", "Mercado Nishiki (Kioto) o Tsukiji (Tokio): probar tamagoyaki y mochi fresco", "Paseo nocturno por Dotonbori (Osaka) y takoyaki en el puesto callejero"],
+    romanticHighlights: [
+      "🛁 Noche en ryokan con onsen privado y cena kaiseki de 10 tiempos — la experiencia más íntima de Japón",
+      "🎎 Paseo al atardecer en rickshaw por el barrio de Gion en Kioto",
+      "🍵 Ceremonia del té privada en jardín zen con traducción (~$60/pareja)",
+    ],
     estimatedFlightFromChileUSD: 4400,
     attractions: [
       {
@@ -134,6 +139,11 @@ export const destinations: Destination[] = [
     climate: "Tropical, 27-32°C, húmedo",
     travelTips: ["Alquilar moto en Ubud (~$8/día)", "Considerar Lombok en Febrero si llueve", "Goa Gajah (Elephant Temple) cerca de Ubud ~$3/persona"],
     freeDayHints: ["Clase de yoga al amanecer en Ubud (desde IDR 150.000/persona)", "Spa balinés: masaje de 90 min ~IDR 350.000/pareja en Ubud", "Mercado de Ubud (Pasar Ubud): artesanías, especias y fruta tropical fresca", "Paseo en moto por campos de arroz y aldeas de artesanos cerca de Mas"],
+    romanticHighlights: [
+      "🏊 Villa privada con piscina infinita sobre las terrazas de arroz de Ubud (~$150-300/noche)",
+      "💆 Spa balinés de pareja: masaje 2h + baño de flores + champagne (~$80/pareja)",
+      "🦞 Cena romántica al atardecer en Jimbaran Bay: mariscos a la brasa en la orilla del mar",
+    ],
     estimatedFlightFromChileUSD: 3800,
     attractions: [
       {
@@ -216,6 +226,11 @@ export const destinations: Destination[] = [
     climate: "Ecuatorial, 25-30°C estable todo el año",
     travelTips: ["Hawker Centers: comida Michelin desde $5 SGD", "MRT eficiente — evitar taxis", "Gardens by the Bay iluminado de noche (gratis exterior)"],
     freeDayHints: ["Tour gastronómico por hawker centers: Lau Pa Sat, Maxwell y Old Airport Road", "Haji Lane y Arab Street: boutiques vintage y café árabe con shisha", "Botanic Gardens patrimonio UNESCO (entrada gratis, Orchid Garden $5 SGD)", "Clarke Quay de noche: cócteles con vistas al río y ambiente cosmopolita"],
+    romanticHighlights: [
+      "🌃 Cena en rooftop bar con vista a Marina Bay Sands (Ce La Vi, Altitude — ~$100-200/pareja)",
+      "🌿 Paseo nocturno bajo los Supertrees iluminados en Gardens by the Bay (gratis, espectáculo a las 20h)",
+      "🦧 Breakfast with Orangutans en Singapore Zoo — experiencia única en el mundo (~$60/pareja)",
+    ],
     estimatedFlightFromChileUSD: 4000,
     attractions: [
       {
@@ -314,6 +329,11 @@ export const destinations: Destination[] = [
       "Elephant Nature Park reservar 2-3 meses antes (se agota rápido)",
       "Songthaew (camioneta roja) en Chiang Mai: $0.50/persona por tramo",
       "Evitar Bangkok en motos — preferir BTS SkyTrain",
+    ],
+    romanticHighlights: [
+      "🚢 Cena flotante en crucero Manohra por el río Chao Phraya en Bangkok (~$100/pareja)",
+      "💆 Spa de pareja en resort de lujo con masaje thai + baño de flores en Koh Samui (~$120/pareja)",
+      "🎈 Amanecer en globo aerostático sobre los templos de Chiang Rai (~$200/pareja)",
     ],
     estimatedFlightFromChileUSD: 3800,
     attractions: [
@@ -434,6 +454,11 @@ export const destinations: Destination[] = [
       "Hoi An: rentar bicicleta para recorrer el casco histórico",
       "Casco histórico Hoi An nominado Patrimonio UNESCO",
     ],
+    romanticHighlights: [
+      "⛵ Crucero privado en Ha Long Bay con camarote y cena en cubierta bajo las estrellas (~$200-320/pareja/noche)",
+      "🏮 Cena en restaurante sobre el agua en Hoi An iluminado por miles de linternas de colores",
+      "👨‍🍳 Cooking class privada para dos + cena romántica con lo que cocinaron juntos (~$40/pareja)",
+    ],
     estimatedFlightFromChileUSD: 4000,
     attractions: [
       {
@@ -532,6 +557,11 @@ export const destinations: Destination[] = [
       "Snorkel y isla hopping: contratar banca local (~$25-40/bote grupo)",
       "Cebu Pacific para vuelos Manila-Puerto Princesa (~$30-60/persona)",
       "Alquilar moto en El Nido pueblo (~$8/día) para explorar sin grupo",
+    ],
+    romanticHighlights: [
+      "🏝 Island hopping privado en banca con picnic en banco de arena virgen solo para dos (El Nido, ~$60/bote)",
+      "🔦 Snorkel nocturno en Kayangan Lake — uno de los lagos más limpios del mundo con bioluminiscencia",
+      "🍢 Cena en la playa con antorchas al atardecer en Palawan — pescado fresco y ron local",
     ],
     estimatedFlightFromChileUSD: 4200,
     attractions: [
@@ -657,6 +687,11 @@ export const destinations: Destination[] = [
       "Excursión en dhow a isla habitada: cultura local, mezquita de coral y mercado de pescado",
       "Spa sobre el agua con vista al índico — masaje de pareja con sonido de olas",
     ],
+    romanticHighlights: [
+      "🌟 Cena privada en muelle sobre el agua bajo las estrellas — servicio exclusivo incluido en resorts",
+      "🤿 Buceo nocturno para ver tiburones de arrecife y bioluminiscencia del Índico",
+      "🛁 Desayuno flotante en la bañera/piscina de la villa overwater — el más instagrameable de la luna de miel",
+    ],
     estimatedFlightFromChileUSD: 5200,
     attractions: [
       {
@@ -770,6 +805,11 @@ export const destinations: Destination[] = [
       "Día de playa en playa Oia o Perissa (Santorini) con vista al caldera volcánico",
       "Mercado central de Atenas (Varvakeios): especias, aceitunas y queso feta en origen",
       "Excursión en velero privado al caldera activo de Santorini — hora dorada perfecta",
+    ],
+    romanticHighlights: [
+      "🌅 Atardecer de Oia en Santorini — el más famoso del mundo (llegar 1h antes para lugar en primera fila)",
+      "⛵ Crucero privado en velero al caldera volcánico activo con cena de langosta y snorkel (~$300/pareja)",
+      "🍷 Cena en cave restaurant de Santorini con vista al mar Egeo y vinos volcánicos locales",
     ],
     estimatedFlightFromChileUSD: 3400,
     attractions: [
@@ -885,6 +925,11 @@ export const destinations: Destination[] = [
       "Paseo por la medina azul de Chefchaouen: cada callejón es una fotografía perfecta",
       "Cena romántica en azotea con vista a la Koutoubia mientras el muecín llama al rezo",
     ],
+    romanticHighlights: [
+      "🌙 Noche en jaima de lujo en el Sahara (Merzouga) bajo el cielo más estrellado del mundo (~$200/pareja)",
+      "🧖 Hammam de pareja en riad de lujo: vapor + peeling de argán + masaje aromático (~$80-120/pareja)",
+      "🍽 Cena en azotea de Marrakech con vista a la Koutoubia iluminada al son de la oración del Magreb",
+    ],
     estimatedFlightFromChileUSD: 2800,
     attractions: [
       {
@@ -998,6 +1043,11 @@ export const destinations: Destination[] = [
       "Tour de vinos en Chianti (Toscana) a bordo de una vespa o bicicleta vintage",
       "Día de playa en Positano o Amalfi con limonada y pasta al limone frente al mar",
       "Mercado de Campo de' Fiori (Roma) a las 7 AM: frutas, quesos y el desayuno más romano posible",
+    ],
+    romanticHighlights: [
+      "🚣 Paseo en góndola privada por los canales de Venecia al atardecer (~$120-150 por 40 min)",
+      "🍋 Día en la Costa Amalfi — Positano + limoncello en terraza + pasta al limone frente al mar",
+      "🌹 Cena en terraza con vista al Coliseo o al Vaticano iluminado de noche en Roma",
     ],
     estimatedFlightFromChileUSD: 3000,
     attractions: [
