@@ -76,14 +76,14 @@ export default function AttractionModal({ attraction, onClose }: Props) {
               💰 {selectedDestination ? formatLocalCost(attraction.costPerCouplePerDay, selectedDestination.currencyCode) : attraction.costPerCouplePerDay} · ~${usdCost} USD/día · 2p
             </span>
             <button
-              onClick={() => toggleAttraction(attraction)}
+              onClick={() => { toggleAttraction(attraction); if (!isActive) onClose(); }}
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
                 isActive
                   ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-700 hover:bg-red-100'
                   : 'bg-brand-500 text-white hover:bg-brand-600'
               }`}
             >
-              {isActive ? '✕ Quitar pin' : '📍 Agregar pin'}
+              {isActive ? '✕ Quitar pin' : '📍 Agregar al itinerario'}
             </button>
           </div>
         </div>
