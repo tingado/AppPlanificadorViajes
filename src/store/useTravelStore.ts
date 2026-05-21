@@ -47,6 +47,10 @@ interface TravelState {
 
   // Itinerary staleness
   itineraryOutdated: boolean;
+
+  // Attraction notes
+  attractionNotes: Record<string, string>;
+  setAttractionNote: (attractionId: string, note: string) => void;
 }
 
 export const useTravelStore = create<TravelState>()(
@@ -121,6 +125,10 @@ export const useTravelStore = create<TravelState>()(
 
       activeTab: "attractions",
       setActiveTab: (tab) => set({ activeTab: tab }),
+
+      attractionNotes: {},
+      setAttractionNote: (id, note) =>
+        set((s) => ({ attractionNotes: { ...s.attractionNotes, [id]: note } })),
     }),
     {
       name: "travel-planner-store",
@@ -130,6 +138,7 @@ export const useTravelStore = create<TravelState>()(
         tripDays: state.tripDays,
         generatedItinerary: state.generatedItinerary,
         currencyRates: state.currencyRates,
+        attractionNotes: state.attractionNotes,
       }),
     }
   )

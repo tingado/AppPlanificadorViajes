@@ -152,8 +152,8 @@ export default function MapView() {
         polylineRef.current = L.polyline(latlngs, {
           color: "#c026d3",
           weight: 3,
-          dashArray: "8 6",
-          opacity: 0.8,
+          dashArray: "8 4",
+          opacity: 0.7,
         }).addTo(map);
       }
     };
