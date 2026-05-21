@@ -26,6 +26,7 @@ export default function AttractionList() {
     setActiveTab,
     generatedItinerary,
     currencyRates,
+    clearPins,
   } = useTravelStore();
 
   const localRate = selectedDestination
@@ -84,10 +85,17 @@ export default function AttractionList() {
               />
             ))}
           </div>
-          <span className="text-xs text-gray-500">{activePins.length}/3 seleccionados</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">{activePins.length}/3 seleccionados</span>
           {activePins.length === 3 && (
             <span className="text-xs text-amber-600 font-medium">máx</span>
           )}
+          <button
+            onClick={clearPins}
+            className="ml-auto text-xs text-gray-400 dark:text-gray-500 hover:text-red-400 transition-colors"
+            title="Quitar todos los pines"
+          >
+            ✕ limpiar
+          </button>
         </div>
       )}
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
