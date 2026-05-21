@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
+import { destinations } from "@/data/destinations";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -293,6 +295,88 @@ export default function CostSummary() {
             ↺ Restaurar valores por defecto
           </button>
         )}
+      </div>
+
+      <MultiDestEstimator primaryUSD={totalUSD} primaryCLP={totalCLP} />
+    </div>
+  );
+}
+
+function MultiDestEstimator({ primaryUSD, primaryCLP }: { primaryUSD: number; primaryCLP: number }) {
+  const [segments, setSegments] = useState<{ destId: string; days: number }[]>([]);
+  const { currencyRates } = useTravelStore();
+
+  const addSegment = () => setSegments(s => [...s, { destId: destinations[0].id, days: 7 }]);
+  const removeSegment = (i: number) => setSegments(s => s.filter((_, idx) => idx !== i));
+  const updateSegment = (i: number, key: 'destId' | 'days', val: string | number) =>
+    setSegments(s => s.map((seg, idx) => idx === i ? { ...seg, [key]: val } : seg));
+
+  if (segments.length === 0) {
+    return (
+      <button
+        onClick={addSegment}
+        className="w-full text-xs text-brand-600 dark:text-brand-400 border border-dashed border-brand-300 dark:border-brand-700 rounded-xl py-2.5 hover:bg-brand-50 dark:hover:bg-brand-900/20"
+      >
+        + Agregar segundo destino al presupuesto
+      </button>
+    );
+  }
+
+  let combinedUSD = primaryUSD;
+  const segDetails = segments.map(seg => {
+    const dest = destinations.find(d => d.id === seg.destId);
+    if (!dest) return { dest: null, estimatedUSD: 0, days: seg.days };
+    const localRate = currencyRates[`USD_TO_${dest.currencyCode}`] ?? 1;
+    const dailyLocal = dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost;
+    const dailyUSD = localRate > 0 ? dailyLocal / localRate : 0;
+    const estimatedUSD = dailyUSD * seg.days;
+    combinedUSD += estimatedUSD;
+    return { dest, estimatedUSD, days: seg.days };
+  });
+  const combinedCLP = combinedUSD * currencyRates.USD_TO_CLP;
+
+  return (
+    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">🌏 Viaje multi-destino</p>
+        <button onClick={addSegment} className="text-xs text-brand-500 hover:underline">+ añadir</button>
+      </div>
+      {segDetails.map((seg, i) => (
+        <div key={i} className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <select
+              value={segments[i].destId}
+              onChange={e => updateSegment(i, 'destId', e.target.value)}
+              className="flex-1 text-xs rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 focus:outline-none"
+            >
+              {destinations.map(d => (
+                <option key={d.id} value={d.id}>{d.flag} {d.country}</option>
+              ))}
+            </select>
+            <input
+              type="number"
+              min={1}
+              max={60}
+              value={segments[i].days}
+              onChange={e => updateSegment(i, 'days', Number(e.target.value))}
+              className="w-14 text-xs text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none"
+            />
+            <span className="text-xs text-gray-400">días</span>
+            <button onClick={() => removeSegment(i)} className="text-gray-300 dark:text-gray-600 hover:text-red-400 text-sm">✕</button>
+          </div>
+          {seg.dest && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 pl-1">
+              {seg.dest.flag} Est. ~${fmt(seg.estimatedUSD)} USD ({seg.days} días base, sin actividades)
+            </p>
+          )}
+        </div>
+      ))}
+      <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
+        <p className="text-xs text-gray-500 dark:text-gray-400">Total combinado (2 personas)</p>
+        <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
+          ${fmt(combinedUSD)} <span className="text-xs font-normal text-gray-400">USD</span>
+        </p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{fmt(combinedCLP)} CLP</p>
       </div>
     </div>
   );
