@@ -57,6 +57,11 @@ interface TravelState {
   addCustomPackingItem: (label: string) => void;
   removeCustomPackingItem: (id: string) => void;
 
+  // Pre-trip administrative checklist
+  preTripChecked: Record<string, boolean>;
+  togglePreTripItem: (id: string) => void;
+  resetPreTrip: () => void;
+
   // UI state
   mobilePanel: "map" | "controls";
   setMobilePanel: (panel: "map" | "controls") => void;
@@ -220,6 +225,12 @@ export const useTravelStore = create<TravelState>()(
         packingItems: Object.fromEntries(Object.entries(s.packingItems).filter(([k]) => k !== id)),
       })),
 
+      preTripChecked: {},
+      togglePreTripItem: (id) => set((s) => ({
+        preTripChecked: { ...s.preTripChecked, [id]: !s.preTripChecked[id] }
+      })),
+      resetPreTrip: () => set({ preTripChecked: {} }),
+
       mobilePanel: "map",
       setMobilePanel: (panel) => set({ mobilePanel: panel }),
 
@@ -262,6 +273,7 @@ export const useTravelStore = create<TravelState>()(
         budgetOverrides: state.budgetOverrides,
         budgetGoalUSD: state.budgetGoalUSD,
         tripDate: state.tripDate,
+        preTripChecked: state.preTripChecked,
       }),
     }
   )
