@@ -161,9 +161,12 @@ const stepperSteps = [
 ];
 
 export default function ControlPanel() {
-  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate, activePins, generatedItinerary, itineraryOutdated, resetTrip } = useTravelStore();
+  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate, activePins, generatedItinerary, itineraryOutdated, resetTrip, preTripChecked } = useTravelStore();
 
   const currentStep = !selectedDestination ? 0 : activePins.length === 0 ? 1 : generatedItinerary.length === 0 ? 2 : 3;
+  const preTripTotal = 19;
+  const preTripDone = Object.values(preTripChecked ?? {}).filter(Boolean).length;
+  const preTripPending = preTripTotal - preTripDone;
 
   return (
     <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900">
@@ -263,6 +266,11 @@ export default function ControlPanel() {
             {tab.icon} {tab.label}
             {tab.key === "itinerary" && itineraryOutdated && (
               <span className="absolute top-1.5 right-1 w-2 h-2 rounded-full bg-amber-400" />
+            )}
+            {tab.key === "packing" && preTripPending > 0 && (
+              <span className="absolute top-1 right-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-indigo-500 text-white text-[9px] font-bold">
+                {preTripPending}
+              </span>
             )}
           </button>
         ))}

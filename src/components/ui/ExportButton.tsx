@@ -183,16 +183,19 @@ export default function ExportButton() {
     URL.revokeObjectURL(url);
   };
 
-  const handleShare = async () => {
-    setOpen(false);
-    const totalUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0);
-    const text = `🌏 Luna de Miel en ${selectedDestination.country} — ${generatedItinerary.length} días\n\n` +
+  const buildShareText = () => {
+    const totalUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0) + intlFlightUSD;
+    return `✈️ Luna de Miel — ${selectedDestination.flag ?? ''} ${selectedDestination.country} · ${generatedItinerary.length} días\n\n` +
       generatedItinerary.map(d => {
         const names = d.isTransitDay ? '✈ Traslado' : d.attractions.map(a => a.name).join(' + ') || 'Día libre';
         return `Día ${d.day}: ${names}`;
       }).join('\n') +
       `\n\n💰 Total estimado: ~$${fmt(totalUSD)} USD (2 personas)`;
+  };
 
+  const handleShare = async () => {
+    setOpen(false);
+    const text = buildShareText();
     if (navigator.share) {
       await navigator.share({ title: `Itinerario ${selectedDestination.country}`, text });
     } else {
@@ -200,6 +203,13 @@ export default function ExportButton() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
+  };
+
+  const handleWhatsApp = () => {
+    setOpen(false);
+    const text = buildShareText();
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -222,6 +232,9 @@ export default function ExportButton() {
             </button>
             <button onClick={handleShare} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200">
               {copied ? '✅ Copiado!' : '🔗 Compartir'}
+            </button>
+            <button onClick={handleWhatsApp} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-green-600 dark:text-green-400">
+              💬 WhatsApp
             </button>
           </div>
         </>
