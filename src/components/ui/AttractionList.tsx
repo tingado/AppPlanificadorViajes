@@ -20,6 +20,7 @@ export default function AttractionList() {
     pinLimitReached,
     attractionNotes,
     setAttractionNote,
+    optimizeRoute,
   } = useTravelStore();
 
   const regions = selectedDestination
@@ -108,6 +109,14 @@ export default function AttractionList() {
             </button>
           ))}
         </div>
+      )}
+      {activePins.length >= 3 && (
+        <button
+          onClick={optimizeRoute}
+          className="w-full text-xs font-semibold text-brand-600 border border-brand-300 rounded-lg py-2 hover:bg-brand-50"
+        >
+          ✨ Optimizar orden de visita
+        </button>
       )}
       {filtered.map((attraction: Attraction) => {
         const isActive = activePins.some((p) => p.id === attraction.id);

@@ -29,6 +29,29 @@ export function formatDuration(hours: number): string {
   return `${h} h ${m} min`;
 }
 
+export function optimizeRouteOrder(pins: Attraction[]): Attraction[] {
+  if (pins.length <= 2) return pins;
+
+  const remaining = [...pins.slice(1)]; // Keep first pin as start
+  const result = [pins[0]];
+
+  while (remaining.length > 0) {
+    const last = result[result.length - 1];
+    let nearestIdx = 0;
+    let nearestDist = Infinity;
+
+    remaining.forEach((pin, i) => {
+      const d = haversineDistanceKm(last.coordinates, pin.coordinates);
+      if (d < nearestDist) { nearestDist = d; nearestIdx = i; }
+    });
+
+    result.push(remaining[nearestIdx]);
+    remaining.splice(nearestIdx, 1);
+  }
+
+  return result;
+}
+
 export function buildRouteInfo(attractions: Attraction[]): RouteInfo {
   if (attractions.length < 2) {
     return { totalDistanceKm: 0, totalTimeHours: 0, segments: [] };
