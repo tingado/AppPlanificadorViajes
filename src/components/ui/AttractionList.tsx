@@ -28,6 +28,7 @@ export default function AttractionList() {
     itineraryOutdated,
     currencyRates,
     clearPins,
+    selectAttractions,
   } = useTravelStore();
 
   const localRate = selectedDestination
@@ -69,7 +70,7 @@ export default function AttractionList() {
       <div className="flex flex-col items-center justify-center py-10 text-center text-gray-400 dark:text-gray-500">
         <span className="text-5xl mb-3">🌏</span>
         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Elige un destino para explorar</p>
-        <p className="text-xs mt-1">Japón, Bali, Singapur, Tailandia, Vietnam, Filipinas o Maldivas</p>
+        <p className="text-xs mt-1">Asia · Europa · África — 10 destinos disponibles</p>
       </div>
     );
   }
@@ -96,9 +97,24 @@ export default function AttractionList() {
           </button>
         </div>
       )}
-      <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-        Selecciona hasta <strong>10 atractivos</strong> para el itinerario
-      </p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          Selecciona hasta <strong>10 atractivos</strong> para el itinerario
+        </p>
+        {activePins.length === 0 && selectedDestination && selectedDestination.attractions.length > 0 && (
+          <button
+            onClick={() => {
+              const top = [...selectedDestination.attractions]
+                .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
+                .slice(0, Math.min(6, selectedDestination.attractions.length));
+              selectAttractions(top);
+            }}
+            className="shrink-0 text-xs font-semibold text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-800 rounded-lg px-2 py-1 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors"
+          >
+            ⭐ Top 6
+          </button>
+        )}
+      </div>
       <div className="relative">
         <input
           type="text"
