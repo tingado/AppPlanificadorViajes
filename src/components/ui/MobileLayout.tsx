@@ -13,8 +13,19 @@ import { destinations } from "@/data/destinations";
 
 const MapView = dynamic(() => import("@/components/map/MapView"), { ssr: false });
 
+function getSeasonBadge(dest: typeof destinations[0], month: number) {
+  if (!dest.goodMonths || dest.goodMonths.length === 12) return { icon: '✅', color: 'text-green-600 dark:text-green-400' };
+  if (dest.avoidMonths?.includes(month)) return { icon: '⚠️', color: 'text-red-500 dark:text-red-400' };
+  if (dest.goodMonths.includes(month)) return { icon: '✅', color: 'text-green-600 dark:text-green-400' };
+  return { icon: '⚡', color: 'text-amber-600 dark:text-amber-400' };
+}
+
 function WelcomeScreen() {
-  const { setSelectedDestination, setActiveTab, currencyRates } = useTravelStore();
+  const { setSelectedDestination, setActiveTab, currencyRates, tripDate } = useTravelStore();
+  const checkMonth = tripDate
+    ? new Date(tripDate + 'T12:00:00').getMonth() + 1
+    : new Date().getMonth() + 1;
+
   return (
     <div className="space-y-3">
       <div className="text-center pt-2 pb-1">
@@ -26,6 +37,7 @@ function WelcomeScreen() {
           const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
           const dailyUSD = Math.round((dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate);
           const budgetColor = dailyUSD < 70 ? 'text-green-600 dark:text-green-400' : dailyUSD < 150 ? 'text-amber-600 dark:text-amber-400' : 'text-red-500 dark:text-red-400';
+          const season = getSeasonBadge(dest, checkMonth);
           return (
             <button
               key={dest.id}
@@ -35,6 +47,7 @@ function WelcomeScreen() {
               <span className="text-2xl">{dest.flag}</span>
               <span className="text-xs font-bold text-gray-800 dark:text-gray-100 leading-tight">{dest.country}</span>
               <span className={`text-xs font-semibold ${budgetColor}`}>~${dailyUSD} USD/día</span>
+              <span className={`text-[10px] font-medium ${season.color}`}>{season.icon} temporada</span>
               <span className="text-[10px] text-gray-400 dark:text-gray-500">{dest.attractions.length} atracciones</span>
             </button>
           );

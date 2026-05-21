@@ -15,6 +15,8 @@ export const destinations: Destination[] = [
     dailyBaseFoodCost: 8000,
     visaInfo: "Sin visa requerida — pasaporte chileno exento",
     bestMonths: "Oct-Nov: follaje otoñal ideal (15-22°C) | Ene-Feb: nieve en templos",
+    goodMonths: [3, 4, 5, 9, 10, 11],
+    avoidMonths: [6, 7, 8],
     climate: "Templado, 15-22°C en Oct-Nov",
     travelTips: ["JR Pass para Shinkansen (~$300 USD/7 días)", "Amiga local sin costo de alojamiento", "Comprar Suica card en aeropuerto"],
     attractions: [
@@ -121,6 +123,8 @@ export const destinations: Destination[] = [
     dailyBaseFoodCost: 200000,
     visaInfo: "VOA (Visa On Arrival) USD $35/persona en aeropuerto Ngurah Rai",
     bestMonths: "Oct-Nov: temporada seca ideal | Dic-Feb: lluvias intensas (EVITAR)",
+    goodMonths: [4, 5, 6, 7, 8, 9, 10, 11],
+    avoidMonths: [12, 1, 2],
     climate: "Tropical, 27-32°C, húmedo",
     travelTips: ["Alquilar moto en Ubud (~$8/día)", "Considerar Lombok en Febrero si llueve", "Goa Gajah (Elephant Temple) cerca de Ubud ~$3/persona"],
     attractions: [
@@ -227,6 +231,7 @@ export const destinations: Destination[] = [
     dailyBaseFoodCost: 80,
     visaInfo: "Sin visa requerida — hasta 30 días pasaporte chileno",
     bestMonths: "Todo el año estable (25-30°C) — ideal como hub de salida",
+    goodMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     climate: "Ecuatorial, 25-30°C estable todo el año",
     travelTips: ["Hawker Centers: comida Michelin desde $5 SGD", "MRT eficiente — evitar taxis", "Gardens by the Bay iluminado de noche (gratis exterior)"],
     attractions: [
@@ -333,6 +338,8 @@ export const destinations: Destination[] = [
     dailyBaseFoodCost: 800,
     visaInfo: "Sin visa requerida — hasta 60 días pasaporte chileno",
     bestMonths: "Nov-Feb: clima perfecto (24-32°C), sin lluvias, ideal playas y norte",
+    goodMonths: [11, 12, 1, 2],
+    avoidMonths: [5, 6, 7, 8, 9],
     climate: "Tropical, 24-32°C en temporada seca (Nov-Feb)",
     travelTips: [
       "Bus nocturno Bangkok-Chiang Mai (~$10/persona, 8h) ahorra noche de hotel",
@@ -445,6 +452,8 @@ export const destinations: Destination[] = [
     dailyBaseFoodCost: 200000,
     visaInfo: "Sin visa requerida — exención 90 días pasaporte chileno",
     bestMonths: "Nov-Dic: ideal norte y centro (17-25°C cielos despejados)",
+    goodMonths: [11, 12, 1, 2, 3],
+    avoidMonths: [6, 7, 8],
     climate: "Variable: norte fresco (17-22°C), sur cálido (28-33°C) en Nov-Feb",
     travelTips: [
       "Crucero Ha Long Bay 2 noches todo incluido (~$200-320/pareja) — reservar antes",
@@ -557,6 +566,8 @@ export const destinations: Destination[] = [
     dailyBaseFoodCost: 1200,
     visaInfo: "Sin visa requerida — hasta 30 días pasaporte chileno",
     bestMonths: "Nov-Abr: temporada seca perfecta (cielos despejados, mares calmados)",
+    goodMonths: [11, 12, 1, 2, 3, 4],
+    avoidMonths: [7, 8, 9],
     climate: "Tropical, 28-33°C, humedad alta. Temporada seca: Nov-Abril",
     travelTips: [
       "El Nido: Laguna Secreta (Tour A) requiere reserva anticipada",
