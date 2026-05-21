@@ -35,7 +35,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
     const baseFood = budgetOverrides.foodPerDay ?? selectedDestination.dailyBaseFoodCost;
     const basePerDayUSD = localRate > 0 ? (baseNight + baseFood) / localRate : 0;
     const activityTotalUSD = activePins.reduce((s, pin) => s + (localRate > 0 ? pin.costPerCouplePerDay / localRate : 0), 0);
-    const intlFlight = budgetOverrides.internationalFlightUSD ?? 3500;
+    const intlFlight = budgetOverrides.internationalFlightUSD ?? selectedDestination.estimatedFlightFromChileUSD ?? 3500;
     return basePerDayUSD * tripDays + activityTotalUSD + intlFlight;
   })();
 
