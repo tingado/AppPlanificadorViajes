@@ -53,7 +53,7 @@ const stepperSteps = [
 ];
 
 export default function MobileLayout() {
-  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary } = useTravelStore();
+  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary, darkMode, toggleDarkMode } = useTravelStore();
   const pinCount = activePins.length;
 
   // Mejora 1: scroll al inicio al cambiar de tab
@@ -111,13 +111,22 @@ export default function MobileLayout() {
 
       {/* Bottom panel — rest of screen */}
       <div className="flex flex-col flex-1 bg-white dark:bg-gray-800 rounded-t-2xl shadow-lg overflow-hidden min-h-0">
-        {/* Handle — draggable */}
+        {/* Handle row — drag handle + app name + dark mode toggle */}
         <div
-          className="flex justify-center pt-2 pb-1 flex-shrink-0 cursor-row-resize touch-none"
+          className="flex items-center px-4 pt-2 pb-1 flex-shrink-0 touch-none"
           onTouchStart={onDragStart}
           onMouseDown={onDragStart}
         >
-          <div className="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
+          <div className="flex-1 flex justify-center cursor-row-resize">
+            <div className="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
+          </div>
+          <button
+            onClick={(e) => { e.stopPropagation(); toggleDarkMode(); }}
+            className="ml-auto text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-base px-1"
+            title="Modo oscuro"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
         </div>
 
         {/* Destination + Days — always visible, no scroll */}
