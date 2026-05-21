@@ -81,6 +81,10 @@ interface TravelState {
   };
   setBudgetOverride: (key: 'accommodationPerNight' | 'foodPerDay' | 'internationalFlightUSD', value: number) => void;
 
+  // Budget goal
+  budgetGoalUSD: number | null;
+  setBudgetGoalUSD: (goal: number | null) => void;
+
   // Trip date (countdown)
   tripDate: string | null;  // ISO date string "2025-03-15"
   setTripDate: (date: string | null) => void;
@@ -202,6 +206,9 @@ export const useTravelStore = create<TravelState>()(
       setBudgetOverride: (key, value) =>
         set((s) => ({ budgetOverrides: { ...s.budgetOverrides, [key]: value } })),
 
+      budgetGoalUSD: null,
+      setBudgetGoalUSD: (goal) => set({ budgetGoalUSD: goal }),
+
       tripDate: null,
       setTripDate: (date) => set({ tripDate: date }),
     }),
@@ -220,6 +227,7 @@ export const useTravelStore = create<TravelState>()(
         packedItems: state.packedItems,
         packingItems: state.packingItems,
         budgetOverrides: state.budgetOverrides,
+        budgetGoalUSD: state.budgetGoalUSD,
         tripDate: state.tripDate,
       }),
     }

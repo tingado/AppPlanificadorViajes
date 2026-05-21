@@ -20,6 +20,7 @@ export default function MapView() {
     calculateRoute,
     clearRoute,
     toggleAttraction,
+    currencyRates,
   } = useTravelStore();
 
   // Initialize map
@@ -157,12 +158,18 @@ export default function MapView() {
         const marker = L.marker([pin.coordinates.lat, pin.coordinates.lng], { icon })
           .addTo(map)
           .bindPopup(
-            `<div style="width:200px;font-family:sans-serif;text-align:center">
-              ${imageHtml}
-              <p style="font-weight:700;font-size:13px;color:#111827;margin:0 0 2px">${pin.name}</p>
-              ${starsHtml}
-              <p style="font-size:11px;color:#6b7280;margin:0">~$${pin.costPerCouplePerDay}/día pareja</p>
-            </div>`,
+            (() => {
+              const rate = selectedDestination
+                ? ((currencyRates as Record<string, number>)[`USD_TO_${selectedDestination.currencyCode}`] ?? 1)
+                : 1;
+              const usd = Math.round(pin.costPerCouplePerDay / rate);
+              return `<div style="width:200px;font-family:sans-serif;text-align:center">
+                ${imageHtml}
+                <p style="font-weight:700;font-size:13px;color:#111827;margin:0 0 2px">${pin.name}</p>
+                ${starsHtml}
+                <p style="font-size:11px;color:#6b7280;margin:0">~$${usd} USD/día · 2 personas</p>
+              </div>`;
+            })(),
             { maxWidth: 200 }
           );
 
@@ -200,7 +207,7 @@ export default function MapView() {
       }
     };
     mapInit();
-  }, [activePins, showRoute, routeInfo, mapReady, selectedDestination, toggleAttraction]);
+  }, [activePins, showRoute, routeInfo, mapReady, selectedDestination, toggleAttraction, currencyRates]);
 
   return (
     <div className="relative w-full h-full">
