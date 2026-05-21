@@ -5,7 +5,7 @@ import { destinations, defaultCurrencyRates } from "@/data/destinations";
 import { generateItinerary } from "@/utils/itineraryGenerator";
 import { buildRouteInfo, optimizeRouteOrder } from "@/utils/geo";
 
-const MAX_PINS = 3;
+const MAX_PINS = 10;
 
 let pinLimitTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -15,7 +15,7 @@ interface TravelState {
   setSelectedDestination: (destination: Destination | null) => void;
   resetTrip: () => void;
 
-  // Pin management (max 3)
+  // Pin management (max 10)
   activePins: Attraction[];
   toggleAttraction: (attraction: Attraction) => void;
   clearPins: () => void;
@@ -160,7 +160,7 @@ export const useTravelStore = create<TravelState>()(
       clearRoute: () => set({ routeInfo: null, showRoute: false }),
       optimizeRoute: () => {
         const { activePins } = get();
-        if (activePins.length < 3) return;
+        if (activePins.length < 2) return;
         const optimized = optimizeRouteOrder(activePins);
         set({ activePins: optimized, routeInfo: null, showRoute: false });
       },

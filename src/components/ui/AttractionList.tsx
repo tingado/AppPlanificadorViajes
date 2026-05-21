@@ -25,6 +25,7 @@ export default function AttractionList() {
     generateItineraryAction,
     setActiveTab,
     generatedItinerary,
+    itineraryOutdated,
     currencyRates,
     clearPins,
   } = useTravelStore();
@@ -38,6 +39,7 @@ export default function AttractionList() {
     : [];
   const [activeRegion, setActiveRegion] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<'default' | 'rating' | 'cost'>('default');
   const [selectedAttraction, setSelectedAttraction] = useState<Attraction | null>(null);
 
   useEffect(() => {
@@ -46,14 +48,20 @@ export default function AttractionList() {
   }, [selectedDestination?.id]);
 
   const filtered = selectedDestination
-    ? selectedDestination.attractions.filter((a) => {
-        const matchRegion = !activeRegion || a.region === activeRegion;
-        const matchSearch =
-          !search ||
-          a.name.toLowerCase().includes(search.toLowerCase()) ||
-          a.description.toLowerCase().includes(search.toLowerCase());
-        return matchRegion && matchSearch;
-      })
+    ? [...selectedDestination.attractions]
+        .filter((a) => {
+          const matchRegion = !activeRegion || a.region === activeRegion;
+          const matchSearch =
+            !search ||
+            a.name.toLowerCase().includes(search.toLowerCase()) ||
+            a.description.toLowerCase().includes(search.toLowerCase());
+          return matchRegion && matchSearch;
+        })
+        .sort((a, b) => {
+          if (sortBy === 'rating') return (b.rating ?? 0) - (a.rating ?? 0);
+          if (sortBy === 'cost') return a.costPerCouplePerDay - b.costPerCouplePerDay;
+          return 0;
+        })
     : [];
 
   if (!selectedDestination) {
@@ -69,24 +77,14 @@ export default function AttractionList() {
   return (
     <div className="space-y-2">
       {pinLimitReached && (
-        <div className="rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-700">
-          Límite de 3 pines alcanzado. Se reemplazó el atractivo más antiguo.
+        <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+          Límite de 10 atractivos alcanzado. Se reemplazó el más antiguo.
         </div>
       )}
       {activePins.length > 0 && (
-        <div className="flex items-center gap-2 mb-2">
-          <div className="flex gap-1">
-            {[0, 1, 2].map(i => (
-              <div
-                key={i}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  i < activePins.length ? 'bg-brand-500' : 'bg-gray-200'
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-xs text-gray-500 dark:text-gray-400">{activePins.length}/3 seleccionados</span>
-          {activePins.length === 3 && (
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xs font-semibold text-brand-600 dark:text-brand-400">{activePins.length} seleccionados</span>
+          {activePins.length >= 10 && (
             <span className="text-xs text-amber-600 font-medium">máx</span>
           )}
           <button
@@ -99,7 +97,7 @@ export default function AttractionList() {
         </div>
       )}
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-        Selecciona hasta <strong>3 atractivos</strong> para visualizarlos en el mapa
+        Selecciona hasta <strong>10 atractivos</strong> para el itinerario
       </p>
       <div className="relative">
         <input
@@ -119,37 +117,48 @@ export default function AttractionList() {
           </button>
         )}
       </div>
-      {regions.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <button
-            onClick={() => setActiveRegion(null)}
-            className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-              activeRegion === null
-                ? "bg-brand-500 text-white"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-            }`}
-          >
-            Todas
-          </button>
-          {regions.map((r) => (
+      <div className="flex items-center gap-2">
+        {regions.length > 1 && (
+          <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none flex-1">
             <button
-              key={r}
-              onClick={() => setActiveRegion(r === activeRegion ? null : r)}
+              onClick={() => setActiveRegion(null)}
               className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                activeRegion === r
+                activeRegion === null
                   ? "bg-brand-500 text-white"
                   : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
               }`}
             >
-              {r}
+              Todas
             </button>
-          ))}
-        </div>
-      )}
-      {activePins.length >= 3 && (
+            {regions.map((r) => (
+              <button
+                key={r}
+                onClick={() => setActiveRegion(r === activeRegion ? null : r)}
+                className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                  activeRegion === r
+                    ? "bg-brand-500 text-white"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                }`}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+        )}
+        <select
+          value={sortBy}
+          onChange={e => setSortBy(e.target.value as typeof sortBy)}
+          className="shrink-0 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+        >
+          <option value="default">Orden</option>
+          <option value="rating">★ Rating</option>
+          <option value="cost">$ Precio</option>
+        </select>
+      </div>
+      {activePins.length >= 2 && (
         <button
           onClick={optimizeRoute}
-          className="w-full text-xs font-semibold text-brand-600 border border-brand-300 rounded-lg py-2 hover:bg-brand-50"
+          className="w-full text-xs font-semibold text-brand-600 dark:text-brand-400 border border-brand-300 dark:border-brand-700 rounded-lg py-2 hover:bg-brand-50 dark:hover:bg-brand-900/20"
         >
           ✨ Optimizar orden de visita
         </button>
@@ -240,14 +249,14 @@ export default function AttractionList() {
           </div>
         );
       })}
-      {/* Sticky CTA when pins selected and no itinerary yet */}
-      {activePins.length > 0 && generatedItinerary.length === 0 && (
+      {/* Sticky CTA when pins selected and no itinerary yet (or outdated) */}
+      {activePins.length > 0 && (generatedItinerary.length === 0 || itineraryOutdated) && (
         <div className="sticky bottom-0 pt-2 pb-1 bg-gradient-to-t from-white dark:from-gray-900 to-transparent">
           <button
             onClick={() => { generateItineraryAction(); setActiveTab("itinerary"); }}
             className="w-full rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-sm font-bold py-3 shadow-lg transition-colors"
           >
-            ✨ Generar itinerario ({activePins.length} atractivo{activePins.length > 1 ? 's' : ''})
+            {generatedItinerary.length > 0 ? '🔄' : '✨'} {generatedItinerary.length > 0 ? 'Regenerar' : 'Generar'} itinerario ({activePins.length} atractivo{activePins.length > 1 ? 's' : ''})
           </button>
         </div>
       )}
