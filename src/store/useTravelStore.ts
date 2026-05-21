@@ -40,12 +40,17 @@ interface TravelState {
   darkMode: boolean;
   toggleDarkMode: () => void;
 
-  // Packing list
+  // Packing list (legacy)
   packingList: string[];
   packedItems: string[];
   addPackingItem: (item: string) => void;
   togglePackedItem: (item: string) => void;
   resetPackingList: () => void;
+
+  // Packing list v2 (smart checklist)
+  packingItems: Record<string, boolean>;
+  togglePackingItem: (id: string) => void;
+  resetPacking: () => void;
 
   // UI state
   mobilePanel: "map" | "controls";
@@ -168,6 +173,12 @@ export const useTravelStore = create<TravelState>()(
       })),
       resetPackingList: () => set({ packedItems: [] }),
 
+      packingItems: {},
+      togglePackingItem: (id) => set((s) => ({
+        packingItems: { ...s.packingItems, [id]: !s.packingItems[id] }
+      })),
+      resetPacking: () => set({ packingItems: {} }),
+
       mobilePanel: "map",
       setMobilePanel: (panel) => set({ mobilePanel: panel }),
 
@@ -197,6 +208,7 @@ export const useTravelStore = create<TravelState>()(
         darkMode: state.darkMode,
         packingList: state.packingList,
         packedItems: state.packedItems,
+        packingItems: state.packingItems,
         budgetOverrides: state.budgetOverrides,
         tripDate: state.tripDate,
       }),

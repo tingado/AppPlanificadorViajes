@@ -142,10 +142,10 @@ export default function AttractionList() {
         const isActive = activePins.some((p) => p.id === attraction.id);
         return (
           <div
-            key={attraction.id}
+            key={`${attraction.id}-${isActive}`}
             className={`w-full rounded-xl border p-3 transition-all duration-200 ${
               isActive
-                ? "border-brand-400 bg-brand-50 dark:bg-brand-900/30 shadow-sm"
+                ? "border-brand-400 bg-brand-50 dark:bg-brand-900/30 shadow-sm pin-pulse"
                 : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-brand-200 hover:bg-brand-50/30 dark:hover:bg-gray-700"
             }`}
           >
