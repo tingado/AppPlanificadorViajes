@@ -53,7 +53,7 @@ const stepperSteps = [
 ];
 
 export default function MobileLayout() {
-  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary, darkMode, toggleDarkMode } = useTravelStore();
+  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary, darkMode, toggleDarkMode, tripDate, setTripDate } = useTravelStore();
   const pinCount = activePins.length;
 
   // Mejora 1: scroll al inicio al cambiar de tab
@@ -133,6 +133,23 @@ export default function MobileLayout() {
         <div className="px-3 pb-2 flex-shrink-0 space-y-2 border-b border-gray-100 dark:border-gray-700">
           <DestinationSelector />
           {selectedDestination && <ItineraryForm compact />}
+          {selectedDestination && (
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={tripDate ?? ''}
+                onChange={e => setTripDate(e.target.value || null)}
+                className="flex-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 px-2 py-1.5 text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-brand-400"
+                min={new Date().toISOString().split('T')[0]}
+              />
+              {tripDate && (() => {
+                const days = Math.ceil((new Date(tripDate).getTime() - Date.now()) / 86400000);
+                return days > 0
+                  ? <span className="text-xs font-bold text-brand-600 whitespace-nowrap">✈ {days}d</span>
+                  : <span className="text-xs font-bold text-green-600 whitespace-nowrap">¡Hoy!</span>;
+              })()}
+            </div>
+          )}
           {/* Progress stepper */}
           {selectedDestination && (() => {
             const step = activePins.length === 0 ? 1 : generatedItinerary.length === 0 ? 2 : 3;
