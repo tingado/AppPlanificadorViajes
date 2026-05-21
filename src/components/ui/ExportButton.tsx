@@ -98,6 +98,7 @@ ${(dest.visaInfo || dest.travelTips?.length) ? `
   ${dest.climate ? `<p style="margin:6px 0;font-size:13px"><strong>🌡️ Clima:</strong> ${dest.climate}</p>` : ''}
   ${dest.bestMonths ? `<p style="margin:6px 0;font-size:13px"><strong>📅 Mejor época:</strong> ${dest.bestMonths}</p>` : ''}
   ${dest.travelTips?.length ? `<p style="margin:8px 0 4px;font-size:13px"><strong>💡 Tips de viaje:</strong></p><ul style="margin:0;padding-left:18px;font-size:13px">${dest.travelTips.map(t => `<li style="margin:3px 0">${t}</li>`).join('')}</ul>` : ''}
+  ${dest.freeDayHints?.length ? `<p style="margin:8px 0 4px;font-size:13px"><strong>🌅 Ideas para días libres:</strong></p><ul style="margin:0;padding-left:18px;font-size:13px">${dest.freeDayHints.map(h => `<li style="margin:3px 0">${h}</li>`).join('')}</ul>` : ''}
 </div>` : ''}
 
 <h2 style="color:#374151;font-size:16px">Detalle por día</h2>
@@ -105,6 +106,11 @@ ${(dest.visaInfo || dest.travelTips?.length) ? `
   <tr><th>Día</th><th>Actividad</th><th>CLP</th><th>USD</th></tr>
   ${dayRows}
   ${visaFeeUSD > 0 ? `<tr style="background:#fef3c7"><td colspan="2" style="padding:8px;border:1px solid #e5e7eb;font-weight:600">🛂 Visa (${dest.country}) · 2 personas</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">${fmt(visaFeeUSD * rates.USD_TO_CLP)} CLP</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">$${fmt(visaFeeUSD)} USD</td></tr>` : ''}
+  <tr style="background:#f3e8ff;font-weight:700">
+    <td colspan="2" style="padding:10px;border:1px solid #e5e7eb">📊 TOTAL DESTINO (2 personas)</td>
+    <td style="padding:10px;border:1px solid #e5e7eb;text-align:right;color:#7c3aed">${fmt(totalCLP)} CLP</td>
+    <td style="padding:10px;border:1px solid #e5e7eb;text-align:right;color:#7c3aed">$${fmt(totalUSD)} USD</td>
+  </tr>
 </table>
 
 ${allPackingItems.length > 0 ? `
