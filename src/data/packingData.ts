@@ -54,4 +54,13 @@ export const DEST_PACKING_ITEMS: Record<string, PackingItem[]> = {
     { id: "ph-sunscreen", cat: "Filipinas", label: "Protector solar (islas)" },
     { id: "ph-snorkel", cat: "Filipinas", label: "Snorkel / máscara buceo" },
   ],
+  maldives: [
+    { id: "mv-usd-cash", cat: "Maldivas", label: "USD en efectivo (propinas y extras)" },
+    { id: "mv-reef-sunscreen", cat: "Maldivas", label: "Protector solar coral-safe (obligatorio)" },
+    { id: "mv-mask-fins", cat: "Maldivas", label: "Máscara + aletas de snorkeling" },
+    { id: "mv-rash-guard", cat: "Maldivas", label: "Lycra / rash guard anti-UV" },
+    { id: "mv-waterproof-bag", cat: "Maldivas", label: "Bolsa seca impermeable" },
+    { id: "mv-gopro", cat: "Maldivas", label: "GoPro / cámara subacuática" },
+    { id: "mv-modest-clothes", cat: "Maldivas", label: "Ropa cubriente para isla local (Malé)" },
+  ],
 };

@@ -69,7 +69,7 @@ export default function AttractionList() {
       <div className="flex flex-col items-center justify-center py-10 text-center text-gray-400 dark:text-gray-500">
         <span className="text-5xl mb-3">🌏</span>
         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Elige un destino para explorar</p>
-        <p className="text-xs mt-1">Japón, Bali, Singapur, Tailandia, Vietnam o Filipinas</p>
+        <p className="text-xs mt-1">Japón, Bali, Singapur, Tailandia, Vietnam, Filipinas o Maldivas</p>
       </div>
     );
   }
