@@ -151,6 +151,30 @@ export default function ItineraryView() {
           {freeDays > 0 && <span className="text-[10px] bg-white/20 rounded-full px-2 py-0.5">{freeDays} libre</span>}
           {transitDays > 0 && <span className="text-[10px] bg-white/20 rounded-full px-2 py-0.5">{transitDays} traslado</span>}
         </div>
+        {/* Trip timeline: group consecutive days by type/attraction */}
+        {(() => {
+          type Seg = { label: string; count: number; transit: boolean };
+          const segs: Seg[] = [];
+          generatedItinerary.forEach(day => {
+            const label = day.isTransitDay ? '✈️' : day.attractions[0]?.name.split(' ')[0] ?? '—';
+            const transit = day.isTransitDay;
+            const last = segs[segs.length - 1];
+            if (last && last.label === label) { last.count++; }
+            else { segs.push({ label, count: 1, transit }); }
+          });
+          return (
+            <div className="flex items-center gap-0.5 mt-2 overflow-x-auto pb-0.5 scrollbar-none">
+              {segs.map((seg, i) => (
+                <div key={i} className="flex items-center gap-0.5 shrink-0">
+                  <div className={`rounded px-1.5 py-0.5 text-[9px] font-medium ${seg.transit ? 'bg-amber-400/40' : 'bg-white/20'}`}>
+                    {seg.label} {seg.count > 1 && <span className="opacity-70">×{seg.count}</span>}
+                  </div>
+                  {i < segs.length - 1 && <span className="text-white/30 text-[8px]">›</span>}
+                </div>
+              ))}
+            </div>
+          );
+        })()}
       </div>
 
       {/* Day cards — Lista */}
