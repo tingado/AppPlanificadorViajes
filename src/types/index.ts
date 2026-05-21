@@ -57,6 +57,7 @@ export interface CurrencyRates {
   USD_TO_THB: number;
   USD_TO_VND: number;
   USD_TO_PHP: number;
+  USD_TO_EUR: number;
   [key: string]: number;
 }
 

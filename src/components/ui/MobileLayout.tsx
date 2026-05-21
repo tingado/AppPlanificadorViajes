@@ -36,19 +36,24 @@ function WelcomeScreen() {
         {destinations.map(dest => {
           const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
           const dailyUSD = Math.round((dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate);
-          const budgetColor = dailyUSD < 70 ? 'text-green-600 dark:text-green-400' : dailyUSD < 150 ? 'text-amber-600 dark:text-amber-400' : 'text-red-500 dark:text-red-400';
+          const budgetColor = dailyUSD < 200 ? 'text-green-400' : dailyUSD < 400 ? 'text-amber-300' : 'text-red-300';
           const season = getSeasonBadge(dest, checkMonth);
+          const coverImg = dest.attractions[0]?.imageUrl;
           return (
             <button
               key={dest.id}
               onClick={() => { setSelectedDestination(dest); setActiveTab("attractions"); }}
-              className="flex flex-col items-center gap-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 hover:border-brand-300 hover:bg-brand-50 dark:hover:bg-gray-700 active:scale-95 transition-all text-center"
+              className="relative overflow-hidden rounded-xl border-2 border-transparent active:scale-95 transition-all text-center h-32"
+              style={coverImg ? { backgroundImage: `url(${coverImg})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
             >
-              <span className="text-2xl">{dest.flag}</span>
-              <span className="text-xs font-bold text-gray-800 dark:text-gray-100 leading-tight">{dest.country}</span>
-              <span className={`text-xs font-semibold ${budgetColor}`}>~${dailyUSD} USD/día</span>
-              <span className={`text-[10px] font-medium ${season.color}`}>{season.icon} temporada</span>
-              <span className="text-[10px] text-gray-400 dark:text-gray-500">{dest.attractions.length} atracciones</span>
+              {!coverImg && <div className="absolute inset-0 bg-gradient-to-br from-brand-500 to-purple-600" />}
+              <div className="absolute inset-0 bg-black/50 active:bg-black/40 transition-colors" />
+              <div className="relative z-10 flex flex-col items-center justify-center gap-0.5 h-full px-2">
+                <span className="text-2xl">{dest.flag}</span>
+                <span className="text-xs font-bold text-white leading-tight drop-shadow">{dest.country}</span>
+                <span className={`text-[11px] font-semibold ${budgetColor}`}>~${dailyUSD} USD/día</span>
+                <span className="text-[10px] text-white/80">{season.icon} {dest.attractions.length} atracciones</span>
+              </div>
             </button>
           );
         })}
