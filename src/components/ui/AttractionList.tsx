@@ -25,7 +25,12 @@ export default function AttractionList() {
     generateItineraryAction,
     setActiveTab,
     generatedItinerary,
+    currencyRates,
   } = useTravelStore();
+
+  const localRate = selectedDestination
+    ? (currencyRates as Record<string, number>)[`USD_TO_${selectedDestination.currencyCode}`] ?? 1
+    : 1;
 
   const regions = selectedDestination
     ? [...new Set(selectedDestination.attractions.map((a) => a.region))]
@@ -210,7 +215,7 @@ export default function AttractionList() {
                     {attraction.description}
                   </p>
                   <p className="text-xs text-brand-600 font-semibold mt-0.5">
-                    ~${attraction.costPerCouplePerDay} USD/día · 2 personas
+                    {formatLocalCost(attraction.costPerCouplePerDay, selectedDestination!.currencyCode)} · ~${Math.round(attraction.costPerCouplePerDay / localRate)} USD/día · 2 personas
                   </p>
                 </div>
               </div>

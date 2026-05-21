@@ -7,9 +7,21 @@ interface Props {
   onClose: () => void;
 }
 
+function formatLocalCost(amount: number, currencyCode: string): string {
+  return new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: currencyCode,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
 export default function AttractionModal({ attraction, onClose }: Props) {
-  const { activePins, toggleAttraction } = useTravelStore();
+  const { activePins, toggleAttraction, selectedDestination, currencyRates } = useTravelStore();
   const isActive = activePins.some(p => p.id === attraction.id);
+  const localRate = selectedDestination
+    ? (currencyRates as Record<string, number>)[`USD_TO_${selectedDestination.currencyCode}`] ?? 1
+    : 1;
+  const usdCost = Math.round(attraction.costPerCouplePerDay / localRate);
 
   return (
     <div
@@ -61,7 +73,7 @@ export default function AttractionModal({ attraction, onClose }: Props) {
           <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{attraction.description}</p>
           <div className="flex items-center justify-between pt-1">
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              💰 ~${attraction.costPerCouplePerDay} USD/día · 2 personas
+              💰 {selectedDestination ? formatLocalCost(attraction.costPerCouplePerDay, selectedDestination.currencyCode) : attraction.costPerCouplePerDay} · ~${usdCost} USD/día · 2p
             </span>
             <button
               onClick={() => toggleAttraction(attraction)}
