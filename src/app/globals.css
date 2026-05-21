@@ -28,24 +28,17 @@ main {
   z-index: 900 !important;
 }
 
-/* Dark mode overrides */
-.dark body {
-  @apply bg-gray-900 text-gray-100;
+/* Dark mode — handled by Tailwind dark: variants in components */
+@media (prefers-color-scheme: dark) {
+  /* vacío — manejado por clases dark: de Tailwind */
 }
-.dark .bg-white {
-  @apply bg-gray-800;
+
+/* Leaflet map inversion for dark mode */
+.dark .leaflet-container {
+  filter: invert(90%) hue-rotate(180deg);
 }
-.dark .bg-gray-50 {
-  @apply bg-gray-900;
-}
-.dark .border-gray-200 {
-  @apply border-gray-700;
-}
-.dark .text-gray-800 {
-  @apply text-gray-100;
-}
-.dark .text-gray-500 {
-  @apply text-gray-400;
+.dark .leaflet-container img {
+  filter: invert(100%) hue-rotate(180deg);
 }
 
 @media print {

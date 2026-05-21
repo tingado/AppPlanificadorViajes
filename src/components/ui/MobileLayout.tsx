@@ -46,27 +46,27 @@ export default function MobileLayout() {
   const pinCount = activePins.length;
 
   return (
-    <div className="flex flex-col bg-gray-100" style={{ height: '100dvh' }}>
+    <div className="flex flex-col bg-gray-100 dark:bg-gray-900" style={{ height: '100dvh' }}>
       {/* Map — 38% max */}
       <div className="flex-shrink-0" style={{ height: "38vh" }}>
         <MapView />
       </div>
 
       {/* Bottom panel — rest of screen */}
-      <div className="flex flex-col flex-1 bg-white rounded-t-2xl shadow-lg overflow-hidden min-h-0">
+      <div className="flex flex-col flex-1 bg-white dark:bg-gray-800 rounded-t-2xl shadow-lg overflow-hidden min-h-0">
         {/* Handle */}
         <div className="flex justify-center pt-2 pb-1 flex-shrink-0">
-          <div className="w-10 h-1 rounded-full bg-gray-300" />
+          <div className="w-10 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
         </div>
 
         {/* Destination + Days — always visible, no scroll */}
-        <div className="px-3 pb-2 flex-shrink-0 space-y-2 border-b border-gray-100">
+        <div className="px-3 pb-2 flex-shrink-0 space-y-2 border-b border-gray-100 dark:border-gray-700">
           <DestinationSelector />
           {selectedDestination && <ItineraryForm compact />}
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200 flex-shrink-0">
+        <div className="flex border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -74,7 +74,7 @@ export default function MobileLayout() {
               className={`flex-1 py-2 text-xs font-semibold transition-colors relative ${
                 activeTab === tab.key
                   ? "border-b-2 border-brand-500 text-brand-600"
-                  : "text-gray-500"
+                  : "text-gray-500 dark:text-gray-400"
               }`}
             >
               {tab.icon} {tab.label}

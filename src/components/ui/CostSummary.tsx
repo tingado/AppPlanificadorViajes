@@ -13,6 +13,8 @@ export default function CostSummary() {
     currencyRates,
     setCurrencyRates,
     tripDays,
+    budgetOverrides,
+    setBudgetOverride,
   } = useTravelStore();
 
   if (!selectedDestination || generatedItinerary.length === 0) {
@@ -41,16 +43,15 @@ export default function CostSummary() {
     0
   );
 
-  // Accommodation & food: each day (transit or not) includes dailyBaseAccommodationCost
-  // and dailyBaseFoodCost in its local cost. We reconstruct them from the destination
-  // base costs, converting local → USD using the current local rate.
-  const accomLocalPerDay = selectedDestination.dailyBaseAccommodationCost;
-  const foodLocalPerDay = selectedDestination.dailyBaseFoodCost;
+  // Accommodation & food: use budget overrides if set, otherwise fall back to
+  // destination base costs. Values are in local currency per day.
+  const baseAccommodation = budgetOverrides.accommodationPerNight ?? selectedDestination.dailyBaseAccommodationCost;
+  const baseFood = budgetOverrides.foodPerDay ?? selectedDestination.dailyBaseFoodCost;
 
   const totalAccomUSD =
-    localRate > 0 ? (accomLocalPerDay * numDays) / localRate : 0;
+    localRate > 0 ? (baseAccommodation * numDays) / localRate : 0;
   const totalFoodUSD =
-    localRate > 0 ? (foodLocalPerDay * numDays) / localRate : 0;
+    localRate > 0 ? (baseFood * numDays) / localRate : 0;
 
   // Activities: whatever remains after subtracting flights, accommodation and food
   const totalActivitiesUSD = Math.max(
@@ -188,6 +189,52 @@ export default function CostSummary() {
         <p className="text-xs text-gray-400">
           Modifica las tasas para recalcular con valores actualizados
         </p>
+      </div>
+
+      {/* ── 5. Editor de presupuesto base ──────────────────────────────── */}
+      <div className="rounded-xl border border-gray-200 p-4 space-y-3">
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">⚙️ Ajustar base diaria</p>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <label className="text-sm text-gray-700">🏨 Alojamiento/noche</label>
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-gray-400">$</span>
+              <input
+                type="number"
+                min={0}
+                value={baseAccommodation}
+                onChange={e => setBudgetOverride('accommodationPerNight', Number(e.target.value))}
+                className="w-20 text-sm text-right rounded-lg border border-gray-200 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+              />
+              <span className="text-xs text-gray-400">USD</span>
+            </div>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <label className="text-sm text-gray-700">🍜 Comida/día</label>
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-gray-400">$</span>
+              <input
+                type="number"
+                min={0}
+                value={baseFood}
+                onChange={e => setBudgetOverride('foodPerDay', Number(e.target.value))}
+                className="w-20 text-sm text-right rounded-lg border border-gray-200 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+              />
+              <span className="text-xs text-gray-400">USD</span>
+            </div>
+          </div>
+        </div>
+        {(budgetOverrides.accommodationPerNight !== undefined || budgetOverrides.foodPerDay !== undefined) && (
+          <button
+            onClick={() => {
+              setBudgetOverride('accommodationPerNight', selectedDestination?.dailyBaseAccommodationCost ?? 0);
+              setBudgetOverride('foodPerDay', selectedDestination?.dailyBaseFoodCost ?? 0);
+            }}
+            className="text-xs text-gray-400 hover:text-red-500"
+          >
+            ↺ Restaurar valores por defecto
+          </button>
+        )}
       </div>
     </div>
   );

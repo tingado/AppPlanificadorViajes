@@ -15,19 +15,19 @@ function WelcomeScreen() {
   return (
     <div className="space-y-4">
       <div className="text-center py-4">
-        <p className="text-sm font-semibold text-gray-700">¿A dónde quieres ir?</p>
-        <p className="text-xs text-gray-400 mt-1">Selecciona un destino para empezar</p>
+        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">¿A dónde quieres ir?</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Selecciona un destino para empezar</p>
       </div>
       <div className="grid grid-cols-2 gap-2">
         {destinations.map((dest) => (
           <button
             key={dest.id}
             onClick={() => setSelectedDestination(dest)}
-            className="flex flex-col items-center gap-1.5 rounded-xl border border-gray-200 bg-white p-4 hover:border-brand-300 hover:bg-brand-50 transition-colors text-center"
+            className="flex flex-col items-center gap-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 hover:border-brand-300 hover:bg-brand-50 dark:hover:bg-gray-700 transition-colors text-center"
           >
             <span className="text-3xl">{dest.flag}</span>
-            <span className="text-xs font-semibold text-gray-800">{dest.country}</span>
-            <span className="text-[10px] text-gray-400">{dest.regions.slice(0, 2).join(" · ")}</span>
+            <span className="text-xs font-semibold text-gray-800 dark:text-gray-100">{dest.country}</span>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500">{dest.regions.slice(0, 2).join(" · ")}</span>
           </button>
         ))}
       </div>
@@ -46,7 +46,7 @@ export default function ControlPanel() {
   const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode } = useTravelStore();
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900">
       {/* Header — gradient banner with logo/title only */}
       <div className="bg-gradient-to-r from-brand-600 to-purple-700 px-4 pt-5 pb-4">
         <div className="flex items-center gap-3">
@@ -70,17 +70,17 @@ export default function ControlPanel() {
       </div>
 
       {/* Destination selector — white background so the select renders correctly */}
-      <div className="px-4 pt-3 pb-2 bg-white border-b border-gray-200">
+      <div className="px-4 pt-3 pb-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <DestinationSelector />
       </div>
 
       {/* Itinerary form — integrated below header without extra card border */}
-      <div className="px-4 py-3 border-b border-gray-200 bg-white">
+      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
         <ItineraryForm />
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 bg-white">
+      <div className="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -88,7 +88,7 @@ export default function ControlPanel() {
             className={`flex-1 py-2.5 text-xs font-semibold transition-colors ${
               activeTab === tab.key
                 ? "border-b-2 border-brand-500 text-brand-600"
-                : "text-gray-500 hover:text-gray-700"
+                : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
             }`}
           >
             {tab.icon} {tab.label}
