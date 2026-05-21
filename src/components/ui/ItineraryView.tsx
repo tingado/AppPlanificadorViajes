@@ -388,10 +388,17 @@ export default function ItineraryView() {
                   ))}
                   {Array.from({ length: calendarOffset }).map((_, i) => <div key={`p${i}`} />)}
                   {generatedItinerary.map(day => (
-                    <div key={day.day} className={`rounded-lg p-1 min-h-[48px] flex flex-col items-center border ${day.isTransitDay ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
+                    <button
+                      key={day.day}
+                      onClick={() => {
+                        setViewMode('list');
+                        setTimeout(() => document.getElementById(`itin-day-${day.day}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+                      }}
+                      className={`rounded-lg p-1 min-h-[48px] flex flex-col items-center border w-full hover:ring-1 hover:ring-brand-400 transition-all ${day.isTransitDay ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}
+                    >
                       <span className={`text-xs font-bold ${day.isTransitDay ? 'text-amber-600 dark:text-amber-400' : 'text-brand-600'}`}>{day.day}</span>
                       <span className="text-[9px] text-gray-600 dark:text-gray-400 text-center leading-tight mt-0.5 line-clamp-2">{day.isTransitDay ? '✈️' : (day.attractions[0]?.name.split(' ')[0] ?? '—')}</span>
-                    </div>
+                    </button>
                   ))}
                 </div>
               );
@@ -425,11 +432,18 @@ export default function ItineraryView() {
                     {group.days.map(day => {
                       const dayDate = getDayDate(day.day)!;
                       return (
-                        <div key={day.day} className={`rounded-lg p-1 min-h-[52px] flex flex-col items-center border ${day.isTransitDay ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
+                        <button
+                          key={day.day}
+                          onClick={() => {
+                            setViewMode('list');
+                            setTimeout(() => document.getElementById(`itin-day-${day.day}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+                          }}
+                          className={`rounded-lg p-1 min-h-[52px] flex flex-col items-center border w-full hover:ring-1 hover:ring-brand-400 transition-all ${day.isTransitDay ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}
+                        >
                           <span className={`text-xs font-bold ${day.isTransitDay ? 'text-amber-600 dark:text-amber-400' : 'text-brand-600'}`}>{day.day}</span>
                           <span className="text-[8px] text-gray-400 dark:text-gray-500 leading-tight">{dayDate.getDate()}</span>
                           <span className="text-[9px] text-gray-600 dark:text-gray-400 text-center leading-tight mt-0.5 line-clamp-2">{day.isTransitDay ? '✈️' : (day.attractions[0]?.name.split(' ')[0] ?? '—')}</span>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
