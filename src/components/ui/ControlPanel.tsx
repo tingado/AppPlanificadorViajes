@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import DestinationSelector from "./DestinationSelector";
 import AttractionList from "./AttractionList";
@@ -26,8 +27,9 @@ function WelcomeScreen() {
             className="flex flex-col items-center gap-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 hover:border-brand-300 hover:bg-brand-50 dark:hover:bg-gray-700 transition-colors text-center"
           >
             <span className="text-3xl">{dest.flag}</span>
-            <span className="text-xs font-semibold text-gray-800 dark:text-gray-100">{dest.country}</span>
-            <span className="text-[10px] text-gray-400 dark:text-gray-500">{dest.regions.slice(0, 2).join(" · ")}</span>
+            <span className="text-xs font-bold text-gray-800 dark:text-gray-100 leading-tight">{dest.country}</span>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium tracking-wide uppercase">{dest.currencyCode}</span>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500">{dest.attractions.length} atracciones</span>
           </button>
         ))}
       </div>
@@ -42,8 +44,16 @@ const tabs = [
   { key: "packing" as const, label: "Maleta", icon: "🎒" },
 ];
 
+const stepperSteps = [
+  { label: 'Destino', icon: '🌏' },
+  { label: 'Atracciones', icon: '📍' },
+  { label: 'Itinerario', icon: '📅' },
+];
+
 export default function ControlPanel() {
-  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate } = useTravelStore();
+  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate, activePins, generatedItinerary } = useTravelStore();
+
+  const currentStep = !selectedDestination ? 0 : activePins.length === 0 ? 1 : generatedItinerary.length === 0 ? 2 : 3;
 
   return (
     <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900">
@@ -90,6 +100,20 @@ export default function ControlPanel() {
                 <span className="text-xs font-bold text-green-600 whitespace-nowrap">¡Hoy!</span>
               );
             })()}
+          </div>
+        )}
+        {/* Progress stepper */}
+        {selectedDestination && (
+          <div className="flex items-center gap-1 mt-2 text-xs">
+            {stepperSteps.map((s, i) => (
+              <React.Fragment key={i}>
+                <div className={`flex items-center gap-1 ${i < currentStep ? 'text-brand-600' : i === currentStep ? 'text-gray-700 font-semibold' : 'text-gray-300 dark:text-gray-600'}`}>
+                  <span>{i < currentStep ? '✅' : s.icon}</span>
+                  <span>{s.label}</span>
+                </div>
+                {i < stepperSteps.length - 1 && <span className="text-gray-200 dark:text-gray-700 mx-0.5">→</span>}
+              </React.Fragment>
+            ))}
           </div>
         )}
       </div>
