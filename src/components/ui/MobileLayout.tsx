@@ -1,61 +1,78 @@
 "use client";
-
 import dynamic from "next/dynamic";
 import { useTravelStore } from "@/store/useTravelStore";
-import ControlPanel from "./ControlPanel";
+import DestinationSelector from "./DestinationSelector";
+import AttractionList from "./AttractionList";
+import ItineraryForm from "./ItineraryForm";
+import ItineraryView from "./ItineraryView";
+import CostSummary from "./CostSummary";
+import DestinationInfo from "./DestinationInfo";
 
 const MapView = dynamic(() => import("@/components/map/MapView"), { ssr: false });
 
+const tabs = [
+  { key: "attractions" as const, label: "Atractivos", icon: "📍" },
+  { key: "itinerary" as const, label: "Itinerario", icon: "📅" },
+  { key: "costs" as const, label: "Costos", icon: "💰" },
+];
+
 export default function MobileLayout() {
-  const { mobilePanel, setMobilePanel, activePins } = useTravelStore();
-  const activePinCount = activePins.length;
+  const { activeTab, setActiveTab, activePins } = useTravelStore();
+  const pinCount = activePins.length;
 
   return (
-    <div className="relative h-screen w-full overflow-hidden">
-      {/* Map layer — always rendered underneath */}
-      <div
-        className={`absolute inset-0 transition-transform duration-300 ${
-          mobilePanel === "map" ? "translate-y-0" : "-translate-y-full"
-        }`}
-      >
+    <div className="flex flex-col h-dvh bg-gray-100">
+      {/* Map — top 60% */}
+      <div className="flex-shrink-0" style={{ height: "58vh" }}>
         <MapView />
       </div>
 
-      {/* Toggle pill */}
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1100] flex rounded-full bg-white shadow-md border border-gray-200 overflow-hidden">
-        {(["map", "controls"] as const).map((panel) => (
-          <button
-            key={panel}
-            onClick={() => setMobilePanel(panel)}
-            className={`px-4 py-1.5 text-xs font-semibold transition-colors ${
-              mobilePanel === panel
-                ? "bg-brand-500 text-white"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            {panel === "map" ? (
-              "🗺 Mapa"
-            ) : (
-              <span className="flex items-center gap-1.5">
-                ⚙ Controles
-                {activePinCount > 0 && (
-                  <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-brand-600 text-white text-[10px] font-bold leading-none">
-                    {activePinCount}
-                  </span>
-                )}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+      {/* Bottom panel — bottom 40% */}
+      <div className="flex flex-col flex-1 bg-white rounded-t-2xl shadow-lg overflow-hidden">
+        {/* Handle */}
+        <div className="flex justify-center py-2">
+          <div className="w-10 h-1 rounded-full bg-gray-300" />
+        </div>
 
-      {/* Bottom sliding panel */}
-      <div
-        className={`absolute inset-x-0 bottom-0 top-12 z-[1050] bg-gray-50 overflow-y-auto transition-transform duration-300 shadow-2xl rounded-t-2xl ${
-          mobilePanel === "controls" ? "translate-y-0" : "translate-y-full"
-        }`}
-      >
-        <ControlPanel />
+        {/* Destination selector */}
+        <div className="px-4 pb-2">
+          <DestinationSelector />
+        </div>
+
+        {/* Tabs */}
+        <div className="flex border-b border-gray-200">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex-1 py-2 text-xs font-semibold transition-colors relative ${
+                activeTab === tab.key
+                  ? "border-b-2 border-brand-500 text-brand-600"
+                  : "text-gray-500"
+              }`}
+            >
+              {tab.icon} {tab.label}
+              {tab.key === "attractions" && pinCount > 0 && (
+                <span className="absolute top-1 right-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-brand-500 text-white text-[10px] font-bold">
+                  {pinCount}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab content — scrollable */}
+        <div className="flex-1 overflow-y-auto p-3">
+          {activeTab === "attractions" && (
+            <div className="space-y-3">
+              <ItineraryForm />
+              <DestinationInfo />
+              <AttractionList />
+            </div>
+          )}
+          {activeTab === "itinerary" && <ItineraryView />}
+          {activeTab === "costs" && <CostSummary />}
+        </div>
       </div>
     </div>
   );

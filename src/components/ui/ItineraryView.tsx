@@ -2,6 +2,7 @@
 
 import { useTravelStore } from "@/store/useTravelStore";
 import { formatDuration } from "@/utils/geo";
+import ExportButton from "@/components/ui/ExportButton";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -56,6 +57,11 @@ export default function ItineraryView() {
           </button>
         </div>
       )}
+
+      {/* Export button */}
+      <div className="flex justify-end">
+        <ExportButton />
+      </div>
 
       {/* Cost summary card */}
       <div className="rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 p-4 text-white shadow">
