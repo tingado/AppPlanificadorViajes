@@ -17,6 +17,7 @@ function fmtDate(date: Date) {
 export default function ItineraryView() {
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
   const [expandedNoteDay, setExpandedNoteDay] = useState<number | null>(null);
+  const [expandedAttrNote, setExpandedAttrNote] = useState<string | null>(null);
   const [jumpDay, setJumpDay] = useState('');
 
   const {
@@ -29,6 +30,8 @@ export default function ItineraryView() {
     tripDate,
     dayNotes,
     setDayNote,
+    attractionNotes,
+    setAttractionNote,
   } = useTravelStore();
 
   if (!selectedDestination || generatedItinerary.length === 0) {
@@ -247,6 +250,49 @@ export default function ItineraryView() {
                             </span>
                           )}
                         </div>
+                        {/* Per-attraction detail rows */}
+                        {!day.isTransitDay && day.attractions.length > 0 && (
+                          <div className="mt-1.5 space-y-1">
+                            {day.attractions.map(attr => {
+                              const attrRate = currencyRates[`USD_TO_${selectedDestination.currencyCode}`] ?? 1;
+                              const attrUSD = attrRate > 0 ? Math.round(attr.costPerCouplePerDay / attrRate) : 0;
+                              const attrNoteKey = `day${day.day}-${attr.id}`;
+                              const isAttrNoteOpen = expandedAttrNote === attrNoteKey;
+                              const attrNote = attractionNotes[attrNoteKey] ?? '';
+                              return (
+                                <div key={attr.id} className="rounded-lg bg-gray-50 dark:bg-gray-700/50 px-2.5 py-1.5">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="min-w-0">
+                                      <p className="text-xs font-medium text-gray-700 dark:text-gray-200 truncate">{attr.name}</p>
+                                      <p className="text-[10px] text-gray-400 dark:text-gray-500">{attr.region}{attr.rating ? ` · ${'★'.repeat(Math.round(attr.rating))}` : ''}</p>
+                                      {attrNote && !isAttrNoteOpen && (
+                                        <p className="text-[10px] text-brand-500 dark:text-brand-400 italic truncate">&ldquo;{attrNote}&rdquo;</p>
+                                      )}
+                                    </div>
+                                    <div className="text-right shrink-0 flex flex-col items-end gap-0.5">
+                                      <p className="text-[10px] font-semibold text-gray-600 dark:text-gray-300">${attrUSD} USD</p>
+                                      <button
+                                        onClick={() => setExpandedAttrNote(isAttrNoteOpen ? null : attrNoteKey)}
+                                        className="text-[9px] text-gray-300 dark:text-gray-600 hover:text-brand-500"
+                                      >
+                                        {isAttrNoteOpen ? '▲' : '✏️'}
+                                      </button>
+                                    </div>
+                                  </div>
+                                  {isAttrNoteOpen && (
+                                    <textarea
+                                      rows={2}
+                                      value={attrNote}
+                                      onChange={e => setAttractionNote(attrNoteKey, e.target.value)}
+                                      placeholder="Nota para esta atracción..."
+                                      className="mt-1.5 w-full text-[10px] rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 placeholder-gray-300 dark:placeholder-gray-500 px-2 py-1 resize-none focus:outline-none focus:ring-1 focus:ring-brand-400"
+                                    />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                         {day.travelTimeHours != null && day.travelTimeHours > 0 && (
                           <p className="text-xs text-amber-600 dark:text-amber-400">
                             ✈ {formatDuration(day.travelTimeHours)} de viaje
