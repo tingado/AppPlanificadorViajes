@@ -24,9 +24,17 @@ const REGIONS: Record<string, string> = {
   morocco: 'África',
 };
 
+const BUDGET_TIERS = [
+  { label: '< $7K', max: 7000, min: 0 },
+  { label: '$7–12K', max: 12000, min: 7000 },
+  { label: '> $12K', max: Infinity, min: 12000 },
+];
+
 function WelcomeScreen() {
   const { setSelectedDestination, currencyRates, tripDate, tripDays } = useTravelStore();
   const [regionFilter, setRegionFilter] = React.useState<string | null>(null);
+  const [budgetTier, setBudgetTier] = React.useState<number | null>(null);
+  const [sortByPrice, setSortByPrice] = React.useState(false);
   const checkMonth = tripDate
     ? new Date(tripDate + 'T12:00:00').getMonth() + 1
     : new Date().getMonth() + 1;
@@ -35,9 +43,24 @@ function WelcomeScreen() {
     d.goodMonths?.includes(checkMonth) && !d.avoidMonths?.includes(checkMonth)
   );
 
-  const filtered = regionFilter
+  const getTripTotal = (dest: typeof destinations[0]) => {
+    const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
+    const dailyUSD = (dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate;
+    return Math.round(dailyUSD * tripDays + (dest.estimatedFlightFromChileUSD ?? 3500));
+  };
+
+  let filtered = regionFilter
     ? destinations.filter(d => REGIONS[d.id] === regionFilter)
     : destinations;
+
+  if (budgetTier !== null) {
+    const tier = BUDGET_TIERS[budgetTier];
+    filtered = filtered.filter(d => { const t = getTripTotal(d); return t >= tier.min && t < tier.max; });
+  }
+
+  if (sortByPrice) {
+    filtered = [...filtered].sort((a, b) => getTripTotal(a) - getTripTotal(b));
+  }
 
   const regionOptions = [...new Set(destinations.map(d => REGIONS[d.id]).filter(Boolean))];
 
@@ -68,31 +91,34 @@ function WelcomeScreen() {
         </div>
       )}
 
-      {/* Region filter */}
-      <div className="flex gap-1.5">
-        <button
-          onClick={() => setRegionFilter(null)}
-          className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${!regionFilter ? 'bg-brand-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
-        >
-          Todos
-        </button>
-        {regionOptions.map(r => (
-          <button
-            key={r}
-            onClick={() => setRegionFilter(r === regionFilter ? null : r)}
-            className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${regionFilter === r ? 'bg-brand-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
-          >
-            {r}
-          </button>
-        ))}
+      {/* Region + budget filters + sort */}
+      <div className="space-y-1.5">
+        <div className="flex gap-1.5 flex-wrap">
+          <button onClick={() => setRegionFilter(null)} className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${!regionFilter ? 'bg-brand-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>Todos</button>
+          {regionOptions.map(r => (
+            <button key={r} onClick={() => setRegionFilter(r === regionFilter ? null : r)} className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${regionFilter === r ? 'bg-brand-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>{r}</button>
+          ))}
+        </div>
+        <div className="flex gap-1.5 items-center">
+          <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">Presup:</span>
+          {BUDGET_TIERS.map((tier, i) => (
+            <button key={i} onClick={() => setBudgetTier(budgetTier === i ? null : i)} className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold transition-colors ${budgetTier === i ? 'bg-emerald-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>{tier.label}</button>
+          ))}
+          <button onClick={() => setSortByPrice(v => !v)} className={`ml-auto shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold transition-colors ${sortByPrice ? 'bg-amber-400 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>$ ↑</button>
+        </div>
       </div>
 
+      {filtered.length === 0 && (
+        <div className="py-6 text-center text-gray-400 dark:text-gray-500">
+          <p className="text-2xl mb-1">🔍</p>
+          <p className="text-xs">Sin destinos en ese rango · <button className="text-brand-500 hover:underline" onClick={() => { setRegionFilter(null); setBudgetTier(null); }}>Limpiar filtros</button></p>
+        </div>
+      )}
       <div className="grid grid-cols-3 gap-2">
         {filtered.map((dest) => {
           const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
           const dailyUSD = Math.round((dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate);
-          const flightUSD = dest.estimatedFlightFromChileUSD ?? 3500;
-          const tripTotalUSD = dailyUSD * tripDays + flightUSD;
+          const tripTotalUSD = getTripTotal(dest);
           const totalK = tripTotalUSD >= 1000 ? `$${(tripTotalUSD / 1000).toFixed(1)}K` : `$${tripTotalUSD}`;
           const budgetColor = tripTotalUSD < 7000 ? 'text-green-400' : tripTotalUSD < 12000 ? 'text-amber-300' : 'text-red-300';
           const season = getSeasonBadge(dest, checkMonth);
