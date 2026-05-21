@@ -19,23 +19,29 @@ export default function ControlPanel() {
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 pt-4 pb-3 space-y-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">👨‍🦲👩‍🦱</span>
+      {/* Header — gradient banner with logo/title only */}
+      <div className="bg-gradient-to-r from-brand-600 to-purple-700 px-4 pt-5 pb-4">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-white/20 text-2xl">
+            👨‍🦲👩‍🦱
+          </div>
           <div>
-            <h1 className="text-base font-bold text-gray-900 leading-tight">
+            <h1 className="text-base font-bold text-white leading-tight">
               Luna de Miel Planner
             </h1>
-            <p className="text-xs text-gray-400">Planificador interactivo de viajes</p>
+            <p className="text-xs text-white/70">Planificador interactivo de viajes</p>
           </div>
         </div>
-        <DestinationSelector />
+      </div>
 
-        {/* Planner tab (always visible) */}
-        <div className="rounded-xl border border-gray-200 bg-white p-3">
-          <ItineraryForm />
-        </div>
+      {/* Destination selector — white background so the select renders correctly */}
+      <div className="px-4 pt-3 pb-2 bg-white border-b border-gray-200">
+        <DestinationSelector />
+      </div>
+
+      {/* Itinerary form — integrated below header without extra card border */}
+      <div className="px-4 py-3 border-b border-gray-200 bg-white">
+        <ItineraryForm />
       </div>
 
       {/* Tabs */}
@@ -56,7 +62,7 @@ export default function ControlPanel() {
       </div>
 
       {/* Tab content */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4">
         {activeTab === "attractions" && (
           <div className="space-y-4">
             <DestinationInfo />
