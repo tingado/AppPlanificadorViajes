@@ -7,8 +7,33 @@ import ItineraryForm from "./ItineraryForm";
 import ItineraryView from "./ItineraryView";
 import CostSummary from "./CostSummary";
 import DestinationInfo from "./DestinationInfo";
+import { destinations } from "@/data/destinations";
 
 const MapView = dynamic(() => import("@/components/map/MapView"), { ssr: false });
+
+function WelcomeScreen() {
+  const { setSelectedDestination } = useTravelStore();
+  return (
+    <div className="space-y-3">
+      <div className="text-center pt-2 pb-1">
+        <p className="text-sm font-semibold text-gray-700">¿A dónde quieres ir?</p>
+        <p className="text-xs text-gray-400 mt-0.5">Toca un destino para comenzar</p>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {destinations.map(dest => (
+          <button
+            key={dest.id}
+            onClick={() => setSelectedDestination(dest)}
+            className="flex flex-col items-center gap-1 rounded-xl border border-gray-200 bg-white p-3 hover:border-brand-300 hover:bg-brand-50 active:scale-95 transition-all text-center"
+          >
+            <span className="text-2xl">{dest.flag}</span>
+            <span className="text-xs font-semibold text-gray-800 leading-tight">{dest.country}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const tabs = [
   { key: "attractions" as const, label: "Atractivos", icon: "📍" },
@@ -17,7 +42,7 @@ const tabs = [
 ];
 
 export default function MobileLayout() {
-  const { activeTab, setActiveTab, activePins } = useTravelStore();
+  const { activeTab, setActiveTab, activePins, selectedDestination } = useTravelStore();
   const pinCount = activePins.length;
 
   return (
@@ -70,11 +95,15 @@ export default function MobileLayout() {
         {/* Tab content — scrollable */}
         <div className="flex-1 overflow-y-auto p-3">
           {activeTab === "attractions" && (
-            <div className="space-y-3">
-              <ItineraryForm />
-              <DestinationInfo />
-              <AttractionList />
-            </div>
+            selectedDestination ? (
+              <div className="space-y-3">
+                <ItineraryForm />
+                <DestinationInfo />
+                <AttractionList />
+              </div>
+            ) : (
+              <WelcomeScreen />
+            )
           )}
           {activeTab === "itinerary" && <ItineraryView />}
           {activeTab === "costs" && <CostSummary />}

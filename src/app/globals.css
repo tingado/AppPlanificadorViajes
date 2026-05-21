@@ -29,12 +29,49 @@ main {
 }
 
 @media print {
-  /* Ocultar todo excepto el itinerario */
-  header, nav, button, select, .leaflet-container, [class*="MobileLayout"], [class*="DesktopLayout"] > *:not([class*="ItineraryView"]) {
-    display: none !important;
+  /* Ocultar todo el contenido de la página */
+  body.printing * {
+    visibility: hidden;
   }
-  body {
-    font-family: sans-serif;
+
+  /* Mostrar solo la zona del itinerario */
+  body.printing .itinerary-print-zone,
+  body.printing .itinerary-print-zone * {
+    visibility: visible;
+  }
+
+  /* Posicionar la zona del itinerario en la esquina superior izquierda */
+  body.printing .itinerary-print-zone {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: white;
     color: black;
+    font-size: 12pt;
+    overflow: visible;
+  }
+
+  /* Ocultar el botón de exportar dentro del itinerario */
+  body.printing .itinerary-print-zone button {
+    visibility: hidden !important;
+  }
+
+  /* Configuración de página */
+  @page {
+    margin: 20mm;
+    size: A4;
+  }
+
+  body.printing {
+    background: white !important;
+    overflow: visible !important;
+  }
+
+  html.printing,
+  body.printing {
+    height: auto !important;
+    overflow: visible !important;
   }
 }

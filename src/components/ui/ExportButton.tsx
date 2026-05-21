@@ -46,7 +46,11 @@ export default function ExportButton() {
 
   const handlePDF = () => {
     setOpen(false);
+    document.body.classList.add('printing');
     window.print();
+    window.addEventListener('afterprint', () => {
+      document.body.classList.remove('printing');
+    }, { once: true });
   };
 
   const handleHTML = () => {
