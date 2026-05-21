@@ -1,23 +1,25 @@
 "use client";
 import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
-import { ItineraryDay, CurrencyRates } from "@/types";
+import { Destination, ItineraryDay, CurrencyRates } from "@/types";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
 }
 
 function generateHTML(
-  destination: string,
-  flag: string,
+  dest: Destination,
   days: ItineraryDay[],
   rates: CurrencyRates,
-  code: string,
   tripDate: string | null,
   dayNotes: Record<number, string>
 ): string {
+  const destination = dest.country;
+  const flag = dest.flag ?? '🌍';
+  const code = dest.currencyCode;
   const localRate = rates[`USD_TO_${code}`] ?? 1;
-  const totalUSD = days.reduce((s: number, d: ItineraryDay) => s + d.estimatedCostUSD, 0);
+  const visaFeeUSD = (dest.visaFeePerPersonUSD ?? 0) * 2;
+  const totalUSD = days.reduce((s: number, d: ItineraryDay) => s + d.estimatedCostUSD, 0) + visaFeeUSD;
   const totalCLP = totalUSD * rates.USD_TO_CLP;
   const totalLocal = totalUSD * localRate;
 
@@ -86,10 +88,20 @@ function generateHTML(
   </div>
 </div>
 
+${(dest.visaInfo || dest.travelTips?.length) ? `
+<div style="border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:24px">
+  <h2 style="color:#374151;font-size:15px;margin-top:0">ℹ️ Información del destino</h2>
+  ${dest.visaInfo ? `<p style="margin:6px 0;font-size:13px"><strong>🛂 Visa:</strong> ${dest.visaInfo}</p>` : ''}
+  ${dest.climate ? `<p style="margin:6px 0;font-size:13px"><strong>🌡️ Clima:</strong> ${dest.climate}</p>` : ''}
+  ${dest.bestMonths ? `<p style="margin:6px 0;font-size:13px"><strong>📅 Mejor época:</strong> ${dest.bestMonths}</p>` : ''}
+  ${dest.travelTips?.length ? `<p style="margin:8px 0 4px;font-size:13px"><strong>💡 Tips de viaje:</strong></p><ul style="margin:0;padding-left:18px;font-size:13px">${dest.travelTips.map(t => `<li style="margin:3px 0">${t}</li>`).join('')}</ul>` : ''}
+</div>` : ''}
+
 <h2 style="color:#374151;font-size:16px">Detalle por día</h2>
 <table>
   <tr><th>Día</th><th>Actividad</th><th>CLP</th><th>USD</th></tr>
   ${dayRows}
+  ${visaFeeUSD > 0 ? `<tr style="background:#fef3c7"><td colspan="2" style="padding:8px;border:1px solid #e5e7eb;font-weight:600">🛂 Visa (${dest.country}) · 2 personas</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">${fmt(visaFeeUSD * rates.USD_TO_CLP)} CLP</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">$${fmt(visaFeeUSD)} USD</td></tr>` : ''}
 </table>
 
 <div class="footer">Generado con Luna de Miel Planner · Estimaciones aproximadas · Precios referenciales</div>
@@ -117,11 +129,9 @@ export default function ExportButton() {
   const handleHTML = () => {
     setOpen(false);
     const html = generateHTML(
-      selectedDestination.country,
-      selectedDestination.flag ?? '🌍',
+      selectedDestination,
       generatedItinerary,
       currencyRates,
-      code,
       tripDate,
       dayNotes
     );
