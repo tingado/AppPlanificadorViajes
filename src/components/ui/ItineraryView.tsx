@@ -284,7 +284,16 @@ export default function ItineraryView() {
                               const isAttrNoteOpen = expandedAttrNote === attrNoteKey;
                               const attrNote = attractionNotes[attrNoteKey] ?? '';
                               return (
-                                <div key={attr.id} className="rounded-lg bg-gray-50 dark:bg-gray-700/50 px-2.5 py-1.5">
+                                <div key={attr.id} className="rounded-lg bg-gray-50 dark:bg-gray-700/50 overflow-hidden">
+                                  {attr.imageUrl && (
+                                    <img
+                                      src={attr.imageUrl}
+                                      alt={attr.name}
+                                      className="w-full h-24 object-cover"
+                                      loading="lazy"
+                                    />
+                                  )}
+                                  <div className="px-2.5 py-1.5">
                                   <div className="flex items-center justify-between gap-2">
                                     <div className="min-w-0">
                                       <p className="text-xs font-medium text-gray-700 dark:text-gray-200 truncate">{attr.name}</p>
@@ -295,6 +304,15 @@ export default function ItineraryView() {
                                     </div>
                                     <div className="text-right shrink-0 flex flex-col items-end gap-0.5">
                                       <p className="text-[10px] font-semibold text-gray-600 dark:text-gray-300">${attrUSD} USD</p>
+                                      <a
+                                        href={`https://maps.google.com/?q=${attr.coordinates.lat},${attr.coordinates.lng}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-[9px] text-blue-400 hover:text-blue-500"
+                                        onClick={e => e.stopPropagation()}
+                                      >
+                                        🗺
+                                      </a>
                                       <button
                                         onClick={() => setExpandedAttrNote(isAttrNoteOpen ? null : attrNoteKey)}
                                         className="text-[9px] text-gray-300 dark:text-gray-600 hover:text-brand-500"
@@ -312,6 +330,7 @@ export default function ItineraryView() {
                                       className="mt-1.5 w-full text-[10px] rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 placeholder-gray-300 dark:placeholder-gray-500 px-2 py-1 resize-none focus:outline-none focus:ring-1 focus:ring-brand-400"
                                     />
                                   )}
+                                  </div>
                                 </div>
                               );
                             })}
