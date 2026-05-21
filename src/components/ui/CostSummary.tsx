@@ -30,18 +30,22 @@ export default function CostSummary() {
   const rateKey = `USD_TO_${code}`;
   const localRate = currencyRates[rateKey] ?? 1;
 
+  const intlFlightUSD = budgetOverrides.internationalFlightUSD ?? 3500;
+
   // ── Totals ────────────────────────────────────────────────────────────────
-  const totalUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0);
+  const destinationUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0);
+  const totalUSD = destinationUSD + intlFlightUSD;
   const totalCLP = totalUSD * currencyRates.USD_TO_CLP;
   const totalLocal = totalUSD * localRate;
   const numDays = generatedItinerary.length || tripDays;
 
   // ── Category breakdown ────────────────────────────────────────────────────
-  // Flights: sum of explicit flightCostUSD already stored in each transit day (in USD)
-  const totalFlightUSD = generatedItinerary.reduce(
+  // Flights: international + in-destination transit flights
+  const transitFlightUSD = generatedItinerary.reduce(
     (s, d) => s + (d.flightCostUSD ?? 0),
     0
   );
+  const totalFlightUSD = intlFlightUSD + transitFlightUSD;
 
   // Accommodation & food: use budget overrides if set, otherwise fall back to
   // destination base costs. Values are in local currency per day.
@@ -89,17 +93,19 @@ export default function CostSummary() {
           <span className="text-lg font-normal opacity-80">USD</span>
         </p>
         <p className="text-xs opacity-75 mt-1">
-          ~${fmt(totalUSD / numDays)} USD/día para 2
+          ~${fmt(totalUSD / numDays)} USD/día · ~${fmt(totalUSD / 2)} por persona
         </p>
-        <div className="mt-3 flex gap-4 text-sm">
-          <span className="opacity-90">
-            🇨🇱 {fmt(totalCLP)} CLP
-          </span>
+        <div className="mt-3 flex gap-4 text-sm flex-wrap">
+          <span className="opacity-90">🇨🇱 {fmt(totalCLP)} CLP</span>
           {code !== "CLP" && (
             <span className="opacity-90">
               {selectedDestination.flag ?? "🌍"} {fmt(totalLocal)} {code}
             </span>
           )}
+        </div>
+        <div className="mt-2 pt-2 border-t border-white/20 flex gap-3 text-xs opacity-80 flex-wrap">
+          <span>🛫 Vuelo intl: ${fmt(intlFlightUSD)}</span>
+          <span>🏖 Destino: ${fmt(destinationUSD)}</span>
         </div>
       </div>
 
@@ -230,8 +236,22 @@ export default function CostSummary() {
 
       {/* ── 5. Editor de presupuesto base ──────────────────────────────── */}
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-3">
-        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">⚙️ Ajustar base diaria</p>
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">⚙️ Ajustar presupuesto</p>
         <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <label className="text-sm text-gray-700 dark:text-gray-300">🛫 Vuelo Santiago → destino (ida+vuelta, 2 pax)</label>
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-gray-400 dark:text-gray-500">$</span>
+              <input
+                type="number"
+                min={0}
+                value={intlFlightUSD}
+                onChange={e => setBudgetOverride('internationalFlightUSD', Number(e.target.value))}
+                className="w-20 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+              />
+              <span className="text-xs text-gray-400 dark:text-gray-500">USD</span>
+            </div>
+          </div>
           <div className="flex items-center justify-between gap-3">
             <label className="text-sm text-gray-700 dark:text-gray-300">🏨 Alojamiento/noche</label>
             <div className="flex items-center gap-1">
@@ -261,11 +281,12 @@ export default function CostSummary() {
             </div>
           </div>
         </div>
-        {(budgetOverrides.accommodationPerNight !== undefined || budgetOverrides.foodPerDay !== undefined) && (
+        {(budgetOverrides.accommodationPerNight !== undefined || budgetOverrides.foodPerDay !== undefined || budgetOverrides.internationalFlightUSD !== undefined) && (
           <button
             onClick={() => {
               setBudgetOverride('accommodationPerNight', selectedDestination?.dailyBaseAccommodationCost ?? 0);
               setBudgetOverride('foodPerDay', selectedDestination?.dailyBaseFoodCost ?? 0);
+              setBudgetOverride('internationalFlightUSD', 3500);
             }}
             className="text-xs text-gray-400 dark:text-gray-500 hover:text-red-500"
           >

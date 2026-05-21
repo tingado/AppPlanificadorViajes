@@ -46,8 +46,14 @@ const tabs = [
   { key: "packing" as const, label: "Maleta", icon: "🧳" },
 ];
 
+const stepperSteps = [
+  { label: 'Destino', icon: '🌏' },
+  { label: 'Atracciones', icon: '📍' },
+  { label: 'Itinerario', icon: '📅' },
+];
+
 export default function MobileLayout() {
-  const { activeTab, setActiveTab, activePins, selectedDestination } = useTravelStore();
+  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary } = useTravelStore();
   const pinCount = activePins.length;
 
   // Mejora 1: scroll al inicio al cambiar de tab
@@ -118,6 +124,22 @@ export default function MobileLayout() {
         <div className="px-3 pb-2 flex-shrink-0 space-y-2 border-b border-gray-100 dark:border-gray-700">
           <DestinationSelector />
           {selectedDestination && <ItineraryForm compact />}
+          {/* Progress stepper */}
+          {selectedDestination && (() => {
+            const step = activePins.length === 0 ? 1 : generatedItinerary.length === 0 ? 2 : 3;
+            return (
+              <div className="flex items-center gap-1 text-[10px]">
+                {stepperSteps.map((s, i) => (
+                  <span key={i} className="flex items-center gap-0.5">
+                    <span className={i < step ? 'text-brand-600' : i === step ? 'text-gray-600 dark:text-gray-300 font-semibold' : 'text-gray-300 dark:text-gray-600'}>
+                      {i < step ? '✅' : s.icon} {s.label}
+                    </span>
+                    {i < stepperSteps.length - 1 && <span className="text-gray-200 dark:text-gray-700 mx-0.5">→</span>}
+                  </span>
+                ))}
+              </div>
+            );
+          })()}
         </div>
 
         {/* Tabs */}

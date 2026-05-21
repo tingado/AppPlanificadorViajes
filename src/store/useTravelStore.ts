@@ -77,8 +77,9 @@ interface TravelState {
   budgetOverrides: {
     accommodationPerNight?: number;
     foodPerDay?: number;
+    internationalFlightUSD?: number;
   };
-  setBudgetOverride: (key: 'accommodationPerNight' | 'foodPerDay', value: number) => void;
+  setBudgetOverride: (key: 'accommodationPerNight' | 'foodPerDay' | 'internationalFlightUSD', value: number) => void;
 
   // Trip date (countdown)
   tripDate: string | null;  // ISO date string "2025-03-15"
