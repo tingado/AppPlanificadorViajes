@@ -48,9 +48,44 @@ export default function DestinationInfo() {
             </div>
           )}
 
+          {/* Visual month calendar */}
+          {(selectedDestination.goodMonths || selectedDestination.avoidMonths) && (() => {
+            const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+            return (
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">📅 Calendario de temporadas</p>
+                <div className="grid grid-cols-6 gap-1">
+                  {MONTHS.map((m, i) => {
+                    const monthNum = i + 1;
+                    const isGood = selectedDestination.goodMonths?.includes(monthNum);
+                    const isAvoid = selectedDestination.avoidMonths?.includes(monthNum);
+                    const isCurrent = monthNum === checkMonth;
+                    let bg = 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400';
+                    if (isAvoid) bg = 'bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400';
+                    else if (isGood) bg = 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400';
+                    return (
+                      <div
+                        key={m}
+                        className={`rounded-md px-1 py-1 text-center text-[10px] font-semibold ${bg} ${isCurrent ? 'ring-2 ring-brand-400 ring-offset-1' : ''}`}
+                      >
+                        {m}
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="flex gap-3 text-[10px] text-gray-400 dark:text-gray-500">
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-green-400 inline-block" />Ideal</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-gray-300 dark:bg-gray-600 inline-block" />Variable</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-red-400 inline-block" />Evitar</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm border-2 border-brand-400 inline-block" />Hoy</span>
+                </div>
+              </div>
+            );
+          })()}
+
           {bestMonths && (
             <div className="space-y-0.5">
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">📅 Mejor época</p>
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">🌤 Resumen de temporadas</p>
               <p className="text-sm text-gray-700 dark:text-gray-300">{bestMonths}</p>
             </div>
           )}

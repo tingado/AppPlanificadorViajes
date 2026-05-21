@@ -19,6 +19,7 @@ export default function CostSummary() {
     setBudgetOverride,
     budgetGoalUSD,
     setBudgetGoalUSD,
+    tripDate,
   } = useTravelStore();
 
   if (!selectedDestination || generatedItinerary.length === 0) {
@@ -170,6 +171,35 @@ export default function CostSummary() {
           );
         })()}
       </div>
+
+      {/* ── 1c. Calculadora de ahorro mensual ──────────────────────────── */}
+      {tripDate && (() => {
+        const tripMs = new Date(tripDate + 'T12:00:00').getTime() - Date.now();
+        const monthsLeft = tripMs / (1000 * 60 * 60 * 24 * 30.44);
+        if (monthsLeft <= 0) return null;
+        const monthsRounded = Math.max(1, Math.round(monthsLeft));
+        const perMonthUSD = totalUSD / monthsRounded;
+        const perMonthCLP = perMonthUSD * currencyRates.USD_TO_CLP;
+        const urgency = monthsRounded <= 3 ? 'text-red-600 dark:text-red-400' : monthsRounded <= 6 ? 'text-amber-600 dark:text-amber-400' : 'text-green-600 dark:text-green-400';
+        return (
+          <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-2">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">🐷 Calculadora de ahorro</p>
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Faltan <span className="font-bold text-gray-900 dark:text-gray-100">{monthsRounded}</span> meses para el viaje
+              </p>
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${monthsRounded <= 3 ? 'bg-red-50 dark:bg-red-900/20' : monthsRounded <= 6 ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-green-50 dark:bg-green-900/20'} ${urgency}`}>
+                {monthsRounded <= 3 ? '¡Pronto!' : monthsRounded <= 6 ? 'Moderado' : 'Tiempo suficiente'}
+              </span>
+            </div>
+            <div className="rounded-lg bg-gray-50 dark:bg-gray-700/50 p-3 space-y-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Para cubrir el total del viaje, deben ahorrar:</p>
+              <p className={`text-xl font-bold ${urgency}`}>{fmt(perMonthCLP)} CLP / mes</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">≈ ${fmt(perMonthUSD)} USD / mes por pareja</p>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ── 2. Breakdown por categoría ──────────────────────────────────── */}
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden shadow-sm">
