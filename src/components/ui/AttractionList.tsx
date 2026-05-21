@@ -48,7 +48,7 @@ export default function AttractionList() {
   }, [selectedDestination?.id]);
 
   const filtered = selectedDestination
-    ? [...selectedDestination.attractions]
+    ? selectedDestination.attractions
         .filter((a) => {
           const matchRegion = !activeRegion || a.region === activeRegion;
           const matchSearch =
