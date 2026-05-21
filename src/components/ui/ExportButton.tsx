@@ -12,7 +12,9 @@ function generateHTML(
   days: ItineraryDay[],
   rates: CurrencyRates,
   tripDate: string | null,
-  dayNotes: Record<number, string>
+  dayNotes: Record<number, string>,
+  packingChecked: Record<string, boolean>,
+  allPackingItems: { id: string; cat: string; label: string }[]
 ): string {
   const destination = dest.country;
   const flag = dest.flag ?? '🌍';
@@ -104,14 +106,86 @@ ${(dest.visaInfo || dest.travelTips?.length) ? `
   ${visaFeeUSD > 0 ? `<tr style="background:#fef3c7"><td colspan="2" style="padding:8px;border:1px solid #e5e7eb;font-weight:600">🛂 Visa (${dest.country}) · 2 personas</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">${fmt(visaFeeUSD * rates.USD_TO_CLP)} CLP</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">$${fmt(visaFeeUSD)} USD</td></tr>` : ''}
 </table>
 
+${allPackingItems.length > 0 ? `
+<h2 style="color:#374151;font-size:16px;margin-top:32px">🧳 Lista de equipaje</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;font-size:13px">
+  ${(() => {
+    const cats = [...new Set(allPackingItems.map(i => i.cat))];
+    return cats.map(cat => `
+      <div style="border:1px solid #e5e7eb;border-radius:8px;padding:10px">
+        <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin:0 0 6px">${cat}</p>
+        ${allPackingItems.filter(i => i.cat === cat).map(item => `
+          <div style="display:flex;align-items:center;gap:6px;margin:3px 0">
+            <span style="width:14px;height:14px;border-radius:50%;border:2px solid ${packingChecked[item.id] ? '#c026d3' : '#d1d5db'};background:${packingChecked[item.id] ? '#c026d3' : 'white'};display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">
+              ${packingChecked[item.id] ? '<span style="color:white;font-size:9px;font-weight:700">✓</span>' : ''}
+            </span>
+            <span style="color:${packingChecked[item.id] ? '#9ca3af' : '#374151'};text-decoration:${packingChecked[item.id] ? 'line-through' : 'none'}">${item.label}</span>
+          </div>`).join('')}
+      </div>`).join('');
+  })()}
+</div>` : ''}
+
 <div class="footer">Generado con Luna de Miel Planner · Estimaciones aproximadas · Precios referenciales</div>
 </body></html>`;
 }
 
+// Base packing items — mirrors PackingList.tsx constants (kept in sync manually)
+const BASE_PACKING = [
+  { id: "passport", cat: "Documentos", label: "Pasaporte vigente" },
+  { id: "visa", cat: "Documentos", label: "Visa (si aplica)" },
+  { id: "insurance", cat: "Documentos", label: "Seguro de viaje" },
+  { id: "flights", cat: "Documentos", label: "Tickets de vuelo" },
+  { id: "hotel", cat: "Documentos", label: "Reservas de hotel" },
+  { id: "phone", cat: "Electrónica", label: "Teléfono + cargador" },
+  { id: "adapter", cat: "Electrónica", label: "Adaptador universal" },
+  { id: "powerbank", cat: "Electrónica", label: "Power bank" },
+  { id: "camera", cat: "Electrónica", label: "Cámara / GoPro" },
+  { id: "sunscreen", cat: "Salud", label: "Protector solar FPS50+" },
+  { id: "repellent", cat: "Salud", label: "Repelente de insectos" },
+  { id: "meds", cat: "Salud", label: "Botiquín básico" },
+  { id: "clothes-light", cat: "Ropa", label: "Ropa liviana (tropical)" },
+  { id: "shoes", cat: "Ropa", label: "Zapatos cómodos" },
+  { id: "swimsuit", cat: "Ropa", label: "Traje de baño" },
+  { id: "rain", cat: "Ropa", label: "Poncho / impermeable" },
+  { id: "backpack", cat: "Accesorios", label: "Mochila de día" },
+  { id: "cash", cat: "Dinero", label: "Efectivo local" },
+  { id: "card", cat: "Dinero", label: "Tarjeta internacional" },
+  { id: "locks", cat: "Seguridad", label: "Candados para maletas" },
+];
+
+const DEST_PACKING: Record<string, { id: string; cat: string; label: string }[]> = {
+  japan: [
+    { id: "jp-ic-card", cat: "Japón", label: "IC Card (transporte)" },
+    { id: "jp-pocket-wifi", cat: "Japón", label: "Pocket WiFi reservado" },
+    { id: "jp-onsen", cat: "Japón", label: "Ropa para onsen (toalla)" },
+  ],
+  bali: [
+    { id: "bali-sarong", cat: "Bali", label: "Sarong para templos" },
+    { id: "bali-deet", cat: "Bali", label: "DEET (dengue zona)" },
+  ],
+  thailand: [
+    { id: "th-temple", cat: "Tailandia", label: "Ropa cubriente para templos" },
+    { id: "th-flip", cat: "Tailandia", label: "Sandalias para templos" },
+  ],
+  vietnam: [
+    { id: "vn-cash", cat: "Vietnam", label: "Dólares en efectivo" },
+    { id: "vn-sim", cat: "Vietnam", label: "SIM local (Viettel)" },
+  ],
+  singapore: [
+    { id: "sg-ez-link", cat: "Singapur", label: "EZ-Link card (transporte)" },
+    { id: "sg-clothes", cat: "Singapur", label: "Ropa fresca (calor húmedo)" },
+  ],
+  philippines: [
+    { id: "ph-cash", cat: "Filipinas", label: "Pesos filipinos en efectivo" },
+    { id: "ph-sunscreen", cat: "Filipinas", label: "Protector solar (islas)" },
+    { id: "ph-snorkel", cat: "Filipinas", label: "Snorkel / máscara buceo" },
+  ],
+};
+
 export default function ExportButton() {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const { generatedItinerary, selectedDestination, currencyRates, tripDate, dayNotes } = useTravelStore();
+  const { generatedItinerary, selectedDestination, currencyRates, tripDate, dayNotes, packingItems, customPackingItems } = useTravelStore();
 
   if (!selectedDestination || generatedItinerary.length === 0) return null;
 
@@ -128,12 +202,17 @@ export default function ExportButton() {
 
   const handleHTML = () => {
     setOpen(false);
+    const destItems = DEST_PACKING[selectedDestination.id] ?? [];
+    const customItems = customPackingItems.map(i => ({ id: i.id, cat: '✏️ Mis items', label: i.label }));
+    const allItems = [...BASE_PACKING, ...destItems, ...customItems];
     const html = generateHTML(
       selectedDestination,
       generatedItinerary,
       currencyRates,
       tripDate,
-      dayNotes
+      dayNotes,
+      packingItems,
+      allItems
     );
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
