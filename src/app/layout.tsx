@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import DarkModeInit from "@/components/DarkModeInit";
 
 export const metadata: Metadata = {
   title: "Luna de Miel Planner",
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     `,
           }}
         />
+        <DarkModeInit />
         {children}
       </body>
     </html>

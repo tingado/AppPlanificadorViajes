@@ -35,11 +35,22 @@ interface TravelState {
   currencyRates: CurrencyRates;
   setCurrencyRates: (rates: Partial<CurrencyRates>) => void;
 
+  // Dark mode
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+
+  // Packing list
+  packingList: string[];
+  packedItems: string[];
+  addPackingItem: (item: string) => void;
+  togglePackedItem: (item: string) => void;
+  resetPackingList: () => void;
+
   // UI state
   mobilePanel: "map" | "controls";
   setMobilePanel: (panel: "map" | "controls") => void;
-  activeTab: "attractions" | "itinerary" | "costs";
-  setActiveTab: (tab: "attractions" | "itinerary" | "costs") => void;
+  activeTab: "attractions" | "itinerary" | "costs" | "packing";
+  setActiveTab: (tab: "attractions" | "itinerary" | "costs" | "packing") => void;
 
   // Pin limit alert
   pinLimitReached: boolean;
@@ -120,6 +131,25 @@ export const useTravelStore = create<TravelState>()(
       setCurrencyRates: (rates) =>
         set((s) => ({ currencyRates: { ...s.currencyRates, ...rates } as CurrencyRates })),
 
+      darkMode: false,
+      toggleDarkMode: () => set((s) => {
+        const next = !s.darkMode;
+        if (typeof document !== 'undefined') {
+          document.documentElement.classList.toggle('dark', next);
+        }
+        return { darkMode: next };
+      }),
+
+      packingList: ['Pasaporte', 'Seguro de viaje', 'Adaptador de corriente', 'Protector solar', 'Ropa liviana', 'Zapatos cómodos', 'Medicamentos', 'Cámara'],
+      packedItems: [],
+      addPackingItem: (item) => set((s) => ({ packingList: [...s.packingList, item] })),
+      togglePackedItem: (item) => set((s) => ({
+        packedItems: s.packedItems.includes(item)
+          ? s.packedItems.filter((i) => i !== item)
+          : [...s.packedItems, item],
+      })),
+      resetPackingList: () => set({ packedItems: [] }),
+
       mobilePanel: "map",
       setMobilePanel: (panel) => set({ mobilePanel: panel }),
 
@@ -139,6 +169,9 @@ export const useTravelStore = create<TravelState>()(
         generatedItinerary: state.generatedItinerary,
         currencyRates: state.currencyRates,
         attractionNotes: state.attractionNotes,
+        darkMode: state.darkMode,
+        packingList: state.packingList,
+        packedItems: state.packedItems,
       }),
     }
   )

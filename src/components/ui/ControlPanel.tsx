@@ -7,6 +7,7 @@ import ItineraryForm from "./ItineraryForm";
 import ItineraryView from "./ItineraryView";
 import CostSummary from "./CostSummary";
 import DestinationInfo from "./DestinationInfo";
+import PackingList from "./PackingList";
 import { destinations } from "@/data/destinations";
 
 function WelcomeScreen() {
@@ -38,10 +39,11 @@ const tabs = [
   { key: "attractions" as const, label: "Atractivos", icon: "📍" },
   { key: "itinerary" as const, label: "Itinerario", icon: "📅" },
   { key: "costs" as const, label: "Costos", icon: "💰" },
+  { key: "packing" as const, label: "Maleta", icon: "🎒" },
 ];
 
 export default function ControlPanel() {
-  const { activeTab, setActiveTab, selectedDestination } = useTravelStore();
+  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode } = useTravelStore();
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
@@ -57,6 +59,13 @@ export default function ControlPanel() {
             </h1>
             <p className="text-xs text-white/70">Planificador interactivo de viajes</p>
           </div>
+          <button
+            onClick={toggleDarkMode}
+            className="ml-auto p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+            title="Modo oscuro"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
         </div>
       </div>
 
@@ -101,6 +110,7 @@ export default function ControlPanel() {
         )}
         {activeTab === "itinerary" && <ItineraryView />}
         {activeTab === "costs" && <CostSummary />}
+        {activeTab === "packing" && <PackingList />}
       </div>
     </div>
   );
