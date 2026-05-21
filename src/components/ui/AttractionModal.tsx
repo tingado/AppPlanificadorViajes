@@ -71,10 +71,23 @@ export default function AttractionModal({ attraction, onClose }: Props) {
             )}
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{attraction.description}</p>
-          <div className="flex items-center justify-between pt-1">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              💰 {selectedDestination ? formatLocalCost(attraction.costPerCouplePerDay, selectedDestination.currencyCode) : attraction.costPerCouplePerDay} · ~${usdCost} USD/día · 2p
-            </span>
+          <div className="flex items-center justify-between pt-1 gap-2 flex-wrap">
+            <div className="space-y-1">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                💰 {selectedDestination ? formatLocalCost(attraction.costPerCouplePerDay, selectedDestination.currencyCode) : attraction.costPerCouplePerDay} · ~${usdCost} USD/día · 2p
+              </span>
+              <div>
+                <a
+                  href={`https://maps.google.com/?q=${attraction.coordinates.lat},${attraction.coordinates.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400 hover:underline"
+                  onClick={e => e.stopPropagation()}
+                >
+                  🗺 Ver en Google Maps
+                </a>
+              </div>
+            </div>
             <button
               onClick={() => { toggleAttraction(attraction); if (!isActive) onClose(); }}
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
