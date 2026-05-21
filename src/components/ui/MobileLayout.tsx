@@ -72,7 +72,7 @@ const stepperSteps = [
 ];
 
 export default function MobileLayout() {
-  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary, darkMode, toggleDarkMode, tripDate, setTripDate } = useTravelStore();
+  const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary, darkMode, toggleDarkMode, tripDate, setTripDate, resetTrip } = useTravelStore();
   const pinCount = activePins.length;
 
   // Mejora 1: scroll al inicio al cambiar de tab
@@ -139,13 +139,24 @@ export default function MobileLayout() {
           <div className="flex-1 flex justify-center cursor-row-resize">
             <div className="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
           </div>
-          <button
-            onClick={(e) => { e.stopPropagation(); toggleDarkMode(); }}
-            className="ml-auto text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-base px-1"
-            title="Modo oscuro"
-          >
-            {darkMode ? '☀️' : '🌙'}
-          </button>
+          <div className="ml-auto flex items-center gap-1">
+            {selectedDestination && (
+              <button
+                onClick={(e) => { e.stopPropagation(); resetTrip(); }}
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm px-1"
+                title="Nueva planificación"
+              >
+                🔄
+              </button>
+            )}
+            <button
+              onClick={(e) => { e.stopPropagation(); toggleDarkMode(); }}
+              className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-base px-1"
+              title="Modo oscuro"
+            >
+              {darkMode ? '☀️' : '🌙'}
+            </button>
+          </div>
         </div>
 
         {/* Destination + Days — always visible, no scroll */}

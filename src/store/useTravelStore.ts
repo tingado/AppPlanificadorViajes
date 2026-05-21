@@ -13,6 +13,7 @@ interface TravelState {
   // Destination selection
   selectedDestination: Destination | null;
   setSelectedDestination: (destination: Destination | null) => void;
+  resetTrip: () => void;
 
   // Pin management (max 3)
   activePins: Attraction[];
@@ -100,6 +101,22 @@ export const useTravelStore = create<TravelState>()(
       setSelectedDestination: (destination) => {
         set({ selectedDestination: destination, activePins: [], routeInfo: null, showRoute: false, generatedItinerary: [], dayNotes: {}, itineraryOutdated: false });
       },
+      resetTrip: () => set({
+        selectedDestination: null,
+        activePins: [],
+        routeInfo: null,
+        showRoute: false,
+        generatedItinerary: [],
+        dayNotes: {},
+        attractionNotes: {},
+        itineraryOutdated: false,
+        tripDate: null,
+        budgetOverrides: {},
+        budgetGoalUSD: null,
+        packingItems: {},
+        customPackingItems: [],
+        activeTab: 'attractions',
+      }),
 
       activePins: [],
       pinLimitReached: false,

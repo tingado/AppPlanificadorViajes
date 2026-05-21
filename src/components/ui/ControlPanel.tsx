@@ -70,7 +70,7 @@ const stepperSteps = [
 ];
 
 export default function ControlPanel() {
-  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate, activePins, generatedItinerary } = useTravelStore();
+  const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate, activePins, generatedItinerary, resetTrip } = useTravelStore();
 
   const currentStep = !selectedDestination ? 0 : activePins.length === 0 ? 1 : generatedItinerary.length === 0 ? 2 : 3;
 
@@ -92,13 +92,24 @@ export default function ControlPanel() {
                 : 'Planificador interactivo de viajes'}
             </p>
           </div>
-          <button
-            onClick={toggleDarkMode}
-            className="ml-auto p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/20 transition-colors"
-            title="Modo oscuro"
-          >
-            {darkMode ? '☀️' : '🌙'}
-          </button>
+          <div className="ml-auto flex items-center gap-1">
+            {selectedDestination && (
+              <button
+                onClick={resetTrip}
+                className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/20 transition-colors text-xs"
+                title="Nueva planificación"
+              >
+                🔄
+              </button>
+            )}
+            <button
+              onClick={toggleDarkMode}
+              className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+              title="Modo oscuro"
+            >
+              {darkMode ? '☀️' : '🌙'}
+            </button>
+          </div>
         </div>
       </div>
 
