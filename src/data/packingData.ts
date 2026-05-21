@@ -70,4 +70,12 @@ export const DEST_PACKING_ITEMS: Record<string, PackingItem[]> = {
     { id: "gr-hat", cat: "Grecia", label: "Sombrero de sol (calor extremo Jul-Ago)" },
     { id: "gr-light-scarf", cat: "Grecia", label: "Pañuelo/chal para visitas a iglesias" },
   ],
+  morocco: [
+    { id: "ma-dirhams", cat: "Marruecos", label: "Dirhams marroquíes en efectivo (souks)" },
+    { id: "ma-modest-clothes", cat: "Marruecos", label: "Ropa respetuosa (hombros + rodillas cubiertos)" },
+    { id: "ma-scarf-women", cat: "Marruecos", label: "Pañuelo para cabeza (mezquitas y mercados)" },
+    { id: "ma-sandals-flip", cat: "Marruecos", label: "Sandalias cómodas para medinas" },
+    { id: "ma-daypack-safe", cat: "Marruecos", label: "Mochila anti-robo / bolso cruzado" },
+    { id: "ma-stomach-meds", cat: "Marruecos", label: "Medicamentos estomacales (cambio de agua)" },
+  ],
 };
