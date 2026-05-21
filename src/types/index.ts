@@ -28,6 +28,7 @@ export interface Destination {
   attractions: Attraction[];
   flag?: string;
   visaInfo?: string;
+  visaFeePerPersonUSD?: number;  // e.g. 35 for Bali VOA; 0 or omitted = visa-free
   bestMonths?: string;
   goodMonths?: number[];   // 1-12, months considered ideal; empty = year-round
   avoidMonths?: number[];  // 1-12, months to avoid
