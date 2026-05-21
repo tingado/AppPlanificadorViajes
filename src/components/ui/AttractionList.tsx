@@ -22,6 +22,9 @@ export default function AttractionList() {
     attractionNotes,
     setAttractionNote,
     optimizeRoute,
+    generateItineraryAction,
+    setActiveTab,
+    generatedItinerary,
   } = useTravelStore();
 
   const regions = selectedDestination
@@ -224,6 +227,18 @@ export default function AttractionList() {
           </div>
         );
       })}
+      {/* Sticky CTA when pins selected and no itinerary yet */}
+      {activePins.length > 0 && generatedItinerary.length === 0 && (
+        <div className="sticky bottom-0 pt-2 pb-1 bg-gradient-to-t from-white dark:from-gray-900 to-transparent">
+          <button
+            onClick={() => { generateItineraryAction(); setActiveTab("itinerary"); }}
+            className="w-full rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-sm font-bold py-3 shadow-lg transition-colors"
+          >
+            ✨ Generar itinerario ({activePins.length} atractivo{activePins.length > 1 ? 's' : ''})
+          </button>
+        </div>
+      )}
+
       {selectedAttraction && (
         <AttractionModal
           attraction={selectedAttraction}

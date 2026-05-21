@@ -67,7 +67,11 @@ export default function ControlPanel() {
             <h1 className="text-base font-bold text-white leading-tight">
               Luna de Miel Planner
             </h1>
-            <p className="text-xs text-white/70">Planificador interactivo de viajes</p>
+            <p className="text-xs text-white/70">
+              {selectedDestination
+                ? `${selectedDestination.flag ?? ''} ${selectedDestination.country} · ${activePins.length > 0 ? `${activePins.length} atractivo${activePins.length > 1 ? 's' : ''}` : 'sin atracciones'}`
+                : 'Planificador interactivo de viajes'}
+            </p>
           </div>
           <button
             onClick={toggleDarkMode}
