@@ -17,6 +17,8 @@ export default function CostSummary() {
     tripDays,
     budgetOverrides,
     setBudgetOverride,
+    budgetGoalUSD,
+    setBudgetGoalUSD,
   } = useTravelStore();
 
   if (!selectedDestination || generatedItinerary.length === 0) {
@@ -109,6 +111,52 @@ export default function CostSummary() {
           <span>🛫 Vuelo intl: ${fmt(intlFlightUSD)}</span>
           <span>🏖 Destino: ${fmt(destinationUSD)}</span>
         </div>
+      </div>
+
+      {/* ── 1b. Meta de presupuesto ────────────────────────────────────── */}
+      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+            🎯 Meta de presupuesto
+          </label>
+          <div className="flex items-center gap-1">
+            <span className="text-xs text-gray-400 dark:text-gray-500">$</span>
+            <input
+              type="number"
+              min={0}
+              placeholder="ej: 8000"
+              value={budgetGoalUSD ?? ''}
+              onChange={e => setBudgetGoalUSD(e.target.value ? Number(e.target.value) : null)}
+              className="w-24 text-sm text-right rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-400"
+            />
+            <span className="text-xs text-gray-400 dark:text-gray-500">USD</span>
+          </div>
+        </div>
+        {budgetGoalUSD != null && budgetGoalUSD > 0 && (() => {
+          const pct = Math.min((totalUSD / budgetGoalUSD) * 100, 100);
+          const over = totalUSD > budgetGoalUSD;
+          const near = !over && totalUSD > budgetGoalUSD * 0.9;
+          const barColor = over ? 'bg-red-500' : near ? 'bg-amber-400' : 'bg-green-500';
+          const textColor = over ? 'text-red-600 dark:text-red-400' : near ? 'text-amber-600 dark:text-amber-400' : 'text-green-600 dark:text-green-400';
+          const diff = Math.abs(totalUSD - budgetGoalUSD);
+          return (
+            <div className="space-y-1">
+              <div className="w-full h-2.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
+              </div>
+              <p className={`text-xs font-semibold ${textColor}`}>
+                {over
+                  ? `⚠️ $${fmt(diff)} USD sobre el presupuesto`
+                  : near
+                    ? `⚡ $${fmt(diff)} USD disponibles (cerca del límite)`
+                    : `✅ $${fmt(diff)} USD disponibles`}
+                <span className="ml-1 text-gray-400 dark:text-gray-500 font-normal">
+                  (${fmt(totalUSD)} / ${fmt(budgetGoalUSD)} USD)
+                </span>
+              </p>
+            </div>
+          );
+        })()}
       </div>
 
       {/* ── 2. Breakdown por categoría ──────────────────────────────────── */}
