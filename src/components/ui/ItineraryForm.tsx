@@ -2,6 +2,8 @@
 
 import { useTravelStore } from "@/store/useTravelStore";
 
+const presets = [7, 10, 14, 21, 25];
+
 export default function ItineraryForm() {
   const {
     tripDays,
@@ -26,11 +28,29 @@ export default function ItineraryForm() {
         <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
           Días de viaje
         </label>
+
+        {/* Preset chips */}
+        <div className="flex gap-1.5 flex-wrap mb-2">
+          {presets.map((d) => (
+            <button
+              key={d}
+              onClick={() => setTripDays(d)}
+              className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
+                tripDays === d
+                  ? "bg-brand-500 text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              {d}d
+            </button>
+          ))}
+        </div>
+
         <div className="flex items-center gap-3">
           <input
             type="range"
             min={2}
-            max={21}
+            max={30}
             value={tripDays}
             onChange={(e) => setTripDays(Number(e.target.value))}
             className="flex-1 accent-brand-500"
@@ -39,7 +59,7 @@ export default function ItineraryForm() {
             {tripDays}
           </span>
         </div>
-        <p className="text-xs text-gray-400 mt-1">Arrastra para ajustar (2–21 días)</p>
+        <p className="text-xs text-gray-400 mt-1">Arrastra para ajustar (2–30 días)</p>
       </div>
 
       <div className="rounded-xl bg-gray-50 border border-gray-200 p-3 text-sm">
@@ -65,19 +85,50 @@ export default function ItineraryForm() {
         </ul>
       </div>
 
-      <button
-        onClick={handleGenerate}
-        disabled={!canGenerate}
-        className="w-full rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
-      >
-        {generatedItinerary.length > 0 ? "Regenerar itinerario" : "Generar itinerario"}
-      </button>
+      {/* Generate button */}
+      <div>
+        <button
+          onClick={handleGenerate}
+          disabled={!canGenerate}
+          className={`w-full rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition ${
+            canGenerate
+              ? "bg-brand-500 hover:bg-brand-600 text-white"
+              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+          }`}
+        >
+          {canGenerate
+            ? generatedItinerary.length > 0
+              ? "Regenerar itinerario ✨"
+              : "Generar itinerario ✨"
+            : generatedItinerary.length > 0
+            ? "Regenerar itinerario"
+            : "Generar itinerario"}
+        </button>
 
-      {!canGenerate && (
-        <p className="text-center text-xs text-gray-400">
-          Selecciona un destino y al menos un atractivo para continuar
-        </p>
-      )}
+        {/* Pin counter hint */}
+        {activePins.length === 0 && (
+          <p className="text-xs text-gray-400 text-center mt-1">
+            Selecciona al menos una atracción para generar
+          </p>
+        )}
+
+        {/* Active pin chips */}
+        {activePins.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-2">
+            {activePins.map((pin, i) => (
+              <span
+                key={pin.id}
+                className="inline-flex items-center gap-1 rounded-full bg-brand-100 text-brand-700 px-2 py-0.5 text-xs font-medium"
+              >
+                <span className="w-4 h-4 rounded-full bg-brand-500 text-white text-[10px] flex items-center justify-center font-bold">
+                  {i + 1}
+                </span>
+                {pin.name}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
