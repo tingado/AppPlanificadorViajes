@@ -36,6 +36,8 @@ function convertCost(
   };
 }
 
+let freeDayCounter = 0;
+
 /** Build a single free-exploration day (no attractions). */
 function makeFreDay(
   dayNumber: number,
@@ -45,6 +47,10 @@ function makeFreDay(
   const baseDaily =
     destination.dailyBaseAccommodationCost + destination.dailyBaseFoodCost;
   const converted = convertCost(baseDaily, destination.currencyCode, rates);
+  const hints = destination.freeDayHints;
+  const note = hints && hints.length > 0
+    ? hints[freeDayCounter++ % hints.length]
+    : "Día libre para explorar a tu ritmo";
   return {
     day: dayNumber,
     isTransitDay: false,
@@ -52,7 +58,7 @@ function makeFreDay(
     estimatedCostLocal: baseDaily,
     estimatedCostUSD: converted.usd,
     estimatedCostCLP: converted.clp,
-    notes: "Día libre para explorar",
+    notes: note,
   };
 }
 
@@ -166,6 +172,7 @@ export function generateItinerary(
   tripDays: number,
   rates: CurrencyRates
 ): ItineraryDay[] {
+  freeDayCounter = 0;
   const sorted = sortByProximity(selectedAttractions);
 
   if (sorted.length === 0) {

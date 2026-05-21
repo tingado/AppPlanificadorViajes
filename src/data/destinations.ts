@@ -19,6 +19,7 @@ export const destinations: Destination[] = [
     avoidMonths: [6, 7, 8],
     climate: "Templado, 15-22°C en Oct-Nov",
     travelTips: ["JR Pass para Shinkansen (~$300 USD/7 días)", "Amiga local sin costo de alojamiento", "Comprar Suica card en aeropuerto"],
+    freeDayHints: ["Onsen en un ryokan tradicional (baño termal, cena kaiseki)", "Explorar konbini: sushi, ramen y repostería local desde ¥500", "Mercado Nishiki (Kioto) o Tsukiji (Tokio): probar tamagoyaki y mochi fresco", "Paseo nocturno por Dotonbori (Osaka) y takoyaki en el puesto callejero"],
     attractions: [
       {
         id: "kyoto",
@@ -128,6 +129,7 @@ export const destinations: Destination[] = [
     avoidMonths: [12, 1, 2],
     climate: "Tropical, 27-32°C, húmedo",
     travelTips: ["Alquilar moto en Ubud (~$8/día)", "Considerar Lombok en Febrero si llueve", "Goa Gajah (Elephant Temple) cerca de Ubud ~$3/persona"],
+    freeDayHints: ["Clase de yoga al amanecer en Ubud (desde IDR 150.000/persona)", "Spa balinés: masaje de 90 min ~IDR 350.000/pareja en Ubud", "Mercado de Ubud (Pasar Ubud): artesanías, especias y fruta tropical fresca", "Paseo en moto por campos de arroz y aldeas de artesanos cerca de Mas"],
     attractions: [
       {
         id: "tegallalang",
@@ -235,6 +237,7 @@ export const destinations: Destination[] = [
     goodMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     climate: "Ecuatorial, 25-30°C estable todo el año",
     travelTips: ["Hawker Centers: comida Michelin desde $5 SGD", "MRT eficiente — evitar taxis", "Gardens by the Bay iluminado de noche (gratis exterior)"],
+    freeDayHints: ["Tour gastronómico por hawker centers: Lau Pa Sat, Maxwell y Old Airport Road", "Haji Lane y Arab Street: boutiques vintage y café árabe con shisha", "Botanic Gardens patrimonio UNESCO (entrada gratis, Orchid Garden $5 SGD)", "Clarke Quay de noche: cócteles con vistas al río y ambiente cosmopolita"],
     attractions: [
       {
         id: "gardens-bay",
@@ -342,6 +345,7 @@ export const destinations: Destination[] = [
     goodMonths: [11, 12, 1, 2],
     avoidMonths: [5, 6, 7, 8, 9],
     climate: "Tropical, 24-32°C en temporada seca (Nov-Feb)",
+    freeDayHints: ["Clase de cocina tailandesa: mercado + cooking class (~$25/persona)", "Mercado nocturno local: Chatuchak (Bangkok) o Night Bazaar (Chiang Mai)", "Masaje tradicional thai de 2h en spa local (~600 THB/persona)", "Tour en tuk-tuk por templos secundarios fuera del circuito turístico"],
     travelTips: [
       "Bus nocturno Bangkok-Chiang Mai (~$10/persona, 8h) ahorra noche de hotel",
       "AirAsia/Nok Air para vuelos internos (~$25-50/persona)",
@@ -456,6 +460,7 @@ export const destinations: Destination[] = [
     goodMonths: [11, 12, 1, 2, 3],
     avoidMonths: [6, 7, 8],
     climate: "Variable: norte fresco (17-22°C), sur cálido (28-33°C) en Nov-Feb",
+    freeDayHints: ["Pho Bo (sopa de res) de madrugada en puesto callejero local (~30.000 VND)", "Cyclo tour por el casco antiguo de Hanoi o bicicleta en Hoi An", "Clase de cocina vietnamita: mercado matutino + preparar Pho, Banh Mi y Cao Lau", "Café de huevo (Egg Coffee) en Giang Café, Hanoi — experiencia única"],
     travelTips: [
       "Crucero Ha Long Bay 2 noches todo incluido (~$200-320/pareja) — reservar antes",
       "Grab (app) más seguro que taxis en Hanoi y HCMC",
@@ -570,6 +575,7 @@ export const destinations: Destination[] = [
     goodMonths: [11, 12, 1, 2, 3, 4],
     avoidMonths: [7, 8, 9],
     climate: "Tropical, 28-33°C, humedad alta. Temporada seca: Nov-Abril",
+    freeDayHints: ["Snorkeling libre desde la playa con alquiler de equipo (~$5/persona)", "Bangka al atardecer: paseo en banca local con pescadores (~$15/bote)", "Barbacoa de mariscos en la playa: pescado fresco, calamares y gambas", "Alquilar moto y explorar playas desconocidas sin turistas"],
     travelTips: [
       "El Nido: Laguna Secreta (Tour A) requiere reserva anticipada",
       "Puerto Princesa ↔ El Nido: van pública ($10/persona, 5h) o vuelo privado ($80+)",

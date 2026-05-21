@@ -34,6 +34,7 @@ export interface Destination {
   avoidMonths?: number[];  // 1-12, months to avoid
   climate?: string;
   travelTips?: string[];
+  freeDayHints?: string[];  // suggestions for free exploration days in itinerary
 }
 
 export interface ItineraryDay {
