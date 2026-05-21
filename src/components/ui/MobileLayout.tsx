@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import DestinationSelector from "./DestinationSelector";
 import AttractionList from "./AttractionList";
@@ -45,18 +46,68 @@ export default function MobileLayout() {
   const { activeTab, setActiveTab, activePins, selectedDestination } = useTravelStore();
   const pinCount = activePins.length;
 
+  // Mejora 1: scroll al inicio al cambiar de tab
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleTabChange = (tab: typeof activeTab) => {
+    setActiveTab(tab);
+    setTimeout(() => {
+      contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 50);
+  };
+
+  // Mejora 3: drag handle para ajustar altura del mapa
+  const [mapHeight, setMapHeight] = useState(38); // vh
+  const dragStartY = useRef<number | null>(null);
+  const dragStartHeight = useRef<number>(38);
+
+  const onDragStart = useCallback((e: React.TouchEvent | React.MouseEvent) => {
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    dragStartY.current = clientY;
+    dragStartHeight.current = mapHeight;
+  }, [mapHeight]);
+
+  const onDragMove = useCallback((e: TouchEvent | MouseEvent) => {
+    if (dragStartY.current === null) return;
+    const clientY = 'touches' in e ? (e as TouchEvent).touches[0].clientY : (e as MouseEvent).clientY;
+    const delta = clientY - dragStartY.current;
+    const newHeight = Math.max(20, Math.min(70, dragStartHeight.current + (delta / window.innerHeight) * 100));
+    setMapHeight(newHeight);
+  }, []);
+
+  const onDragEnd = useCallback(() => {
+    dragStartY.current = null;
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('touchmove', onDragMove, { passive: true });
+    window.addEventListener('touchend', onDragEnd);
+    window.addEventListener('mousemove', onDragMove);
+    window.addEventListener('mouseup', onDragEnd);
+    return () => {
+      window.removeEventListener('touchmove', onDragMove);
+      window.removeEventListener('touchend', onDragEnd);
+      window.removeEventListener('mousemove', onDragMove);
+      window.removeEventListener('mouseup', onDragEnd);
+    };
+  }, [onDragMove, onDragEnd]);
+
   return (
     <div className="flex flex-col bg-gray-100 dark:bg-gray-900" style={{ height: '100dvh' }}>
-      {/* Map — 38% max */}
-      <div className="flex-shrink-0" style={{ height: "38vh" }}>
+      {/* Map — altura dinámica via drag */}
+      <div className="flex-shrink-0" style={{ height: `${mapHeight}vh` }}>
         <MapView />
       </div>
 
       {/* Bottom panel — rest of screen */}
       <div className="flex flex-col flex-1 bg-white dark:bg-gray-800 rounded-t-2xl shadow-lg overflow-hidden min-h-0">
-        {/* Handle */}
-        <div className="flex justify-center pt-2 pb-1 flex-shrink-0">
-          <div className="w-10 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+        {/* Handle — draggable */}
+        <div
+          className="flex justify-center pt-2 pb-1 flex-shrink-0 cursor-row-resize touch-none"
+          onTouchStart={onDragStart}
+          onMouseDown={onDragStart}
+        >
+          <div className="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
         </div>
 
         {/* Destination + Days — always visible, no scroll */}
@@ -70,7 +121,7 @@ export default function MobileLayout() {
           {tabs.map((tab) => (
             <button
               key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
+              onClick={() => handleTabChange(tab.key)}
               className={`flex-1 py-2 text-xs font-semibold transition-colors relative ${
                 activeTab === tab.key
                   ? "border-b-2 border-brand-500 text-brand-600"
@@ -88,7 +139,7 @@ export default function MobileLayout() {
         </div>
 
         {/* Scrollable tab content */}
-        <div className="flex-1 overflow-y-auto min-h-0 p-3">
+        <div ref={contentRef} className="flex-1 overflow-y-auto min-h-0 p-3">
           {activeTab === "attractions" && (
             selectedDestination ? (
               <div className="space-y-2">

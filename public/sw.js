@@ -1,8 +1,4 @@
-const CACHE = 'lm-planner-v1';
-const SHELL = [
-  '/AppPlanificadorViajes/',
-  '/AppPlanificadorViajes/_next/static/',
-];
+const CACHE = 'lm-planner-v3';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
@@ -21,18 +17,34 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // No cachear tiles del mapa (tile.openstreetmap.org)
-  if (e.request.url.includes('openstreetmap') || e.request.url.includes('tile.')) return;
+  const url = e.request.url;
 
+  // No interceptar tiles del mapa
+  if (url.includes('openstreetmap') || url.includes('tile.')) return;
+
+  // Chunks JS/_next/static: network-first para evitar servir chunks stale
+  // tras un nuevo deploy (chunk hashes cambian con cada build)
+  if (url.includes('/_next/static/chunks/') || url.includes('/_next/static/css/')) {
+    e.respondWith(
+      fetch(e.request)
+        .then((res) => {
+          if (res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE).then((c) => c.put(e.request, clone));
+          }
+          return res;
+        })
+        .catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // Shell HTML: cache-first con fallback a red
   e.respondWith(
     caches.match(e.request).then((cached) => {
       if (cached) return cached;
       return fetch(e.request).then((res) => {
-        // Solo cachear requests de mismo origin y assets estáticos
-        if (
-          res.ok &&
-          (e.request.url.includes('/_next/static/') || e.request.url.endsWith('/'))
-        ) {
+        if (res.ok && e.request.url.endsWith('/')) {
           const clone = res.clone();
           caches.open(CACHE).then((c) => c.put(e.request, clone));
         }
