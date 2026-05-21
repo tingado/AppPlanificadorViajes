@@ -16,8 +16,8 @@ export default function DestinationInfo() {
   const { selectedDestination, tripDate } = useTravelStore();
   if (!selectedDestination) return null;
 
-  const { visaInfo, bestMonths, climate, travelTips, freeDayHints } = selectedDestination;
-  if (!visaInfo && !bestMonths && !climate && !travelTips?.length && !freeDayHints?.length) return null;
+  const { visaInfo, bestMonths, climate, travelTips, freeDayHints, romanticHighlights } = selectedDestination;
+  if (!visaInfo && !bestMonths && !climate && !travelTips?.length && !freeDayHints?.length && !romanticHighlights?.length) return null;
 
   const checkMonth = tripDate
     ? new Date(tripDate + 'T12:00:00').getMonth() + 1
@@ -41,6 +41,14 @@ export default function DestinationInfo() {
 
       {open && (
         <div className="px-4 pb-4 space-y-3 border-t border-brand-100 dark:border-brand-900/40 pt-3">
+          {romanticHighlights && romanticHighlights.length > 0 && (
+            <div className="rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 p-3 space-y-1.5">
+              <p className="text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wide">💑 Experiencias románticas imperdibles</p>
+              {romanticHighlights.map((h, i) => (
+                <p key={i} className="text-xs text-rose-700 dark:text-rose-300 leading-snug">{h}</p>
+              ))}
+            </div>
+          )}
           {visaInfo && (
             <div className="space-y-0.5">
               <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">🛂 Visa</p>

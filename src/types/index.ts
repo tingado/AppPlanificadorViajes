@@ -36,6 +36,7 @@ export interface Destination {
   travelTips?: string[];
   freeDayHints?: string[];  // suggestions for free exploration days in itinerary
   estimatedFlightFromChileUSD?: number;  // round trip per couple, economy class
+  romanticHighlights?: string[];  // curated honeymoon-specific experiences
 }
 
 export interface ItineraryDay {
