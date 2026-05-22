@@ -16,8 +16,8 @@ export default function DestinationInfo() {
   const { selectedDestination, tripDate } = useTravelStore();
   if (!selectedDestination) return null;
 
-  const { visaInfo, bestMonths, climate, travelTips, freeDayHints, romanticHighlights } = selectedDestination;
-  if (!visaInfo && !bestMonths && !climate && !travelTips?.length && !freeDayHints?.length && !romanticHighlights?.length) return null;
+  const { visaInfo, bestMonths, climate, travelTips, freeDayHints, romanticHighlights, basicPhrases } = selectedDestination;
+  if (!visaInfo && !bestMonths && !climate && !travelTips?.length && !freeDayHints?.length && !romanticHighlights?.length && !basicPhrases?.length) return null;
 
   const checkMonth = tripDate
     ? new Date(tripDate + 'T12:00:00').getMonth() + 1
@@ -130,6 +130,25 @@ export default function DestinationInfo() {
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {basicPhrases && basicPhrases.length > 0 && (
+            <div className="rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 p-3 space-y-2">
+              <p className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">🗣 Frases útiles</p>
+              <div className="space-y-1.5">
+                {basicPhrases.map((item, i) => (
+                  <div key={i} className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <span className="text-xs font-semibold text-indigo-700 dark:text-indigo-300">{item.phrase}</span>
+                      {item.phonetic && (
+                        <span className="text-[10px] text-indigo-400 dark:text-indigo-500 ml-1.5 italic">({item.phonetic})</span>
+                      )}
+                    </div>
+                    <span className="text-xs text-gray-600 dark:text-gray-400 shrink-0 text-right">{item.translation}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
