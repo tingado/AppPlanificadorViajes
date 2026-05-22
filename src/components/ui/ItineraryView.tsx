@@ -291,6 +291,7 @@ export default function ItineraryView() {
                                       alt={attr.name}
                                       className="w-full h-24 object-cover"
                                       loading="lazy"
+                                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                                     />
                                   )}
                                   <div className="px-2.5 py-1.5">
