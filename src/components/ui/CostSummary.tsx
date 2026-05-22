@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { destinations } from "@/data/destinations";
+import ExportButton from "@/components/ui/ExportButton";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -126,7 +127,12 @@ export default function CostSummary() {
         </div>
       </div>
 
-      {/* ── 1b. Meta de presupuesto ────────────────────────────────────── */}
+      {/* ── 1b. Export ───────────────────────────────────────────────── */}
+      <div className="flex justify-end">
+        <ExportButton />
+      </div>
+
+      {/* ── 1c. Meta de presupuesto ────────────────────────────────────── */}
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-2">
         <div className="flex items-center justify-between gap-2">
           <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
