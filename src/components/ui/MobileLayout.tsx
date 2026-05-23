@@ -25,6 +25,7 @@ const REGIONS_MOBILE: Record<string, string> = {
   japan: 'Asia', bali: 'Asia', singapore: 'Asia', thailand: 'Asia', vietnam: 'Asia', philippines: 'Asia', maldives: 'Asia',
   greece: 'Europa', italy: 'Europa', france: 'Europa', croatia: 'Europa',
   morocco: 'África',
+  mexico: 'América',
 };
 
 const BUDGET_TIERS_MOBILE = [
