@@ -1,7 +1,7 @@
 "use client";
 
 import { useTravelStore } from "@/store/useTravelStore";
-import { defaultCurrencyRates } from "@/data/destinations";
+import { getRate } from "@/utils/rates";
 
 const presets = [7, 10, 14, 21, 25];
 
@@ -31,8 +31,7 @@ export default function ItineraryForm({ compact }: ItineraryFormProps) {
   // Quick estimate: base accommodation+food + avg attraction cost spread across days
   const quickEstimateUSD = (() => {
     if (!selectedDestination) return null;
-    const rk = `USD_TO_${selectedDestination.currencyCode}`;
-    const localRate = (currencyRates as Record<string, number>)[rk] ?? (defaultCurrencyRates as Record<string, number>)[rk] ?? 1;
+    const localRate = getRate(currencyRates as Record<string, number>, selectedDestination.currencyCode);
     const baseNight = budgetOverrides.accommodationPerNight ?? selectedDestination.dailyBaseAccommodationCost;
     const baseFood = budgetOverrides.foodPerDay ?? selectedDestination.dailyBaseFoodCost;
     const basePerDayUSD = localRate > 0 ? (baseNight + baseFood) / localRate : 0;

@@ -1,6 +1,6 @@
 import { Attraction, Destination, ItineraryDay, CurrencyRates } from "@/types";
 import { haversineDistanceKm, estimateTravelHours } from "./geo";
-import { defaultCurrencyRates } from "@/data/destinations";
+import { getRate } from "./rates";
 
 const TRANSIT_DAY_THRESHOLD_HOURS = 5;
 
@@ -28,8 +28,7 @@ function convertCost(
   rates: CurrencyRates
 ): { usd: number; clp: number } {
   let usdAmount: number;
-  const rateKey = `USD_TO_${currencyCode}`;
-  const rate = rates[rateKey] || (defaultCurrencyRates as Record<string, number>)[rateKey] || 1;
+  const rate = getRate(rates as Record<string, number>, currencyCode);
   usdAmount = rate > 0 ? localAmount / rate : 0;
   return {
     usd: usdAmount,

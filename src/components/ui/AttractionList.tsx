@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { Attraction } from "@/types";
 import AttractionModal from "./AttractionModal";
-import { defaultCurrencyRates } from "@/data/destinations";
+import { getRate } from "@/utils/rates";
 
 function formatLocalCost(amount: number, currencyCode: string): string {
   return new Intl.NumberFormat("es-CL", {
@@ -32,11 +32,9 @@ export default function AttractionList() {
     selectAttractions,
   } = useTravelStore();
 
-  const localRate = (() => {
-    if (!selectedDestination) return 1;
-    const rk = `USD_TO_${selectedDestination.currencyCode}`;
-    return (currencyRates as Record<string, number>)[rk] ?? (defaultCurrencyRates as Record<string, number>)[rk] ?? 1;
-  })();
+  const localRate = selectedDestination
+    ? getRate(currencyRates as Record<string, number>, selectedDestination.currencyCode)
+    : 1;
 
   const regions = selectedDestination
     ? [...new Set(selectedDestination.attractions.map((a) => a.region))]
