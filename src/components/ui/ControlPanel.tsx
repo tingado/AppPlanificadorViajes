@@ -22,7 +22,7 @@ function getSeasonBadge(dest: typeof destinations[0], month: number) {
 
 const REGIONS: Record<string, string> = {
   japan: 'Asia', bali: 'Asia', singapore: 'Asia', thailand: 'Asia', vietnam: 'Asia', philippines: 'Asia', maldives: 'Asia',
-  greece: 'Europa', italy: 'Europa', france: 'Europa',
+  greece: 'Europa', italy: 'Europa', france: 'Europa', croatia: 'Europa',
   morocco: 'África',
 };
 
