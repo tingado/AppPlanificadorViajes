@@ -5,12 +5,7 @@ import { useTravelStore } from "@/store/useTravelStore";
 import { formatDuration } from "@/utils/geo";
 import ExportButton from "@/components/ui/ExportButton";
 import ShareButton from "@/components/ui/ShareButton";
-import { defaultCurrencyRates } from "@/data/destinations";
-
-function getRate(rates: Record<string, number>, code: string): number {
-  const key = `USD_TO_${code}`;
-  return rates[key] ?? (defaultCurrencyRates as Record<string, number>)[key] ?? 1;
-}
+import { getRate } from "@/utils/rates";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));

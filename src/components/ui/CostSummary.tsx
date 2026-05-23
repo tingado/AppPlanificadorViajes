@@ -2,13 +2,9 @@
 
 import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
-import { destinations, defaultCurrencyRates } from "@/data/destinations";
+import { destinations } from "@/data/destinations";
 import ExportButton from "@/components/ui/ExportButton";
-
-function getRate(rates: Record<string, number>, code: string): number {
-  const key = `USD_TO_${code}`;
-  return rates[key] ?? (defaultCurrencyRates as Record<string, number>)[key] ?? 1;
-}
+import { getRate } from "@/utils/rates";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
