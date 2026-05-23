@@ -1,6 +1,7 @@
 "use client";
 import { Attraction } from "@/types";
 import { useTravelStore } from "@/store/useTravelStore";
+import { getRate } from "@/utils/rates";
 
 interface Props {
   attraction: Attraction;
@@ -19,7 +20,7 @@ export default function AttractionModal({ attraction, onClose }: Props) {
   const { activePins, toggleAttraction, selectedDestination, currencyRates } = useTravelStore();
   const isActive = activePins.some(p => p.id === attraction.id);
   const localRate = selectedDestination
-    ? (currencyRates as Record<string, number>)[`USD_TO_${selectedDestination.currencyCode}`] ?? 1
+    ? getRate(currencyRates as Record<string, number>, selectedDestination.currencyCode)
     : 1;
   const usdCost = Math.round(attraction.costPerCouplePerDay / localRate);
 

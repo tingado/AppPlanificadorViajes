@@ -10,6 +10,7 @@ import CostSummary from "./CostSummary";
 import DestinationInfo from "./DestinationInfo";
 import PackingList from "./PackingList";
 import { destinations } from "@/data/destinations";
+import { getRate } from "@/utils/rates";
 
 function getSeasonBadge(dest: typeof destinations[0], month: number) {
   if (!dest.goodMonths || dest.goodMonths.length === 12) return { icon: '✅', color: 'text-green-600 dark:text-green-400' };
@@ -44,7 +45,7 @@ function WelcomeScreen() {
   );
 
   const getTripTotal = (dest: typeof destinations[0]) => {
-    const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
+    const rate = getRate(currencyRates as Record<string, number>, dest.currencyCode);
     const dailyUSD = (dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate;
     return Math.round(dailyUSD * tripDays + (dest.estimatedFlightFromChileUSD ?? 3500));
   };
@@ -116,7 +117,7 @@ function WelcomeScreen() {
       )}
       <div className="grid grid-cols-3 gap-2">
         {filtered.map((dest) => {
-          const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
+          const rate = getRate(currencyRates as Record<string, number>, dest.currencyCode);
           const dailyUSD = Math.round((dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate);
           const tripTotalUSD = getTripTotal(dest);
           const totalK = tripTotalUSD >= 1000 ? `$${(tripTotalUSD / 1000).toFixed(1)}K` : `$${tripTotalUSD}`;
