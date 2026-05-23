@@ -3,6 +3,12 @@ import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { Destination, ItineraryDay, CurrencyRates } from "@/types";
 import { BASE_PACKING_ITEMS, DEST_PACKING_ITEMS } from "@/data/packingData";
+import { defaultCurrencyRates } from "@/data/destinations";
+
+function getRate(rates: CurrencyRates, code: string): number {
+  const key = `USD_TO_${code}`;
+  return (rates as Record<string, number>)[key] ?? (defaultCurrencyRates as Record<string, number>)[key] ?? 1;
+}
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -21,7 +27,7 @@ function generateHTML(
   const destination = dest.country;
   const flag = dest.flag ?? '🌍';
   const code = dest.currencyCode;
-  const localRate = rates[`USD_TO_${code}`] ?? 1;
+  const localRate = getRate(rates, code);
   const visaFeeUSD = (dest.visaFeePerPersonUSD ?? 0) * 2;
   const destinationUSD = days.reduce((s: number, d: ItineraryDay) => s + d.estimatedCostUSD, 0);
   const totalUSD = destinationUSD + intlFlightUSD + visaFeeUSD;

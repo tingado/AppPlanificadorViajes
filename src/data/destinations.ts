@@ -177,7 +177,7 @@ export const destinations: Destination[] = [
         coordinates: { lat: -8.8291, lng: 115.0849 },
         costPerCouplePerDay: 450000,
         region: "Uluwatu",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Tanah_Lot_temple.jpg/400px-Tanah_Lot_temple.jpg",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Uluwatu_Temple.jpg/400px-Uluwatu_Temple.jpg",
         rating: 5,
       },
       {
@@ -281,7 +281,7 @@ export const destinations: Destination[] = [
         coordinates: { lat: 1.2839, lng: 103.8595 },
         costPerCouplePerDay: 60,
         region: "Downtown Core",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Singapore_Chinatown.jpg/400px-Singapore_Chinatown.jpg",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Marina_Bay_Sands_in_the_evening_-_20101120.jpg/400px-Marina_Bay_Sands_in_the_evening_-_20101120.jpg",
         rating: 5,
       },
       {
@@ -523,7 +523,7 @@ export const destinations: Destination[] = [
         coordinates: { lat: 21.0285, lng: 105.8542 },
         costPerCouplePerDay: 500000,
         region: "Hanoi",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Hue_citadel.jpg/400px-Hue_citadel.jpg",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Hoan_Kiem_lake_and_Ngoc_Son_temple.jpg/400px-Hoan_Kiem_lake_and_Ngoc_Son_temple.jpg",
         rating: 4.5,
       },
       {
@@ -624,7 +624,7 @@ export const destinations: Destination[] = [
         coordinates: { lat: 11.9981, lng: 120.2040 },
         costPerCouplePerDay: 4000,
         region: "Coron",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Chocolate_Hills_Overview.JPG/400px-Chocolate_Hills_Overview.JPG",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Kayangan_Lake.jpg/400px-Kayangan_Lake.jpg",
         rating: 4.5,
       },
       {
@@ -634,7 +634,7 @@ export const destinations: Destination[] = [
         coordinates: { lat: 10.7202, lng: 119.5030 },
         costPerCouplePerDay: 2000,
         region: "Palawan",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Boracay_white_beach.jpg/400px-Boracay_white_beach.jpg",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/El_Nido_Palawan.jpg/400px-El_Nido_Palawan.jpg",
         rating: 5,
       },
       {
