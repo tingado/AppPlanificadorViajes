@@ -11,6 +11,7 @@ import DestinationInfo from "./DestinationInfo";
 import PackingList from "./PackingList";
 import { destinations } from "@/data/destinations";
 import { getRate } from "@/utils/rates";
+import { PRE_TRIP_ITEMS } from "@/data/preTripData";
 
 function getSeasonBadge(dest: typeof destinations[0], month: number) {
   if (!dest.goodMonths || dest.goodMonths.length === 12) return { icon: '✅', color: 'text-green-600 dark:text-green-400' };
@@ -21,7 +22,7 @@ function getSeasonBadge(dest: typeof destinations[0], month: number) {
 
 const REGIONS: Record<string, string> = {
   japan: 'Asia', bali: 'Asia', singapore: 'Asia', thailand: 'Asia', vietnam: 'Asia', philippines: 'Asia', maldives: 'Asia',
-  greece: 'Europa', italy: 'Europa',
+  greece: 'Europa', italy: 'Europa', france: 'Europa',
   morocco: 'África',
 };
 
@@ -165,7 +166,7 @@ export default function ControlPanel() {
   const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate, activePins, generatedItinerary, itineraryOutdated, resetTrip, preTripChecked } = useTravelStore();
 
   const currentStep = !selectedDestination ? 0 : activePins.length === 0 ? 1 : generatedItinerary.length === 0 ? 2 : 3;
-  const preTripTotal = 19;
+  const preTripTotal = PRE_TRIP_ITEMS.length;
   const preTripDone = Object.values(preTripChecked ?? {}).filter(Boolean).length;
   const preTripPending = preTripTotal - preTripDone;
 
