@@ -282,6 +282,15 @@ export const useTravelStore = create<TravelState>()(
         tripDate: state.tripDate,
         preTripChecked: state.preTripChecked,
       }),
+      merge: (persisted, current) => ({
+        ...current,
+        ...(persisted as Partial<TravelState>),
+        // Always fill missing currency rate keys from defaults so new destinations work correctly
+        currencyRates: {
+          ...current.currencyRates,
+          ...(persisted as Partial<TravelState>)?.currencyRates,
+        } as CurrencyRates,
+      }),
     }
   )
 );

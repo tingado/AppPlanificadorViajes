@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { formatDuration } from "@/utils/geo";
+import { getRate } from "@/utils/rates";
 
 export default function MapView() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -160,7 +161,7 @@ export default function MapView() {
           .bindPopup(
             (() => {
               const rate = selectedDestination
-                ? ((currencyRates as Record<string, number>)[`USD_TO_${selectedDestination.currencyCode}`] ?? 1)
+                ? getRate(currencyRates as Record<string, number>, selectedDestination.currencyCode)
                 : 1;
               const usd = Math.round(pin.costPerCouplePerDay / rate);
               return `<div style="width:200px;font-family:sans-serif;text-align:center">

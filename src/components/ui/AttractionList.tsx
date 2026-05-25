@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { Attraction } from "@/types";
 import AttractionModal from "./AttractionModal";
+import { getRate } from "@/utils/rates";
+import { destinations } from "@/data/destinations";
 
 function formatLocalCost(amount: number, currencyCode: string): string {
   return new Intl.NumberFormat("es-CL", {
@@ -32,7 +34,7 @@ export default function AttractionList() {
   } = useTravelStore();
 
   const localRate = selectedDestination
-    ? (currencyRates as Record<string, number>)[`USD_TO_${selectedDestination.currencyCode}`] ?? 1
+    ? getRate(currencyRates as Record<string, number>, selectedDestination.currencyCode)
     : 1;
 
   const regions = selectedDestination
@@ -70,7 +72,7 @@ export default function AttractionList() {
       <div className="flex flex-col items-center justify-center py-10 text-center text-gray-400 dark:text-gray-500">
         <span className="text-5xl mb-3">🌏</span>
         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Elige un destino para explorar</p>
-        <p className="text-xs mt-1">Asia · Europa · África — 10 destinos disponibles</p>
+        <p className="text-xs mt-1">Asia · Europa · África · América — {destinations.length} destinos</p>
       </div>
     );
   }
@@ -223,6 +225,7 @@ export default function AttractionList() {
                     alt={attraction.name}
                     className="w-16 h-16 rounded-lg object-cover shrink-0 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     loading="lazy"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     onClick={(e) => { e.stopPropagation(); setSelectedAttraction(attraction); }}
                   />
                 )}

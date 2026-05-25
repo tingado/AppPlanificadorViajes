@@ -10,6 +10,8 @@ import CostSummary from "./CostSummary";
 import DestinationInfo from "./DestinationInfo";
 import PackingList from "./PackingList";
 import { destinations } from "@/data/destinations";
+import { getRate } from "@/utils/rates";
+import { PRE_TRIP_ITEMS } from "@/data/preTripData";
 
 function getSeasonBadge(dest: typeof destinations[0], month: number) {
   if (!dest.goodMonths || dest.goodMonths.length === 12) return { icon: '✅', color: 'text-green-600 dark:text-green-400' };
@@ -20,8 +22,9 @@ function getSeasonBadge(dest: typeof destinations[0], month: number) {
 
 const REGIONS: Record<string, string> = {
   japan: 'Asia', bali: 'Asia', singapore: 'Asia', thailand: 'Asia', vietnam: 'Asia', philippines: 'Asia', maldives: 'Asia',
-  greece: 'Europa', italy: 'Europa',
+  greece: 'Europa', italy: 'Europa', france: 'Europa', croatia: 'Europa', portugal: 'Europa',
   morocco: 'África',
+  mexico: 'América',
 };
 
 const BUDGET_TIERS = [
@@ -44,7 +47,7 @@ function WelcomeScreen() {
   );
 
   const getTripTotal = (dest: typeof destinations[0]) => {
-    const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
+    const rate = getRate(currencyRates as Record<string, number>, dest.currencyCode);
     const dailyUSD = (dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate;
     return Math.round(dailyUSD * tripDays + (dest.estimatedFlightFromChileUSD ?? 3500));
   };
@@ -116,7 +119,7 @@ function WelcomeScreen() {
       )}
       <div className="grid grid-cols-3 gap-2">
         {filtered.map((dest) => {
-          const rate = (currencyRates as Record<string, number>)[`USD_TO_${dest.currencyCode}`] ?? 1;
+          const rate = getRate(currencyRates as Record<string, number>, dest.currencyCode);
           const dailyUSD = Math.round((dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost) / rate);
           const tripTotalUSD = getTripTotal(dest);
           const totalK = tripTotalUSD >= 1000 ? `$${(tripTotalUSD / 1000).toFixed(1)}K` : `$${tripTotalUSD}`;
@@ -164,7 +167,7 @@ export default function ControlPanel() {
   const { activeTab, setActiveTab, selectedDestination, darkMode, toggleDarkMode, tripDate, setTripDate, activePins, generatedItinerary, itineraryOutdated, resetTrip, preTripChecked } = useTravelStore();
 
   const currentStep = !selectedDestination ? 0 : activePins.length === 0 ? 1 : generatedItinerary.length === 0 ? 2 : 3;
-  const preTripTotal = 19;
+  const preTripTotal = PRE_TRIP_ITEMS.length;
   const preTripDone = Object.values(preTripChecked ?? {}).filter(Boolean).length;
   const preTripPending = preTripTotal - preTripDone;
 

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { Destination, ItineraryDay, CurrencyRates } from "@/types";
 import { BASE_PACKING_ITEMS, DEST_PACKING_ITEMS } from "@/data/packingData";
+import { getRate } from "@/utils/rates";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -21,7 +22,7 @@ function generateHTML(
   const destination = dest.country;
   const flag = dest.flag ?? '🌍';
   const code = dest.currencyCode;
-  const localRate = rates[`USD_TO_${code}`] ?? 1;
+  const localRate = getRate(rates, code);
   const visaFeeUSD = (dest.visaFeePerPersonUSD ?? 0) * 2;
   const destinationUSD = days.reduce((s: number, d: ItineraryDay) => s + d.estimatedCostUSD, 0);
   const totalUSD = destinationUSD + intlFlightUSD + visaFeeUSD;
@@ -102,6 +103,7 @@ ${(dest.visaInfo || dest.travelTips?.length) ? `
   ${dest.romanticHighlights?.length ? `<div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:10px;margin:8px 0"><p style="margin:0 0 6px;font-size:11px;font-weight:700;color:#e11d48;text-transform:uppercase;letter-spacing:0.05em">💑 Experiencias románticas imperdibles</p>${dest.romanticHighlights.map(h => `<p style="margin:3px 0;font-size:13px;color:#be123c">${h}</p>`).join('')}</div>` : ''}
   ${dest.travelTips?.length ? `<p style="margin:8px 0 4px;font-size:13px"><strong>💡 Tips de viaje:</strong></p><ul style="margin:0;padding-left:18px;font-size:13px">${dest.travelTips.map(t => `<li style="margin:3px 0">${t}</li>`).join('')}</ul>` : ''}
   ${dest.freeDayHints?.length ? `<p style="margin:8px 0 4px;font-size:13px"><strong>🌅 Ideas para días libres:</strong></p><ul style="margin:0;padding-left:18px;font-size:13px">${dest.freeDayHints.map(h => `<li style="margin:3px 0">${h}</li>`).join('')}</ul>` : ''}
+  ${dest.basicPhrases?.length ? `<div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:10px;margin:8px 0"><p style="margin:0 0 6px;font-size:11px;font-weight:700;color:#4338ca;text-transform:uppercase;letter-spacing:0.05em">🗣 Frases útiles</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12px">${dest.basicPhrases.map(p => `<div><strong style="color:#3730a3">${p.phrase}</strong>${p.phonetic ? ` <span style="color:#6366f1;font-style:italic">(${p.phonetic})</span>` : ''}</div><div style="color:#6b7280">${p.translation}</div>`).join('')}</div></div>` : ''}
 </div>` : ''}
 
 <h2 style="color:#374151;font-size:16px">Detalle por día</h2>

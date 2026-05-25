@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useTravelStore } from "@/store/useTravelStore";
 import { destinations } from "@/data/destinations";
+import ExportButton from "@/components/ui/ExportButton";
+import { getRate } from "@/utils/rates";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -41,7 +43,7 @@ export default function CostSummary() {
 
   const code = selectedDestination.currencyCode;
   const rateKey = `USD_TO_${code}`;
-  const localRate = currencyRates[rateKey] ?? 1;
+  const localRate = getRate(currencyRates as Record<string, number>, code);
 
   const intlFlightUSD = budgetOverrides.internationalFlightUSD ?? selectedDestination.estimatedFlightFromChileUSD ?? 3500;
   const visaFeeUSD = (selectedDestination.visaFeePerPersonUSD ?? 0) * 2; // 2 travelers
@@ -126,7 +128,12 @@ export default function CostSummary() {
         </div>
       </div>
 
-      {/* ── 1b. Meta de presupuesto ────────────────────────────────────── */}
+      {/* ── 1b. Export ───────────────────────────────────────────────── */}
+      <div className="flex justify-end">
+        <ExportButton />
+      </div>
+
+      {/* ── 1c. Meta de presupuesto ────────────────────────────────────── */}
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-2">
         <div className="flex items-center justify-between gap-2">
           <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
@@ -401,7 +408,7 @@ function CurrencyConverter({ destCode, destFlag }: { destCode: string; destFlag:
   const [amount, setAmount] = useState('');
   const [fromCurrency, setFromCurrency] = useState<'USD' | 'CLP' | 'LOCAL'>('LOCAL');
 
-  const localRate = currencyRates[`USD_TO_${destCode}`] ?? 1;
+  const localRate = getRate(currencyRates as Record<string, number>, destCode);
   const numAmount = parseFloat(amount) || 0;
 
   const toUSD = fromCurrency === 'USD'
@@ -493,7 +500,7 @@ function MultiDestEstimator({ primaryUSD, primaryCLP }: { primaryUSD: number; pr
   const segDetails = segments.map(seg => {
     const dest = destinations.find(d => d.id === seg.destId);
     if (!dest) return { dest: null, estimatedUSD: 0, days: seg.days };
-    const localRate = currencyRates[`USD_TO_${dest.currencyCode}`] ?? 1;
+    const localRate = getRate(currencyRates as Record<string, number>, dest.currencyCode);
     const dailyLocal = dest.dailyBaseAccommodationCost + dest.dailyBaseFoodCost;
     const dailyUSD = localRate > 0 ? dailyLocal / localRate : 0;
     const estimatedUSD = dailyUSD * seg.days;

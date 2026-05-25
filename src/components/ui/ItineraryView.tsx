@@ -5,6 +5,7 @@ import { useTravelStore } from "@/store/useTravelStore";
 import { formatDuration } from "@/utils/geo";
 import ExportButton from "@/components/ui/ExportButton";
 import ShareButton from "@/components/ui/ShareButton";
+import { getRate } from "@/utils/rates";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -52,7 +53,7 @@ export default function ItineraryView() {
   }
 
   const code = selectedDestination.currencyCode;
-  const localRate = currencyRates[`USD_TO_${code}`] ?? 1;
+  const localRate = getRate(currencyRates as Record<string, number>, code);
   const totalUSD = generatedItinerary.reduce((s, d) => s + d.estimatedCostUSD, 0);
   const totalCLP = totalUSD * currencyRates.USD_TO_CLP;
   const totalLocal = totalUSD * localRate;
@@ -278,7 +279,7 @@ export default function ItineraryView() {
                         {!day.isTransitDay && day.attractions.length > 0 && (
                           <div className="mt-1.5 space-y-1">
                             {day.attractions.map(attr => {
-                              const attrRate = currencyRates[`USD_TO_${selectedDestination.currencyCode}`] ?? 1;
+                              const attrRate = getRate(currencyRates as Record<string, number>, selectedDestination.currencyCode);
                               const attrUSD = attrRate > 0 ? Math.round(attr.costPerCouplePerDay / attrRate) : 0;
                               const attrNoteKey = `day${day.day}-${attr.id}`;
                               const isAttrNoteOpen = expandedAttrNote === attrNoteKey;
@@ -291,6 +292,7 @@ export default function ItineraryView() {
                                       alt={attr.name}
                                       className="w-full h-24 object-cover"
                                       loading="lazy"
+                                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                                     />
                                   )}
                                   <div className="px-2.5 py-1.5">
