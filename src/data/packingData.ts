@@ -107,4 +107,11 @@ export const DEST_PACKING_ITEMS: Record<string, PackingItem[]> = {
     { id: "mx-stomach-meds", cat: "México", label: "Bismuto y probióticos (agua local)" },
     { id: "mx-deet", cat: "México", label: "Repelente DEET (zona de dengue)" },
   ],
+  portugal: [
+    { id: "pt-euros", cat: "Portugal", label: "Euros en efectivo (tascos y mercados)" },
+    { id: "pt-tram-pass", cat: "Portugal", label: "Pase de tram Lisboa (comprar en kiosco oficial)" },
+    { id: "pt-sintra-tickets", cat: "Portugal", label: "Entradas Palácio da Pena y Quinta da Regaleira reservadas" },
+    { id: "pt-comfy-shoes", cat: "Portugal", label: "Zapatos muy cómodos (Lisboa tiene muchas subidas)" },
+    { id: "pt-car-rental", cat: "Portugal", label: "Auto alquilado para el Algarve y Sintra" },
+  ],
 };
