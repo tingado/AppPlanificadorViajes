@@ -11,6 +11,7 @@ import DestinationInfo from "./DestinationInfo";
 import PackingList from "./PackingList";
 import { destinations } from "@/data/destinations";
 import { getRate } from "@/utils/rates";
+import { PRE_TRIP_ITEMS } from "@/data/preTripData";
 
 const MapView = dynamic(() => import("@/components/map/MapView"), { ssr: false });
 
@@ -152,7 +153,7 @@ const stepperSteps = [
 export default function MobileLayout() {
   const { activeTab, setActiveTab, activePins, selectedDestination, generatedItinerary, itineraryOutdated, darkMode, toggleDarkMode, tripDate, setTripDate, resetTrip, preTripChecked } = useTravelStore();
   const pinCount = activePins.length;
-  const preTripTotal = 19; // PRE_TRIP_ITEMS length — kept in sync with preTripData.ts
+  const preTripTotal = PRE_TRIP_ITEMS.length;
   const preTripDone = Object.values(preTripChecked ?? {}).filter(Boolean).length;
   const preTripPending = preTripTotal - preTripDone;
 
