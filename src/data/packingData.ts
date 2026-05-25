@@ -85,4 +85,26 @@ export const DEST_PACKING_ITEMS: Record<string, PackingItem[]> = {
     { id: "it-walking-shoes", cat: "Italia", label: "Zapatos cómodos para adoquines (sin tacones)" },
     { id: "it-trenitalia", cat: "Italia", label: "Reservas Trenitalia Frecciarossa confirmadas" },
   ],
+  france: [
+    { id: "fr-euros", cat: "Francia", label: "Euros en efectivo (mercados y boulangeries)" },
+    { id: "fr-eiffel-ticket", cat: "Francia", label: "Entradas Torre Eiffel reservadas online con anticipación" },
+    { id: "fr-museum-pass", cat: "Francia", label: "Museum Pass Paris (2/4/6 días)" },
+    { id: "fr-navigo", cat: "Francia", label: "Navigo Easy (tarjeta metro París)" },
+    { id: "fr-scarf", cat: "Francia", label: "Pañuelo/chal (elegante en restaurantes)" },
+  ],
+  croatia: [
+    { id: "cr-euros", cat: "Croacia", label: "Euros en efectivo (taxis y mercados locales)" },
+    { id: "cr-ferry", cat: "Croacia", label: "Pasajes de ferri inter-islas reservados" },
+    { id: "cr-reef-shoes", cat: "Croacia", label: "Escarpines para playas de guijarros" },
+    { id: "cr-walls-ticket", cat: "Croacia", label: "Entradas murallas de Dubrovnik reservadas" },
+    { id: "cr-sunscreen", cat: "Croacia", label: "Protector solar (sol mediterráneo intenso)" },
+  ],
+  mexico: [
+    { id: "mx-reef-sunscreen", cat: "México", label: "Protector solar libre de oxibenzona (arrecifes protegidos)" },
+    { id: "mx-pesos", cat: "México", label: "Pesos mexicanos en efectivo (cenotes y mercados)" },
+    { id: "mx-snorkel", cat: "México", label: "Snorkel / máscara de buceo" },
+    { id: "mx-rash-guard", cat: "México", label: "Lycra anti-UV para snorkel en cenotes" },
+    { id: "mx-stomach-meds", cat: "México", label: "Bismuto y probióticos (agua local)" },
+    { id: "mx-deet", cat: "México", label: "Repelente DEET (zona de dengue)" },
+  ],
 };
